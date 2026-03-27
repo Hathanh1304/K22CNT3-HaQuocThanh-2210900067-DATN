@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FlightVN - Đặt Vé</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Segoe UI', sans-serif; background: #f0f4f8; }
+    header {
+      background: linear-gradient(135deg, #003580, #0066cc);
+      color: white; padding: 16px 40px;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    header .logo { font-size: 24px; font-weight: 700; }
+    header .logo span { color: #f5a623; }
+    header nav a { color: white; text-decoration: none; margin-left: 24px; font-size: 14px; }
+
+    .container { max-width: 900px; margin: 32px auto; padding: 0 16px; }
+
+    /* Thông tin chuyến bay */
+    .flight-info {
+      background: linear-gradient(135deg, #003580, #0066cc);
+      color: white; border-radius: 12px; padding: 24px; margin-bottom: 24px;
+    }
+    .flight-info h2 { font-size: 18px; margin-bottom: 16px; }
+    .flight-route {
+      display: flex; align-items: center; gap: 16px;
+      font-size: 28px; font-weight: 700;
+    }
+    .flight-route span { font-size: 16px; opacity: 0.8; }
+    .flight-details {
+      display: flex; gap: 32px; margin-top: 12px; font-size: 14px; opacity: 0.9;
+    }
+
+    /* Form hành khách */
+    .section {
+      background: white; border-radius: 12px;
+      padding: 24px; margin-bottom: 20px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    }
+    .section h3 {
+      font-size: 16px; font-weight: 700; color: #003580;
+      margin-bottom: 20px; padding-bottom: 12px;
+      border-bottom: 2px solid #f0f4f8;
+    }
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px; }
+    .form-row.three { grid-template-columns: 1fr 1fr 1fr; }
+    .form-group { display: flex; flex-direction: column; gap: 6px; }
+    .form-group label { font-size: 12px; font-weight: 600; color: #666; text-transform: uppercase; }
+    .form-group input,
+    .form-group select {
+      padding: 12px 14px; border: 2px solid #e0e0e0;
+      border-radius: 8px; font-size: 14px; outline: none;
+      transition: border-color 0.2s;
+    }
+    .form-group input:focus,
+    .form-group select:focus { border-color: #0066cc; }
+
+    /* Tóm tắt giá */
+    .gia-tong {
+      background: #fff8e8; border: 2px solid #f5a623;
+      border-radius: 12px; padding: 20px;
+    }
+    .gia-tong h3 { color: #e8920e; margin-bottom: 16px; }
+    .gia-row {
+      display: flex; justify-content: space-between;
+      font-size: 14px; color: #555; margin-bottom: 8px;
+    }
+    .gia-row.total {
+      font-size: 18px; font-weight: 700; color: #e84545;
+      border-top: 1px solid #f5a623; padding-top: 12px; margin-top: 8px;
+    }
+
+    .btn-tiep {
+      width: 100%; padding: 16px;
+      background: linear-gradient(135deg, #f5a623, #e8920e);
+      color: white; border: none; border-radius: 10px;
+      font-size: 18px; font-weight: 700; cursor: pointer;
+      margin-top: 20px; transition: transform 0.1s;
+    }
+    .btn-tiep:hover { transform: translateY(-1px); }
+
+    footer { background: #002050; color: #aaa; text-align: center; padding: 24px; font-size: 13px; margin-top: 40px; }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="logo">Flight<span>VN</span></div>
+  <nav>
+    <a href="index.html">← Quay lại</a>
+    <a href="dang-nhap.html">Đăng nhập</a>
+  </nav>
+</header>
+
+<div class="container">
+  <!-- Thông tin chuyến bay -->
+  <div class="flight-info" id="flight-info">
+    <h2>✈ Thông tin chuyến bay</h2>
+    <div class="flight-route" id="flight-route">Đang tải...</div>
+    <div class="flight-details" id="flight-details"></div>
+  </div>
+
+  <!-- Form thông tin hành khách -->
+  <div id="danh-sach-hanh-khach"></div>
+
+  <!-- Tóm tắt giá -->
+  <div class="section">
+    <div class="gia-tong">
+      <h3>💰 Tóm tắt giá</h3>
+      <div id="gia-chi-tiet"></div>
+      <div class="gia-row total">
+        <span>Tổng cộng</span>
+        <span id="tong-tien">0 ₫</span>
+      </div>
+    </div>
+    <button class="btn-tiep" onclick="tiepTucThanhToan()">Tiếp tục thanh toán →</button>
+  </div>
+</div>
+
+<footer>© 2026 FlightVN</footer>
+
+<script>
+const API = 'http://127.0.0.1:5000/api';
+const cb  = JSON.parse(localStorage.getItem('chuyen_bay_di') || '{}');
+const soNguoiLon = parseInt(localStorage.getItem('so_nguoi_lon') || 1);
+const soTreEm   = parseInt(localStorage.getItem('so_tre_em')   || 0);
+
+// Hiển thị thông tin chuyến bay
+function hienThiChuyenBay() {
+  if (!cb.so_hieu_cb) { window.location.href = 'index.html'; return; }
+  const gioDi  = cb.gio_cat_canh.split(' ')[1].slice(0,5);
+  const gioDen = cb.gio_ha_canh.split(' ')[1].slice(0,5);
+  const gioBay = Math.floor(cb.thoi_gian_bay/60)+'h'+(cb.thoi_gian_bay%60?cb.thoi_gian_bay%60+'m':'');
+
+  document.getElementById('flight-route').innerHTML =
+    `${cb.thanh_pho_di} <span>(${cb.san_bay_di})</span> → ${cb.thanh_pho_den} <span>(${cb.san_bay_den})</span>`;
+  document.getElementById('flight-details').innerHTML =
+    `<span>✈ ${cb.so_hieu_cb} - ${cb.ten_hang}</span>
+     <span>🕐 ${gioDi} → ${gioDen} (${gioBay})</span>
+     <span>💺 ${cb.hang_ghe.replace(/_/g,' ')}</span>
+     <span>🧳 Hành lý ${cb.han_hanh_ly_kg}kg</span>`;
+}
+
+// Tạo form hành khách
+function taoFormHanhKhach() {
+  let html = '';
+  for (let i = 0; i < soNguoiLon; i++) {
+    html += formHanhKhach(i+1, 'Nguoi_lon', `Người lớn ${i+1}`);
+  }
+  for (let i = 0; i < soTreEm; i++) {
+    html += formHanhKhach(soNguoiLon+i+1, 'Tre_em', `Trẻ em ${i+1}`);
+  }
+  document.getElementById('danh-sach-hanh-khach').innerHTML = html;
+}
+
+function formHanhKhach(idx, loai, tieude) {
+  return `
+  <div class="section">
+    <h3>👤 ${tieude}</h3>
+    <input type="hidden" id="loai_${idx}" value="${loai}">
+    <div class="form-row">
+      <div class="form-group">
+        <label>Họ và tên (viết hoa)</label>
+        <input type="text" id="hoten_${idx}" placeholder="VD: NGUYEN VAN AN" style="text-transform:uppercase">
+      </div>
+      <div class="form-group">
+        <label>Giới tính</label>
+        <select id="gioitinh_${idx}">
+          <option value="Nam">Nam</option>
+          <option value="Nu">Nữ</option>
+        </select>
+      </div>
+    </div>
+    <div class="form-row three">
+      <div class="form-group">
+        <label>Ngày sinh</label>
+        <input type="date" id="ngaysinh_${idx}">
+      </div>
+      <div class="form-group">
+        <label>Quốc tịch</label>
+        <input type="text" id="quoctich_${idx}" value="Việt Nam">
+      </div>
+      <div class="form-group">
+        <label>Số hộ chiếu (nếu có)</label>
+        <input type="text" id="hochieu_${idx}" placeholder="B1234567">
+      </div>
+    </div>
+  </div>`;
+}
+
+// Tính giá
+function tinhGia() {
+  const giaNguoiLon = cb.gia_nguoi_lon || 0;
+  const giaTreEm   = cb.gia_tre_em    || 0;
+  const tongNL = soNguoiLon * giaNguoiLon;
+  const tongTE = soTreEm   * giaTreEm;
+  const tong   = tongNL + tongTE;
+
+  let html = '';
+  if (soNguoiLon > 0)
+    html += `<div class="gia-row"><span>Người lớn x${soNguoiLon}</span><span>${tongNL.toLocaleString('vi-VN')} ₫</span></div>`;
+  if (soTreEm > 0)
+    html += `<div class="gia-row"><span>Trẻ em x${soTreEm}</span><span>${tongTE.toLocaleString('vi-VN')} ₫</span></div>`;
+
+  document.getElementById('gia-chi-tiet').innerHTML = html;
+  document.getElementById('tong-tien').textContent  = tong.toLocaleString('vi-VN') + ' ₫';
+  return tong;
+}
+
+// Tiếp tục thanh toán
+function tiepTucThanhToan() {
+  const tongHK = soNguoiLon + soTreEm;
+  const dsVe   = [];
+
+  for (let i = 1; i <= tongHK; i++) {
+    const hoTen = document.getElementById(`hoten_${i}`).value.trim();
+    if (!hoTen) { alert(`Vui lòng nhập họ tên hành khách ${i}!`); return; }
+    const loai = document.getElementById(`loai_${i}`).value;
+    const gia  = loai === 'Nguoi_lon' ? cb.gia_nguoi_lon : cb.gia_tre_em;
+    dsVe.push({
+      chuyen_bay_id:   cb.id,
+      hang_ghe_id:     cb.hang_ghe_id,
+      loai_hanh_khach: loai,
+      ho_ten:          hoTen.toUpperCase(),
+      ngay_sinh:       document.getElementById(`ngaysinh_${i}`).value,
+      gioi_tinh:       document.getElementById(`gioitinh_${i}`).value,
+      gia_ve:          gia
+    });
+  }
+
+  localStorage.setItem('danh_sach_ve', JSON.stringify(dsVe));
+  localStorage.setItem('tong_tien', tinhGia());
+  window.location.href = 'thanh-toan.html';
+}
+
+hienThiChuyenBay();
+taoFormHanhKhach();
+tinhGia();
+</script>
+</body>
+</html>

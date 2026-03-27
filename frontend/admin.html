@@ -1,0 +1,738 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HaThanhF - Quản trị</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Segoe UI', sans-serif; background: #f0f4f8; display: flex; min-height: 100vh; }
+    .sidebar { width: 240px; min-height: 100vh; background: linear-gradient(180deg, #003580, #002050); color: white; display: flex; flex-direction: column; position: fixed; left: 0; top: 0; }
+    .sidebar-logo { padding: 24px 20px; font-size: 22px; font-weight: 700; border-bottom: 1px solid rgba(255,255,255,0.1); }
+    .sidebar-logo span { color: #f5a623; }
+    .sidebar-logo small { display: block; font-size: 11px; opacity: 0.6; font-weight: 400; margin-top: 2px; }
+    .sidebar-menu { flex: 1; padding: 16px 0; }
+    .menu-item { display: flex; align-items: center; gap: 12px; padding: 12px 20px; cursor: pointer; font-size: 14px; color: rgba(255,255,255,0.75); transition: all 0.2s; border-left: 3px solid transparent; text-decoration: none; }
+    .menu-item:hover { background: rgba(255,255,255,0.1); color: white; }
+    .menu-item.active { background: rgba(255,255,255,0.15); color: white; border-left-color: #f5a623; }
+    .menu-item .icon { font-size: 18px; width: 24px; text-align: center; }
+    .sidebar-footer { padding: 16px 20px; border-top: 1px solid rgba(255,255,255,0.1); font-size: 12px; opacity: 0.6; }
+    .main { margin-left: 240px; flex: 1; display: flex; flex-direction: column; }
+    .topbar { background: white; padding: 16px 32px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 8px rgba(0,0,0,0.06); position: sticky; top: 0; z-index: 10; }
+    .topbar h1 { font-size: 20px; color: #333; font-weight: 600; }
+    .topbar-right { display: flex; align-items: center; gap: 16px; }
+    .admin-badge { background: #e8f0fe; color: #003580; padding: 6px 14px; border-radius: 20px; font-size: 13px; font-weight: 600; }
+    .btn-logout { padding: 8px 16px; background: #f8d7da; color: #721c24; border: none; border-radius: 6px; font-size: 13px; cursor: pointer; }
+    .content { padding: 32px; flex: 1; }
+    .tab-content { display: none; }
+    .tab-content.active { display: block; }
+    .stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; margin-bottom: 32px; }
+    .stat-card { background: white; border-radius: 12px; padding: 24px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); display: flex; align-items: center; gap: 16px; }
+    .stat-icon { width: 56px; height: 56px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 24px; }
+    .stat-icon.blue { background: #e8f0fe; }
+    .stat-icon.green { background: #e8f5e9; }
+    .stat-icon.orange { background: #fff3e0; }
+    .stat-icon.red { background: #ffebee; }
+    .stat-label { font-size: 13px; color: #888; margin-bottom: 4px; }
+    .stat-value { font-size: 28px; font-weight: 700; color: #333; }
+    .card { background: white; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); overflow: hidden; margin-bottom: 24px; }
+    .card-header { padding: 20px 24px; border-bottom: 1px solid #f0f0f0; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; }
+    .card-header h3 { font-size: 16px; font-weight: 700; color: #333; }
+    .card-header-actions { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+    .search-input { padding: 8px 14px; border: 1px solid #e0e0e0; border-radius: 8px; font-size: 14px; outline: none; width: 200px; }
+    .filter-select { padding: 8px 14px; border: 1px solid #e0e0e0; border-radius: 8px; font-size: 14px; outline: none; }
+    table { width: 100%; border-collapse: collapse; }
+    th { padding: 12px 16px; text-align: left; font-size: 12px; font-weight: 600; color: #888; text-transform: uppercase; background: #f8f9fa; border-bottom: 1px solid #e8e8e8; }
+    td { padding: 14px 16px; font-size: 14px; color: #333; border-bottom: 1px solid #f5f5f5; }
+    tr:hover td { background: #f8f9ff; }
+    tr:last-child td { border-bottom: none; }
+    .badge { padding: 4px 10px; border-radius: 20px; font-size: 12px; font-weight: 600; display: inline-block; }
+    .badge.da_xac_nhan,.badge.da_xu_ly { background: #d4edda; color: #155724; }
+    .badge.da_thanh_toan { background: #d4edda; color: #155724; }
+    .badge.cho_thanh_toan,.badge.cho_xu_ly { background: #fff3cd; color: #856404; }
+    .badge.da_huy { background: #f8d7da; color: #721c24; }
+    .badge.du_kien { background: #d4edda; color: #155724; }
+    .badge.tre_gio,.badge.dang_xu_ly { background: #cce5ff; color: #004085; }
+    .badge.huy_chuyen { background: #f8d7da; color: #721c24; }
+    .badge.da_cat_canh,.badge.dong { background: #e2e3e5; color: #383d41; }
+    .btn-sm { padding: 5px 12px; border-radius: 6px; font-size: 12px; font-weight: 600; cursor: pointer; border: none; margin: 2px; }
+    .btn-primary { background: #003580; color: white; }
+    .btn-danger { background: #e84545; color: white; }
+    .btn-warning { background: #f5a623; color: white; }
+    .btn-success { background: #28a745; color: white; }
+    .btn-info { background: #17a2b8; color: white; }
+    .chart-container { padding: 24px; }
+    .bar-chart { display: flex; align-items: flex-end; gap: 12px; height: 160px; }
+    .bar-wrap { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 4px; }
+    .bar { width: 100%; background: linear-gradient(180deg, #0066cc, #003580); border-radius: 4px 4px 0 0; display: flex; align-items: flex-start; justify-content: center; padding-top: 4px; font-size: 10px; color: white; font-weight: 600; }
+    .bar-label { font-size: 11px; color: #888; }
+    .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 1000; align-items: center; justify-content: center; }
+    .modal-overlay.show { display: flex; }
+    .modal { background: white; border-radius: 16px; padding: 32px; max-width: 620px; width: 90%; max-height: 90vh; overflow-y: auto; }
+    .modal h3 { font-size: 20px; color: #333; margin-bottom: 20px; padding-bottom: 12px; border-bottom: 2px solid #f0f4f8; }
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px; }
+    .form-group { display: flex; flex-direction: column; gap: 6px; margin-bottom: 16px; }
+    .form-group label { font-size: 12px; font-weight: 600; color: #666; text-transform: uppercase; }
+    .form-group input, .form-group select, .form-group textarea { padding: 12px 14px; border: 2px solid #e0e0e0; border-radius: 8px; font-size: 14px; outline: none; transition: border-color 0.2s; font-family: inherit; }
+    .form-group textarea { resize: vertical; min-height: 100px; }
+    .form-group input:focus, .form-group select:focus, .form-group textarea:focus { border-color: #0066cc; }
+    .modal-info { background: #fff3cd; border: 1px solid #f5a623; border-radius: 8px; padding: 14px; margin-bottom: 16px; font-size: 14px; color: #856404; }
+    .modal-khach { max-height: 200px; overflow-y: auto; border: 1px solid #e0e0e0; border-radius: 8px; margin-bottom: 20px; }
+    .khach-row { display: flex; justify-content: space-between; padding: 10px 14px; border-bottom: 1px solid #f5f5f5; font-size: 13px; }
+    .khach-row:last-child { border-bottom: none; }
+    .modal-btns { display: flex; gap: 12px; justify-content: flex-end; margin-top: 20px; }
+    .btn-cancel { padding: 10px 24px; background: #f0f4f8; color: #555; border: none; border-radius: 8px; font-size: 14px; cursor: pointer; }
+    .btn-confirm { padding: 10px 24px; background: #003580; color: white; border: none; border-radius: 8px; font-size: 14px; font-weight: 600; cursor: pointer; }
+    .btn-confirm.orange { background: #f5a623; }
+    .btn-confirm.green { background: #28a745; }
+    .thong-bao-item { padding: 16px 20px; border-bottom: 1px solid #f0f0f0; display: flex; gap: 16px; align-items: flex-start; }
+    .thong-bao-item:last-child { border-bottom: none; }
+    .tb-icon { width: 40px; height: 40px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 18px; flex-shrink: 0; }
+    .tb-icon.delay { background: #fff3cd; }
+    .tb-icon.xac_nhan { background: #d4edda; }
+    .tb-icon.khuyen_mai { background: #e8f0fe; }
+    .tb-content { flex: 1; }
+    .tb-tieu-de { font-weight: 600; font-size: 14px; color: #333; margin-bottom: 4px; }
+    .tb-noi-dung { font-size: 13px; color: #666; margin-bottom: 4px; }
+    .tb-time { font-size: 12px; color: #aaa; }
+    .ht-item { padding: 16px 20px; border-bottom: 1px solid #f0f0f0; }
+    .ht-item:last-child { border-bottom: none; }
+    .ht-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px; }
+    .ht-tieu-de { font-weight: 700; font-size: 14px; color: #333; }
+    .ht-meta { font-size: 12px; color: #888; margin-top: 2px; }
+    .ht-noi-dung { font-size: 13px; color: #555; margin-bottom: 8px; line-height: 1.5; }
+    .ht-phan-hoi { background: #e8f5e9; border-left: 3px solid #28a745; padding: 10px 14px; border-radius: 6px; font-size: 13px; color: #2e7d32; margin-top: 8px; }
+    /* Sửa vé */
+    .ve-sua-card { border: 1px solid #e0e0e0; border-radius: 10px; padding: 20px; margin-bottom: 16px; background: #fafafa; }
+    .ve-sua-title { font-weight: 700; color: #003580; margin-bottom: 16px; font-size: 14px; padding: 8px 12px; background: #e8f0fe; border-radius: 6px; }
+    footer { background: #002050; color: #aaa; text-align: center; padding: 16px; font-size: 12px; }
+  </style>
+</head>
+<body>
+
+<div class="sidebar">
+  <div class="sidebar-logo">HaThanh<span>F</span><small>Bảng điều khiển Admin</small></div>
+  <div class="sidebar-menu">
+    <a class="menu-item active" onclick="showTab('dashboard', this)"><span class="icon">📊</span> Dashboard</a>
+    <a class="menu-item" onclick="showTab('chuyen-bay', this)"><span class="icon">✈️</span> Chuyến bay</a>
+    <a class="menu-item" onclick="showTab('don-dat-ve', this)"><span class="icon">🎫</span> Đơn đặt vé</a>
+    <a class="menu-item" onclick="showTab('khach-hang', this)"><span class="icon">👥</span> Khách hàng</a>
+    <a class="menu-item" onclick="showTab('thong-bao', this)"><span class="icon">🔔</span> Thông báo</a>
+    <a class="menu-item" onclick="showTab('ho-tro', this)"><span class="icon">🎧</span> Hỗ trợ KH</a>
+  </div>
+  <div class="sidebar-footer">© 2026 HaThanhF Admin</div>
+</div>
+
+<div class="main">
+  <div class="topbar">
+    <h1 id="topbar-title">📊 Dashboard</h1>
+    <div class="topbar-right">
+      <span class="admin-badge" id="admin-name">👤 Admin</span>
+      <button class="btn-logout" onclick="dangXuat()">Đăng xuất</button>
+    </div>
+  </div>
+
+  <div class="content">
+
+    <!-- DASHBOARD -->
+    <div class="tab-content active" id="tab-dashboard">
+      <div class="stats-grid">
+        <div class="stat-card"><div class="stat-icon blue">👥</div><div><div class="stat-label">Khách hàng</div><div class="stat-value" id="stat-kh">--</div></div></div>
+        <div class="stat-card"><div class="stat-icon green">🎫</div><div><div class="stat-label">Đơn đặt vé</div><div class="stat-value" id="stat-don">--</div></div></div>
+        <div class="stat-card"><div class="stat-icon orange">✈️</div><div><div class="stat-label">Chuyến bay</div><div class="stat-value" id="stat-cb">--</div></div></div>
+        <div class="stat-card"><div class="stat-icon red">💰</div><div><div class="stat-label">Doanh thu</div><div class="stat-value" id="stat-dt">--</div></div></div>
+      </div>
+      <div class="card">
+        <div class="card-header"><h3>📈 Doanh thu 7 ngày gần nhất</h3></div>
+        <div class="chart-container"><div class="bar-chart" id="bar-chart"><div style="color:#aaa">Đang tải...</div></div></div>
+      </div>
+    </div>
+
+    <!-- CHUYẾN BAY -->
+    <div class="tab-content" id="tab-chuyen-bay">
+      <div class="card">
+        <div class="card-header">
+          <h3>✈️ Danh sách chuyến bay</h3>
+          <div class="card-header-actions">
+            <select class="filter-select" onchange="locChuyenBayTheoTrangThai(this.value)">
+              <option value="">-- Tất cả trạng thái --</option>
+              <option value="du_kien">Dự kiến</option>
+              <option value="tre_gio">Trễ giờ</option>
+              <option value="huy_chuyen">Hủy chuyến</option>
+              <option value="da_cat_canh">Đã cất cánh</option>
+            </select>
+            <input class="search-input" type="text" placeholder="🔍 Tìm số hiệu..." oninput="locChuyenBay(this.value)">
+            <button class="btn-sm btn-success" onclick="moModalThemCB()">➕ Thêm chuyến bay</button>
+          </div>
+        </div>
+        <table>
+          <thead><tr><th>Số hiệu</th><th>Hãng bay</th><th>Tuyến</th><th>Giờ cất cánh</th><th>Giờ hạ cánh</th><th>Ghế trống</th><th>Trạng thái</th><th>Thao tác</th></tr></thead>
+          <tbody id="table-chuyen-bay"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- ĐƠN ĐẶT VÉ -->
+    <div class="tab-content" id="tab-don-dat-ve">
+      <div class="card">
+        <div class="card-header">
+          <h3>🎫 Danh sách đơn đặt vé</h3>
+          <div class="card-header-actions">
+            <select class="filter-select" onchange="locDonTheoTrangThai(this.value)">
+              <option value="">-- Tất cả --</option>
+              <option value="cho_thanh_toan">Chờ thanh toán</option>
+              <option value="da_thanh_toan">Đã thanh toán</option>
+              <option value="da_xac_nhan">Đã xác nhận</option>
+              <option value="da_huy">Đã hủy</option>
+            </select>
+            <input class="search-input" type="text" placeholder="🔍 Tìm mã / tên..." oninput="locDonDatVe(this.value)">
+          </div>
+        </div>
+        <table>
+          <thead><tr><th>Mã đặt vé</th><th>Khách hàng</th><th>SĐT</th><th>Loại</th><th>Tổng tiền</th><th>Ngày đặt</th><th>Trạng thái</th><th>Thao tác</th></tr></thead>
+          <tbody id="table-don-dat-ve"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- KHÁCH HÀNG -->
+    <div class="tab-content" id="tab-khach-hang">
+      <div class="card">
+        <div class="card-header">
+          <h3>👥 Danh sách khách hàng</h3>
+          <input class="search-input" type="text" placeholder="🔍 Tìm tên / email..." oninput="locKhachHang(this.value)">
+        </div>
+        <table>
+          <thead><tr><th>#</th><th>Họ tên</th><th>Email</th><th>Số điện thoại</th><th>Số đơn</th><th>Ngày tạo</th></tr></thead>
+          <tbody id="table-khach-hang"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- THÔNG BÁO -->
+    <div class="tab-content" id="tab-thong-bao">
+      <div class="card">
+        <div class="card-header">
+          <h3>🔔 Lịch sử thông báo</h3>
+          <button class="btn-sm btn-primary" onclick="loadThongBao()">🔄 Làm mới</button>
+        </div>
+        <div id="ds-thong-bao"><div style="padding:32px;text-align:center;color:#aaa">Đang tải...</div></div>
+      </div>
+    </div>
+
+    <!-- HỖ TRỢ -->
+    <div class="tab-content" id="tab-ho-tro">
+      <div class="card">
+        <div class="card-header">
+          <h3>🎧 Yêu cầu hỗ trợ khách hàng</h3>
+          <div class="card-header-actions">
+            <select class="filter-select" onchange="locHoTroTheoTrangThai(this.value)">
+              <option value="">-- Tất cả --</option>
+              <option value="cho_xu_ly">Chờ xử lý</option>
+              <option value="dang_xu_ly">Đang xử lý</option>
+              <option value="da_xu_ly">Đã xử lý</option>
+              <option value="dong">Đóng</option>
+            </select>
+            <button class="btn-sm btn-primary" onclick="loadHoTro()">🔄 Làm mới</button>
+          </div>
+        </div>
+        <div id="ds-ho-tro"><div style="padding:32px;text-align:center;color:#aaa">Đang tải...</div></div>
+      </div>
+    </div>
+
+  </div>
+  <footer>© 2026 HaThanhF - Hệ thống quản trị</footer>
+</div>
+
+<!-- Modal sửa chuyến bay -->
+<div class="modal-overlay" id="modal-sua-cb">
+  <div class="modal">
+    <h3>✏️ Sửa chuyến bay</h3>
+    <input type="hidden" id="sua-cb-id">
+    <div class="form-row">
+      <div class="form-group"><label>Số hiệu</label><input type="text" id="sua-so-hieu"></div>
+      <div class="form-group"><label>Trạng thái</label>
+        <select id="sua-trang-thai">
+          <option value="du_kien">Dự kiến</option><option value="tre_gio">Trễ giờ</option>
+          <option value="huy_chuyen">Hủy chuyến</option><option value="da_cat_canh">Đã cất cánh</option><option value="da_ha_canh">Đã hạ cánh</option>
+        </select>
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group"><label>Giờ cất cánh</label><input type="datetime-local" id="sua-gio-di"></div>
+      <div class="form-group"><label>Giờ hạ cánh</label><input type="datetime-local" id="sua-gio-den"></div>
+    </div>
+    <div class="form-row">
+      <div class="form-group"><label>Thời gian bay (phút)</label><input type="number" id="sua-thoigian"></div>
+      <div class="form-group"><label>Giá người lớn (₫)</label><input type="number" id="sua-gia-nl"></div>
+    </div>
+    <div class="form-group"><label>Giá trẻ em (₫)</label><input type="number" id="sua-gia-te"></div>
+    <div class="modal-btns">
+      <button class="btn-cancel" onclick="dongModal('modal-sua-cb')">Hủy</button>
+      <button class="btn-confirm" onclick="suaChuyenBay()">💾 Lưu thay đổi</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal thêm chuyến bay -->
+<div class="modal-overlay" id="modal-them-cb">
+  <div class="modal">
+    <h3>➕ Thêm chuyến bay mới</h3>
+    <div class="form-row">
+      <div class="form-group"><label>Hãng hàng không</label><select id="them-hang-hk"></select></div>
+      <div class="form-group"><label>Số hiệu</label><input type="text" id="them-so-hieu" placeholder="VD: VN999"></div>
+    </div>
+    <div class="form-row">
+      <div class="form-group"><label>Sân bay đi</label><select id="them-sb-di"></select></div>
+      <div class="form-group"><label>Sân bay đến</label><select id="them-sb-den"></select></div>
+    </div>
+    <div class="form-row">
+      <div class="form-group"><label>Giờ cất cánh</label><input type="datetime-local" id="them-gio-di"></div>
+      <div class="form-group"><label>Giờ hạ cánh</label><input type="datetime-local" id="them-gio-den"></div>
+    </div>
+    <div class="form-row">
+      <div class="form-group"><label>Thời gian bay (phút)</label><input type="number" id="them-thoigian" placeholder="VD: 120"></div>
+      <div class="form-group"><label>Số ghế</label><input type="number" id="them-so-ghe" placeholder="VD: 180"></div>
+    </div>
+    <div class="form-row">
+      <div class="form-group"><label>Giá người lớn (₫)</label><input type="number" id="them-gia-nl" placeholder="VD: 1200000"></div>
+      <div class="form-group"><label>Giá trẻ em (₫)</label><input type="number" id="them-gia-te" placeholder="VD: 900000"></div>
+    </div>
+    <div class="modal-btns">
+      <button class="btn-cancel" onclick="dongModal('modal-them-cb')">Hủy</button>
+      <button class="btn-confirm" onclick="themChuyenBay()">➕ Thêm chuyến bay</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal thông báo delay -->
+<div class="modal-overlay" id="modal-delay">
+  <div class="modal">
+    <h3>📢 Thông báo chuyến bay trễ giờ</h3>
+    <p style="color:#666;font-size:14px;margin-bottom:16px">Hệ thống sẽ cập nhật trạng thái và hiển thị danh sách khách hàng cần thông báo.</p>
+    <div class="modal-info" id="modal-cb-info"></div>
+    <div style="font-size:13px;font-weight:600;color:#333;margin-bottom:8px" id="modal-so-khach"></div>
+    <div class="modal-khach" id="modal-ds-khach"></div>
+    <div class="modal-btns">
+      <button class="btn-cancel" onclick="dongModal('modal-delay')">Hủy</button>
+      <button class="btn-confirm orange" onclick="xacNhanDelay()">📢 Xác nhận báo delay</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal trả lời hỗ trợ -->
+<div class="modal-overlay" id="modal-tra-loi">
+  <div class="modal">
+    <h3>💬 Trả lời yêu cầu hỗ trợ</h3>
+    <input type="hidden" id="ht-id">
+    <div class="modal-info" id="ht-info"></div>
+    <div class="form-group">
+      <label>Nội dung yêu cầu</label>
+      <div id="ht-noi-dung-hien" style="background:#f8f9fa;padding:12px;border-radius:8px;font-size:13px;color:#555;line-height:1.6;margin-bottom:8px"></div>
+    </div>
+    <div class="form-group">
+      <label>Phản hồi của admin</label>
+      <textarea id="ht-phan-hoi" placeholder="Nhập phản hồi cho khách hàng..."></textarea>
+    </div>
+    <div class="form-group">
+      <label>Cập nhật trạng thái</label>
+      <select id="ht-trang-thai">
+        <option value="dang_xu_ly">Đang xử lý</option>
+        <option value="da_xu_ly">Đã xử lý</option>
+        <option value="dong">Đóng</option>
+      </select>
+    </div>
+    <div class="modal-btns">
+      <button class="btn-cancel" onclick="dongModal('modal-tra-loi')">Hủy</button>
+      <button class="btn-confirm green" onclick="guiTraLoi()">📤 Gửi phản hồi</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal sửa vé -->
+<div class="modal-overlay" id="modal-sua-ve">
+  <div class="modal" style="max-width:680px">
+    <h3>✏️ Sửa vé trong đơn <span id="sua-ve-ma" style="color:#003580;font-size:16px"></span></h3>
+    <div id="ds-ve-sua"><div style="text-align:center;padding:20px;color:#aaa">Đang tải...</div></div>
+    <div class="modal-btns">
+      <button class="btn-cancel" onclick="dongModal('modal-sua-ve')">Đóng</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const API = 'http://127.0.0.1:5000/api';
+let allChuyenBay = [], allDonDatVe = [], allKhachHang = [], allHoTro = [];
+let pendingDelayId = null;
+
+const adminInfo = JSON.parse(localStorage.getItem('admin') || 'null');
+if (!adminInfo) { window.location.href = 'dang-nhap-admin.html'; }
+else { document.getElementById('admin-name').textContent = '👤 ' + adminInfo.ho_ten; }
+
+const TRANG_THAI = {
+  cho_thanh_toan:'Chờ TT', da_thanh_toan:'Đã TT', da_xac_nhan:'Xác nhận', da_huy:'Đã hủy',
+  du_kien:'Dự kiến', tre_gio:'Trễ giờ', huy_chuyen:'Hủy chuyến', da_cat_canh:'Đã cất cánh', da_ha_canh:'Đã hạ cánh',
+  cho_xu_ly:'Chờ xử lý', dang_xu_ly:'Đang xử lý', da_xu_ly:'Đã xử lý', dong:'Đóng',
+  cho_xac_nhan:'Chờ XN', da_checkin:'Đã check-in'
+};
+const LOAI_HT = {
+  hoi_thong_tin:'❓ Hỏi thông tin', doi_lich:'📅 Đổi lịch', huy_ve:'❌ Hủy vé',
+  hoan_tien:'💰 Hoàn tiền', khieu_nai:'⚠️ Khiếu nại', khac:'📌 Khác'
+};
+
+function showTab(tab, el) {
+  document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.menu-item').forEach(m => m.classList.remove('active'));
+  document.getElementById('tab-' + tab).classList.add('active');
+  el.classList.add('active');
+  const titles = {
+    dashboard:'📊 Dashboard', 'chuyen-bay':'✈️ Chuyến bay',
+    'don-dat-ve':'🎫 Đơn đặt vé', 'khach-hang':'👥 Khách hàng',
+    'thong-bao':'🔔 Thông báo', 'ho-tro':'🎧 Hỗ trợ khách hàng'
+  };
+  document.getElementById('topbar-title').textContent = titles[tab];
+  if (tab === 'chuyen-bay' && !allChuyenBay.length) loadChuyenBay();
+  if (tab === 'don-dat-ve' && !allDonDatVe.length)  loadDonDatVe();
+  if (tab === 'khach-hang' && !allKhachHang.length) loadKhachHang();
+  if (tab === 'thong-bao') loadThongBao();
+  if (tab === 'ho-tro')    loadHoTro();
+}
+
+function dongModal(id) { document.getElementById(id).classList.remove('show'); }
+function dangXuat() { localStorage.removeItem('admin'); window.location.href = 'dang-nhap-admin.html'; }
+
+// DASHBOARD
+async function loadDashboard() {
+  const res  = await fetch(`${API}/admin/dashboard`);
+  const data = await res.json();
+  document.getElementById('stat-kh').textContent  = data.tong_khach_hang;
+  document.getElementById('stat-don').textContent = data.tong_don_dat_ve;
+  document.getElementById('stat-cb').textContent  = data.tong_chuyen_bay;
+  document.getElementById('stat-dt').textContent  = Math.round(data.tong_doanh_thu / 1000000) + 'M ₫';
+  const maxDT = Math.max(...data.doanh_thu_7ngay.map(d => d.doanh_thu), 1);
+  const chart = data.doanh_thu_7ngay.reverse().map(d => {
+    const h = Math.max(20, Math.round((d.doanh_thu / maxDT) * 140));
+    return `<div class="bar-wrap"><div class="bar" style="height:${h}px">${Math.round(d.doanh_thu/1000)}k</div><div class="bar-label">${d.ngay.slice(5)}</div></div>`;
+  }).join('');
+  document.getElementById('bar-chart').innerHTML = chart || '<div style="color:#aaa">Chưa có dữ liệu</div>';
+}
+
+// CHUYẾN BAY
+async function loadChuyenBay() {
+  const res = await fetch(`${API}/admin/chuyen-bay`);
+  allChuyenBay = await res.json();
+  renderChuyenBay(allChuyenBay);
+}
+function renderChuyenBay(data) {
+  const rows = data.map(cb => `
+    <tr>
+      <td><strong>${cb.so_hieu_cb}</strong></td>
+      <td>${cb.ten_hang}</td>
+      <td>${cb.tu} → ${cb.den}</td>
+      <td>${cb.gio_cat_canh.split(' ')[1].slice(0,5)}<br><small style="color:#aaa">${cb.gio_cat_canh.split(' ')[0]}</small></td>
+      <td>${cb.gio_ha_canh.split(' ')[1].slice(0,5)}</td>
+      <td>${cb.ghe_trong}/${cb.tong_ghe}</td>
+      <td><span class="badge ${cb.trang_thai}">${TRANG_THAI[cb.trang_thai]||cb.trang_thai}</span></td>
+      <td>
+        <button class="btn-sm btn-info"    onclick="moModalSuaCB(${cb.id})">✏️ Sửa</button>
+        <button class="btn-sm btn-warning" onclick="moModalDelay(${cb.id},'${cb.so_hieu_cb}','${cb.tu}','${cb.den}','${cb.gio_cat_canh}')">📢 Delay</button>
+        <button class="btn-sm btn-danger"  onclick="xoaChuyenBay(${cb.id},'${cb.so_hieu_cb}')">🗑️ Xóa</button>
+      </td>
+    </tr>`).join('');
+  document.getElementById('table-chuyen-bay').innerHTML = rows || '<tr><td colspan="8" style="text-align:center;color:#aaa">Không có dữ liệu</td></tr>';
+}
+function locChuyenBay(q) { renderChuyenBay(allChuyenBay.filter(cb => cb.so_hieu_cb.toLowerCase().includes(q.toLowerCase()) || cb.ten_hang.toLowerCase().includes(q.toLowerCase()))); }
+function locChuyenBayTheoTrangThai(tt) { renderChuyenBay(tt ? allChuyenBay.filter(cb => cb.trang_thai===tt) : allChuyenBay); }
+
+async function xoaChuyenBay(id, soHieu) {
+  if (!confirm(`Xác nhận xóa chuyến bay ${soHieu}?`)) return;
+  const res  = await fetch(`${API}/admin/chuyen-bay/xoa/${id}`, { method:'DELETE' });
+  const data = await res.json();
+  if (data.success) { alert('✅ Đã xóa!'); allChuyenBay=[]; loadChuyenBay(); }
+  else alert('❌ ' + data.error);
+}
+
+async function moModalSuaCB(cbId) {
+  document.getElementById('modal-sua-cb').classList.add('show');
+  const res  = await fetch(`${API}/admin/chuyen-bay/chi-tiet/${cbId}`);
+  const data = await res.json();
+  document.getElementById('sua-cb-id').value      = cbId;
+  document.getElementById('sua-so-hieu').value    = data.so_hieu_cb;
+  document.getElementById('sua-trang-thai').value = data.trang_thai;
+  document.getElementById('sua-gio-di').value     = data.gio_cat_canh.replace(' ','T').slice(0,16);
+  document.getElementById('sua-gio-den').value    = data.gio_ha_canh.replace(' ','T').slice(0,16);
+  document.getElementById('sua-thoigian').value   = data.thoi_gian_bay;
+  document.getElementById('sua-gia-nl').value     = data.gia_nguoi_lon;
+  document.getElementById('sua-gia-te').value     = data.gia_tre_em;
+}
+
+async function suaChuyenBay() {
+  const id = document.getElementById('sua-cb-id').value;
+  const payload = {
+    so_hieu_cb: document.getElementById('sua-so-hieu').value,
+    trang_thai: document.getElementById('sua-trang-thai').value,
+    gio_cat_canh: document.getElementById('sua-gio-di').value.replace('T',' '),
+    gio_ha_canh:  document.getElementById('sua-gio-den').value.replace('T',' '),
+    thoi_gian_bay: parseInt(document.getElementById('sua-thoigian').value),
+    gia_nguoi_lon: parseInt(document.getElementById('sua-gia-nl').value),
+    gia_tre_em:    parseInt(document.getElementById('sua-gia-te').value),
+  };
+  const res  = await fetch(`${API}/admin/chuyen-bay/sua/${id}`, { method:'PUT', headers:{'Content-Type':'application/json'}, body:JSON.stringify(payload) });
+  const data = await res.json();
+  if (data.success) { alert('✅ Cập nhật thành công!'); dongModal('modal-sua-cb'); allChuyenBay=[]; loadChuyenBay(); }
+  else alert('❌ ' + data.error);
+}
+
+async function moModalThemCB() {
+  document.getElementById('modal-them-cb').classList.add('show');
+  const [hhk, sb] = await Promise.all([
+    fetch(`${API}/admin/hang-hang-khong`).then(r=>r.json()),
+    fetch(`${API}/admin/san-bay`).then(r=>r.json())
+  ]);
+  document.getElementById('them-hang-hk').innerHTML = hhk.map(h=>`<option value="${h.id}">${h.ma_hang} - ${h.ten_hang}</option>`).join('');
+  const sbOpts = sb.map(s=>`<option value="${s.ma_iata}">${s.ma_iata} - ${s.thanh_pho}</option>`).join('');
+  document.getElementById('them-sb-di').innerHTML  = sbOpts;
+  document.getElementById('them-sb-den').innerHTML = sbOpts;
+}
+
+async function themChuyenBay() {
+  const payload = {
+    hang_hk_id: parseInt(document.getElementById('them-hang-hk').value),
+    so_hieu_cb: document.getElementById('them-so-hieu').value.trim(),
+    san_bay_di: document.getElementById('them-sb-di').value,
+    san_bay_den:document.getElementById('them-sb-den').value,
+    gio_cat_canh:document.getElementById('them-gio-di').value.replace('T',' '),
+    gio_ha_canh: document.getElementById('them-gio-den').value.replace('T',' '),
+    thoi_gian_bay:parseInt(document.getElementById('them-thoigian').value),
+    so_ghe:       parseInt(document.getElementById('them-so-ghe').value),
+    gia_nguoi_lon:parseInt(document.getElementById('them-gia-nl').value),
+    gia_tre_em:   parseInt(document.getElementById('them-gia-te').value),
+  };
+  if (!payload.so_hieu_cb || !payload.gio_cat_canh || !payload.gia_nguoi_lon) { alert('Vui lòng điền đầy đủ!'); return; }
+  const res  = await fetch(`${API}/admin/chuyen-bay/them`, { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(payload) });
+  const data = await res.json();
+  if (data.success) { alert('✅ Thêm thành công!'); dongModal('modal-them-cb'); allChuyenBay=[]; loadChuyenBay(); }
+  else alert('❌ ' + data.error);
+}
+
+async function moModalDelay(cbId, soHieu, tu, den, gioCatCanh) {
+  pendingDelayId = cbId;
+  document.getElementById('modal-cb-info').innerHTML = `✈️ <strong>${soHieu}</strong> &nbsp;|&nbsp; ${tu} → ${den} &nbsp;|&nbsp; 🕐 ${gioCatCanh.split(' ')[1].slice(0,5)}`;
+  document.getElementById('modal-so-khach').textContent = '⏳ Đang tải...';
+  document.getElementById('modal-ds-khach').innerHTML = '';
+  document.getElementById('modal-delay').classList.add('show');
+  const res  = await fetch(`${API}/admin/khach-hang-chuyen-bay/${cbId}`);
+  const data = await res.json();
+  if (!data.length) { document.getElementById('modal-so-khach').textContent = 'Không có khách hàng nào đặt vé chuyến này.'; return; }
+  document.getElementById('modal-so-khach').textContent = `📋 ${data.length} khách hàng cần thông báo:`;
+  document.getElementById('modal-ds-khach').innerHTML = data.map((kh,i) => `
+    <div class="khach-row"><span><strong>${i+1}. ${kh.ho_ten}</strong></span><span style="color:#666">${kh.so_dien_thoai||''} &nbsp; ${kh.email}</span></div>`).join('');
+}
+
+async function xacNhanDelay() {
+  if (!pendingDelayId) return;
+  const res  = await fetch(`${API}/admin/thong-bao-delay/${pendingDelayId}`, { method:'POST' });
+  const data = await res.json();
+  dongModal('modal-delay');
+  if (data.success) { alert(`✅ Đã báo delay! Thông báo tới ${data.so_khach} khách hàng.`); allChuyenBay=[]; loadChuyenBay(); }
+  else alert('❌ ' + data.error);
+}
+
+// ĐƠN ĐẶT VÉ
+async function loadDonDatVe() {
+  const res = await fetch(`${API}/admin/don-dat-ve`);
+  allDonDatVe = await res.json();
+  renderDonDatVe(allDonDatVe);
+}
+function renderDonDatVe(data) {
+  const rows = data.map(d => `
+    <tr>
+      <td><strong style="color:#003580">${d.ma_dat_ve}</strong></td>
+      <td>${d.ten_khach}</td>
+      <td>${d.so_dien_thoai||'--'}</td>
+      <td>${d.loai_chuyen==='Khu_hoi'?'↔ Khứ hồi':'→ Một chiều'}</td>
+      <td style="color:#e84545;font-weight:600">${parseInt(d.tong_tien).toLocaleString('vi-VN')} ₫</td>
+      <td>${new Date(d.ngay_dat).toLocaleDateString('vi-VN')}</td>
+      <td><span class="badge ${d.trang_thai}">${TRANG_THAI[d.trang_thai]||d.trang_thai}</span></td>
+      <td>
+        <a href="xem-ve.html?ma=${d.ma_dat_ve}" target="_blank"><button class="btn-sm btn-primary">👁 Xem</button></a>
+        <button class="btn-sm btn-info" onclick="moModalSuaVe(${d.id}, '${d.ma_dat_ve}')">✏️ Sửa vé</button>
+      </td>
+    </tr>`).join('');
+  document.getElementById('table-don-dat-ve').innerHTML = rows || '<tr><td colspan="8" style="text-align:center;color:#aaa">Không có dữ liệu</td></tr>';
+}
+function locDonDatVe(q) { renderDonDatVe(allDonDatVe.filter(d => d.ma_dat_ve.toLowerCase().includes(q.toLowerCase()) || d.ten_khach.toLowerCase().includes(q.toLowerCase()))); }
+function locDonTheoTrangThai(tt) { renderDonDatVe(tt ? allDonDatVe.filter(d => d.trang_thai===tt) : allDonDatVe); }
+
+// SỬA VÉ
+async function moModalSuaVe(datVeId, maDatVe) {
+  document.getElementById('sua-ve-ma').textContent = maDatVe;
+  document.getElementById('ds-ve-sua').innerHTML = '<div style="text-align:center;padding:20px;color:#aaa">⏳ Đang tải...</div>';
+  document.getElementById('modal-sua-ve').classList.add('show');
+
+  const res  = await fetch(`${API}/admin/ve-theo-don/${datVeId}`);
+  const data = await res.json();
+
+  if (!data.length) {
+    document.getElementById('ds-ve-sua').innerHTML = '<div style="text-align:center;padding:20px;color:#aaa">Không có vé nào trong đơn này.</div>';
+    return;
+  }
+
+  document.getElementById('ds-ve-sua').innerHTML = data.map((v, i) => `
+    <div class="ve-sua-card">
+      <div class="ve-sua-title">🎫 Vé ${i+1}: ${v.so_hieu_cb} (${v.tu} → ${v.den}) — ${v.hang_ghe_ten.replace(/_/g,' ')}</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+        <div class="form-group" style="margin-bottom:8px">
+          <label>Họ tên hành khách</label>
+          <input type="text" id="ve-ten-${v.id}" value="${v.ho_ten||''}">
+        </div>
+        <div class="form-group" style="margin-bottom:8px">
+          <label>Ngày sinh</label>
+          <input type="date" id="ve-ns-${v.id}" value="${v.ngay_sinh||''}">
+        </div>
+        <div class="form-group" style="margin-bottom:8px">
+          <label>Giới tính</label>
+          <select id="ve-gt-${v.id}">
+            <option value="Nam"  ${v.gioi_tinh==='Nam'?'selected':''}>Nam</option>
+            <option value="Nu"   ${v.gioi_tinh==='Nu'?'selected':''}>Nữ</option>
+            <option value="Khac" ${v.gioi_tinh==='Khac'?'selected':''}>Khác</option>
+          </select>
+        </div>
+        <div class="form-group" style="margin-bottom:8px">
+          <label>Số hộ chiếu / CMND</label>
+          <input type="text" id="ve-hc-${v.id}" value="${v.so_ho_chieu||''}">
+        </div>
+        <div class="form-group" style="margin-bottom:8px">
+          <label>Số ghế</label>
+          <input type="text" id="ve-ghe-${v.id}" value="${v.so_ghe||''}">
+        </div>
+        <div class="form-group" style="margin-bottom:8px">
+          <label>Giá vé (₫)</label>
+          <input type="number" id="ve-gia-${v.id}" value="${v.gia_ve}">
+        </div>
+        <div class="form-group" style="margin-bottom:8px">
+          <label>Trạng thái vé</label>
+          <select id="ve-tt-${v.id}">
+            <option value="cho_xac_nhan" ${v.trang_thai==='cho_xac_nhan'?'selected':''}>Chờ xác nhận</option>
+            <option value="da_xac_nhan"  ${v.trang_thai==='da_xac_nhan'?'selected':''}>Đã xác nhận</option>
+            <option value="da_checkin"   ${v.trang_thai==='da_checkin'?'selected':''}>Đã check-in</option>
+            <option value="da_huy"       ${v.trang_thai==='da_huy'?'selected':''}>Đã hủy</option>
+          </select>
+        </div>
+      </div>
+      <button class="btn-sm btn-success" style="margin-top:4px;padding:8px 16px" onclick="luuVe(${v.id})">💾 Lưu vé này</button>
+    </div>`).join('');
+}
+
+async function luuVe(veId) {
+  const payload = {
+    ho_ten:      document.getElementById(`ve-ten-${veId}`).value.trim(),
+    ngay_sinh:   document.getElementById(`ve-ns-${veId}`).value || null,
+    gioi_tinh:   document.getElementById(`ve-gt-${veId}`).value,
+    so_ho_chieu: document.getElementById(`ve-hc-${veId}`).value.trim(),
+    so_ghe:      document.getElementById(`ve-ghe-${veId}`).value.trim(),
+    gia_ve:      parseInt(document.getElementById(`ve-gia-${veId}`).value),
+    trang_thai:  document.getElementById(`ve-tt-${veId}`).value,
+  };
+  const res  = await fetch(`${API}/admin/ve/sua/${veId}`, {
+    method:'PUT', headers:{'Content-Type':'application/json'},
+    body: JSON.stringify(payload)
+  });
+  const data = await res.json();
+  if (data.success) alert('✅ Đã lưu vé thành công!');
+  else alert('❌ ' + data.error);
+}
+
+// KHÁCH HÀNG
+async function loadKhachHang() {
+  const res = await fetch(`${API}/admin/khach-hang`);
+  allKhachHang = await res.json();
+  renderKhachHang(allKhachHang);
+}
+function renderKhachHang(data) {
+  const rows = data.map((kh,i) => `
+    <tr>
+      <td>${i+1}</td><td><strong>${kh.ho_ten}</strong></td><td>${kh.email}</td>
+      <td>${kh.so_dien_thoai||'--'}</td>
+      <td><span style="background:#e8f0fe;color:#003580;padding:3px 10px;border-radius:12px;font-size:12px;font-weight:600">${kh.so_don} đơn</span></td>
+      <td>${new Date(kh.ngay_tao).toLocaleDateString('vi-VN')}</td>
+    </tr>`).join('');
+  document.getElementById('table-khach-hang').innerHTML = rows || '<tr><td colspan="6" style="text-align:center;color:#aaa">Không có dữ liệu</td></tr>';
+}
+function locKhachHang(q) { renderKhachHang(allKhachHang.filter(kh => kh.ho_ten.toLowerCase().includes(q.toLowerCase()) || kh.email.toLowerCase().includes(q.toLowerCase()))); }
+
+// THÔNG BÁO
+async function loadThongBao() {
+  const res  = await fetch(`${API}/admin/thong-bao`);
+  const data = await res.json();
+  if (!data.length) { document.getElementById('ds-thong-bao').innerHTML = '<div style="padding:32px;text-align:center;color:#aaa">Chưa có thông báo nào</div>'; return; }
+  const icons = { delay:'⏰', xac_nhan_ve:'✅', khuyen_mai:'🎁', he_thong:'⚙️', huy_chuyen:'❌' };
+  document.getElementById('ds-thong-bao').innerHTML = data.map(tb => `
+    <div class="thong-bao-item">
+      <div class="tb-icon ${tb.loai}">${icons[tb.loai]||'🔔'}</div>
+      <div class="tb-content">
+        <div class="tb-tieu-de">${tb.tieu_de}</div>
+        <div class="tb-noi-dung">${tb.noi_dung}</div>
+        <div class="tb-time">${new Date(tb.ngay_tao).toLocaleString('vi-VN')}</div>
+      </div>
+    </div>`).join('');
+}
+
+// HỖ TRỢ
+async function loadHoTro(trangThai = '') {
+  const res  = await fetch(`${API}/ho-tro/admin/danh-sach?trang_thai=${trangThai}`);
+  allHoTro   = await res.json();
+  renderHoTro(allHoTro);
+}
+function renderHoTro(data) {
+  if (!data.length) { document.getElementById('ds-ho-tro').innerHTML = '<div style="padding:32px;text-align:center;color:#aaa">Không có yêu cầu nào.</div>'; return; }
+  document.getElementById('ds-ho-tro').innerHTML = data.map(ht => `
+    <div class="ht-item">
+      <div class="ht-header">
+        <div>
+          <div class="ht-tieu-de">${ht.tieu_de}</div>
+          <div class="ht-meta">
+            👤 ${ht.ho_ten} &nbsp;|&nbsp; 📧 ${ht.email}
+            ${ht.so_dien_thoai?' &nbsp;|&nbsp; 📱 '+ht.so_dien_thoai:''}
+            &nbsp;|&nbsp; ${LOAI_HT[ht.loai]||ht.loai}
+            &nbsp;|&nbsp; 📅 ${new Date(ht.ngay_gui).toLocaleString('vi-VN')}
+          </div>
+        </div>
+        <div style="display:flex;gap:8px;align-items:center;flex-shrink:0">
+          <span class="badge ${ht.trang_thai}">${TRANG_THAI[ht.trang_thai]||ht.trang_thai}</span>
+          <button class="btn-sm btn-primary" onclick="moModalTraLoi(${ht.id},'${ht.tieu_de.replace(/'/g,"\\'")}','${ht.noi_dung.replace(/'/g,"\\'")}','${ht.trang_thai}')">💬 Trả lời</button>
+        </div>
+      </div>
+      <div class="ht-noi-dung">${ht.noi_dung}</div>
+      ${ht.phan_hoi?`<div class="ht-phan-hoi"><strong>💬 Phản hồi của admin:</strong> ${ht.phan_hoi}</div>`:''}
+    </div>`).join('');
+}
+function locHoTroTheoTrangThai(tt) { loadHoTro(tt); }
+
+function moModalTraLoi(id, tieuDe, noiDung, trangThai) {
+  document.getElementById('ht-id').value = id;
+  document.getElementById('ht-info').innerHTML = `📋 <strong>${tieuDe}</strong>`;
+  document.getElementById('ht-noi-dung-hien').textContent = noiDung;
+  document.getElementById('ht-phan-hoi').value = '';
+  document.getElementById('ht-trang-thai').value = trangThai==='cho_xu_ly'?'dang_xu_ly':'da_xu_ly';
+  document.getElementById('modal-tra-loi').classList.add('show');
+}
+
+async function guiTraLoi() {
+  const id       = document.getElementById('ht-id').value;
+  const phanHoi  = document.getElementById('ht-phan-hoi').value.trim();
+  const trangThai= document.getElementById('ht-trang-thai').value;
+  if (!phanHoi) { alert('Vui lòng nhập nội dung phản hồi!'); return; }
+  const res  = await fetch(`${API}/ho-tro/admin/tra-loi/${id}`, {
+    method:'PUT', headers:{'Content-Type':'application/json'},
+    body: JSON.stringify({ phan_hoi: phanHoi, trang_thai: trangThai })
+  });
+  const data = await res.json();
+  if (data.success) { alert('✅ Đã gửi phản hồi!'); dongModal('modal-tra-loi'); loadHoTro(); }
+  else alert('❌ ' + data.error);
+}
+
+loadDashboard();
+</script>
+</body>
+</html>

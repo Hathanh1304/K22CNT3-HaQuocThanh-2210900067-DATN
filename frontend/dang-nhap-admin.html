@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HaThanhF - Đăng nhập Admin</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(135deg, #003580, #002050);
+      min-height: 100vh; display: flex;
+      align-items: center; justify-content: center;
+    }
+    .login-box {
+      background: white; border-radius: 16px;
+      padding: 48px 40px; width: 100%; max-width: 420px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+    }
+    .logo {
+      text-align: center; font-size: 28px; font-weight: 700;
+      color: #003580; margin-bottom: 8px;
+    }
+    .logo span { color: #f5a623; }
+    .subtitle {
+      text-align: center; color: #888; font-size: 14px;
+      margin-bottom: 32px;
+    }
+    .form-group { display: flex; flex-direction: column; gap: 6px; margin-bottom: 16px; }
+    .form-group label { font-size: 12px; font-weight: 600; color: #666; text-transform: uppercase; }
+    .form-group input {
+      padding: 14px; border: 2px solid #e0e0e0;
+      border-radius: 8px; font-size: 15px; outline: none;
+      transition: border-color 0.2s;
+    }
+    .form-group input:focus { border-color: #003580; }
+    .btn-login {
+      width: 100%; padding: 16px;
+      background: linear-gradient(135deg, #003580, #0066cc);
+      color: white; border: none; border-radius: 8px;
+      font-size: 16px; font-weight: 700; cursor: pointer;
+      margin-top: 8px; transition: transform 0.1s;
+    }
+    .btn-login:hover { transform: translateY(-1px); }
+    .error-msg {
+      background: #ffebee; color: #c62828;
+      border: 1px solid #ef9a9a; border-radius: 8px;
+      padding: 12px; font-size: 13px;
+      margin-bottom: 16px; display: none; text-align: center;
+    }
+    .back-link {
+      text-align: center; margin-top: 20px;
+      font-size: 13px; color: #888;
+    }
+    .back-link a { color: #003580; text-decoration: none; font-weight: 600; }
+  </style>
+</head>
+<body>
+<div class="login-box">
+  <div class="logo">HaThanh<span>F</span></div>
+  <div class="subtitle">🔐 Trang quản trị hệ thống</div>
+
+  <div class="error-msg" id="error-msg"></div>
+
+  <div class="form-group">
+    <label>Tên đăng nhập</label>
+    <input type="text" id="tendangnhap" placeholder="admin">
+  </div>
+  <div class="form-group">
+    <label>Mật khẩu</label>
+    <input type="password" id="matkhau" placeholder="••••••••"
+           onkeypress="if(event.key==='Enter') dangNhap()">
+  </div>
+
+  <button class="btn-login" onclick="dangNhap()">Đăng nhập</button>
+
+  <div class="back-link">
+    <a href="index.html">← Về trang chủ</a>
+  </div>
+</div>
+
+<script>
+const API = 'http://127.0.0.1:5000/api';
+
+// Nếu đã đăng nhập thì chuyển thẳng vào admin
+if (localStorage.getItem('admin')) {
+  window.location.href = 'admin.html';
+}
+
+async function dangNhap() {
+  const ten    = document.getElementById('tendangnhap').value.trim();
+  const mk     = document.getElementById('matkhau').value;
+  const errEl  = document.getElementById('error-msg');
+
+  if (!ten || !mk) {
+    errEl.textContent = '❌ Vui lòng nhập đầy đủ thông tin!';
+    errEl.style.display = 'block';
+    return;
+  }
+
+  const res  = await fetch(`${API}/auth-admin/dang-nhap`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ ten_dang_nhap: ten, mat_khau: mk })
+  });
+  const data = await res.json();
+
+  if (data.success) {
+    localStorage.setItem('admin', JSON.stringify(data.admin));
+    window.location.href = 'admin.html';
+  } else {
+    errEl.textContent = '❌ ' + (data.error || 'Đăng nhập thất bại!');
+    errEl.style.display = 'block';
+  }
+}
+</script>
+</body>
+</html>

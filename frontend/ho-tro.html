@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HaThanhF - Hỗ trợ khách hàng</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Segoe UI', sans-serif; background: #f0f4f8; }
+    header { background: linear-gradient(135deg, #003580, #0066cc); color: white; padding: 16px 40px; display: flex; align-items: center; justify-content: space-between; }
+    header .logo { font-size: 24px; font-weight: 700; }
+    header .logo span { color: #f5a623; }
+    header nav a { color: white; text-decoration: none; margin-left: 24px; font-size: 14px; }
+
+    .hero { background: linear-gradient(135deg, #003580, #0066cc); padding: 40px; color: white; text-align: center; }
+    .hero h1 { font-size: 32px; margin-bottom: 8px; }
+    .hero p  { font-size: 15px; opacity: 0.85; }
+
+    .container { max-width: 900px; margin: 32px auto; padding: 0 16px; }
+
+    /* Tabs */
+    .tabs { display: flex; gap: 4px; margin-bottom: 24px; background: white; border-radius: 12px; padding: 6px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
+    .tab-btn { flex: 1; padding: 12px; border: none; background: none; border-radius: 8px; font-size: 14px; font-weight: 600; color: #666; cursor: pointer; transition: all 0.2s; }
+    .tab-btn.active { background: #003580; color: white; }
+
+    .tab-panel { display: none; }
+    .tab-panel.active { display: block; }
+
+    .card { background: white; border-radius: 12px; padding: 28px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); margin-bottom: 20px; }
+    .card h3 { font-size: 18px; font-weight: 700; color: #003580; margin-bottom: 20px; padding-bottom: 12px; border-bottom: 2px solid #f0f4f8; }
+
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px; }
+    .form-group { display: flex; flex-direction: column; gap: 6px; margin-bottom: 16px; }
+    .form-group label { font-size: 12px; font-weight: 600; color: #666; text-transform: uppercase; }
+    .form-group input, .form-group select, .form-group textarea {
+      padding: 12px 14px; border: 2px solid #e0e0e0; border-radius: 8px;
+      font-size: 14px; outline: none; transition: border-color 0.2s; font-family: inherit;
+    }
+    .form-group input:focus, .form-group select:focus, .form-group textarea:focus { border-color: #0066cc; }
+    .form-group textarea { resize: vertical; min-height: 120px; }
+
+    .btn-submit { width: 100%; padding: 16px; background: linear-gradient(135deg, #003580, #0066cc); color: white; border: none; border-radius: 10px; font-size: 16px; font-weight: 700; cursor: pointer; }
+    .btn-submit:hover { opacity: 0.9; }
+
+    /* FAQ */
+    .faq-item { border: 1px solid #e8e8e8; border-radius: 10px; margin-bottom: 12px; overflow: hidden; }
+    .faq-q { padding: 16px 20px; font-weight: 600; font-size: 14px; color: #333; cursor: pointer; display: flex; justify-content: space-between; align-items: center; background: #fafafa; }
+    .faq-q:hover { background: #f0f4f8; }
+    .faq-a { padding: 0 20px; max-height: 0; overflow: hidden; transition: all 0.3s; font-size: 14px; color: #555; line-height: 1.6; }
+    .faq-a.open { padding: 16px 20px; max-height: 300px; }
+
+    /* Yêu cầu của tôi */
+    .ht-item { border: 1px solid #e8e8e8; border-radius: 10px; padding: 16px 20px; margin-bottom: 12px; }
+    .ht-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px; }
+    .ht-tieu-de { font-weight: 700; font-size: 15px; color: #333; }
+    .ht-loai { font-size: 12px; color: #888; margin-top: 2px; }
+    .ht-noi-dung { font-size: 13px; color: #555; margin-bottom: 10px; line-height: 1.5; }
+    .ht-phan-hoi { background: #e8f5e9; border-left: 3px solid #28a745; padding: 10px 14px; border-radius: 6px; font-size: 13px; color: #2e7d32; margin-top: 8px; }
+    .ht-phan-hoi strong { display: block; margin-bottom: 4px; }
+    .ht-time { font-size: 12px; color: #aaa; margin-top: 8px; }
+
+    .badge { padding: 4px 10px; border-radius: 20px; font-size: 12px; font-weight: 600; }
+    .badge.cho_xu_ly  { background: #fff3cd; color: #856404; }
+    .badge.dang_xu_ly { background: #cce5ff; color: #004085; }
+    .badge.da_xu_ly   { background: #d4edda; color: #155724; }
+    .badge.dong       { background: #e2e3e5; color: #383d41; }
+
+    /* Liên hệ nhanh */
+    .contact-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+    .contact-card { border: 2px solid #e0e0e0; border-radius: 10px; padding: 20px; text-align: center; transition: all 0.2s; cursor: pointer; text-decoration: none; color: inherit; display: block; }
+    .contact-card:hover { border-color: #003580; background: #f0f4ff; }
+    .contact-icon { font-size: 32px; margin-bottom: 10px; }
+    .contact-title { font-weight: 700; font-size: 15px; color: #333; margin-bottom: 4px; }
+    .contact-desc  { font-size: 13px; color: #888; }
+
+    /* Chat box */
+    .chat-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.4); z-index: 100; }
+    .chat-overlay.show { display: flex; align-items: flex-end; justify-content: flex-end; padding: 24px; }
+    .chat-box { background: white; border-radius: 16px; width: 360px; height: 500px; display: flex; flex-direction: column; box-shadow: 0 8px 32px rgba(0,0,0,0.2); }
+    .chat-header { background: linear-gradient(135deg, #003580, #0066cc); color: white; padding: 16px 20px; border-radius: 16px 16px 0 0; display: flex; justify-content: space-between; align-items: center; }
+    .chat-header h4 { font-size: 15px; }
+    .chat-close { background: none; border: none; color: white; font-size: 20px; cursor: pointer; }
+    .chat-messages { flex: 1; overflow-y: auto; padding: 16px; display: flex; flex-direction: column; gap: 12px; }
+    .msg { max-width: 80%; padding: 10px 14px; border-radius: 12px; font-size: 13px; line-height: 1.5; }
+    .msg.bot  { background: #f0f4f8; color: #333; align-self: flex-start; border-bottom-left-radius: 4px; }
+    .msg.user { background: #003580; color: white; align-self: flex-end; border-bottom-right-radius: 4px; }
+    .chat-input { padding: 12px 16px; border-top: 1px solid #f0f0f0; display: flex; gap: 8px; }
+    .chat-input input { flex: 1; padding: 10px 14px; border: 2px solid #e0e0e0; border-radius: 20px; font-size: 14px; outline: none; }
+    .chat-input input:focus { border-color: #0066cc; }
+    .chat-input button { padding: 10px 16px; background: #003580; color: white; border: none; border-radius: 20px; font-size: 13px; font-weight: 600; cursor: pointer; }
+
+    .chat-fab { position: fixed; bottom: 24px; right: 24px; width: 56px; height: 56px; background: linear-gradient(135deg, #003580, #0066cc); color: white; border: none; border-radius: 50%; font-size: 24px; cursor: pointer; box-shadow: 0 4px 16px rgba(0,53,128,0.4); z-index: 99; }
+
+    footer { background: #002050; color: #aaa; text-align: center; padding: 24px; font-size: 13px; margin-top: 40px; }
+
+    .success-box { background: #d4edda; border: 1px solid #28a745; border-radius: 10px; padding: 20px; text-align: center; display: none; }
+    .success-box h3 { color: #155724; font-size: 18px; margin-bottom: 8px; }
+    .success-box p  { color: #155724; font-size: 14px; }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="logo">HaThanh<span>F</span></div>
+  <nav id="nav-menu">
+    <a href="index.html">Trang chủ</a>
+    <a href="dang-nhap.html">Đăng nhập</a>
+  </nav>
+</header>
+
+<div class="hero">
+  <h1>🎧 Trung tâm hỗ trợ</h1>
+  <p>Chúng tôi luôn sẵn sàng hỗ trợ bạn 24/7</p>
+</div>
+
+<div class="container">
+
+  <!-- Liên hệ nhanh -->
+  <div class="card">
+    <h3>📞 Liên hệ nhanh</h3>
+    <div class="contact-grid">
+      <a class="contact-card" onclick="moChat()">
+        <div class="contact-icon">💬</div>
+        <div class="contact-title">Chat trực tiếp</div>
+        <div class="contact-desc">Phản hồi trong vài phút</div>
+      </a>
+      <a class="contact-card" href="tel:0986830471">
+        <div class="contact-icon">📱</div>
+        <div class="contact-title">Hotline</div>
+        <div class="contact-desc">0986 830 471 (8:00 - 22:00)</div>
+      </a>
+      <a class="contact-card" href="mailto:haquocthanhnb@gmail.com">
+        <div class="contact-icon">📧</div>
+        <div class="contact-title">Email</div>
+        <div class="contact-desc">haquocthanhnb@gmail.com</div>
+      </a>
+    </div>
+  </div>
+
+  <!-- Tabs -->
+  <div class="tabs">
+    <button class="tab-btn active" onclick="doiTab('gui-yeu-cau', this)">📝 Gửi yêu cầu</button>
+    <button class="tab-btn" onclick="doiTab('yeu-cau-cua-toi', this)">📋 Yêu cầu của tôi</button>
+    <button class="tab-btn" onclick="doiTab('faq', this)">❓ Câu hỏi thường gặp</button>
+  </div>
+
+  <!-- Tab 1: Gửi yêu cầu -->
+  <div class="tab-panel active" id="tab-gui-yeu-cau">
+    <div class="card">
+      <h3>📝 Gửi yêu cầu hỗ trợ</h3>
+      <div id="form-box">
+        <div class="form-row">
+          <div class="form-group">
+            <label>Họ và tên</label>
+            <input type="text" id="ht-ten" placeholder="Nguyễn Văn An">
+          </div>
+          <div class="form-group">
+            <label>Email</label>
+            <input type="email" id="ht-email" placeholder="example@email.com">
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Số điện thoại</label>
+            <input type="tel" id="ht-sdt" placeholder="0901234567">
+          </div>
+          <div class="form-group">
+            <label>Loại yêu cầu</label>
+            <select id="ht-loai">
+              <option value="hoi_thong_tin">❓ Hỏi thông tin</option>
+              <option value="doi_lich">📅 Đổi lịch bay</option>
+              <option value="huy_ve">❌ Hủy vé</option>
+              <option value="hoan_tien">💰 Hoàn tiền</option>
+              <option value="khieu_nai">⚠️ Khiếu nại</option>
+              <option value="khac">📌 Khác</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Mã đặt vé (nếu có)</label>
+          <input type="text" id="ht-ma-dat-ve" placeholder="VD: BKG2603001">
+        </div>
+        <div class="form-group">
+          <label>Tiêu đề</label>
+          <input type="text" id="ht-tieu-de" placeholder="Tóm tắt vấn đề của bạn">
+        </div>
+        <div class="form-group">
+          <label>Nội dung chi tiết</label>
+          <textarea id="ht-noi-dung" placeholder="Mô tả chi tiết vấn đề bạn gặp phải..."></textarea>
+        </div>
+        <button class="btn-submit" onclick="guiYeuCau()">📤 Gửi yêu cầu hỗ trợ</button>
+      </div>
+      <div class="success-box" id="success-box">
+        <h3>✅ Gửi yêu cầu thành công!</h3>
+        <p>Chúng tôi sẽ phản hồi trong vòng 24 giờ.<br>Bạn có thể theo dõi trạng thái tại tab <strong>"Yêu cầu của tôi"</strong>.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tab 2: Yêu cầu của tôi -->
+  <div class="tab-panel" id="tab-yeu-cau-cua-toi">
+    <div class="card">
+      <h3>📋 Yêu cầu hỗ trợ của tôi</h3>
+      <div id="ds-yeu-cau">
+        <div style="text-align:center;padding:40px;color:#aaa">Đang tải...</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tab 3: FAQ -->
+  <div class="tab-panel" id="tab-faq">
+    <div class="card">
+      <h3>❓ Câu hỏi thường gặp</h3>
+      <div id="faq-list"></div>
+    </div>
+  </div>
+
+</div>
+
+<!-- Chat box -->
+<button class="chat-fab" onclick="moChat()">💬</button>
+
+<div class="chat-overlay" id="chat-overlay" onclick="dongChat(event)">
+  <div class="chat-box" onclick="event.stopPropagation()">
+    <div class="chat-header">
+      <div>
+        <h4>💬 Chat hỗ trợ trực tiếp</h4>
+        <small style="opacity:0.8">HaThanhF Support</small>
+      </div>
+      <button class="chat-close" onclick="dongChat()">✕</button>
+    </div>
+    <div class="chat-messages" id="chat-messages"></div>
+    <div class="chat-input">
+      <input type="text" id="chat-input" placeholder="Nhập tin nhắn..." onkeydown="if(event.key==='Enter') guiChat()">
+      <button onclick="guiChat()">Gửi</button>
+    </div>
+  </div>
+</div>
+
+<footer>© 2026 HaThanhF - Hệ thống đặt vé máy bay</footer>
+
+<script>
+const API = 'http://127.0.0.1:5000/api';
+const khDangNhap = JSON.parse(localStorage.getItem('khach_hang') || 'null');
+
+// Cập nhật header
+function capNhatHeader() {
+  const nav = document.getElementById('nav-menu');
+  if (khDangNhap) {
+    nav.innerHTML = `
+      <a href="index.html">Trang chủ</a>
+      <a href="trang-ca-nhan.html">👤 ${khDangNhap.ho_ten}</a>
+      <a href="#" onclick="dangXuat()">Đăng xuất</a>`;
+    // Điền sẵn thông tin
+    document.getElementById('ht-ten').value   = khDangNhap.ho_ten  || '';
+    document.getElementById('ht-email').value = khDangNhap.email   || '';
+    document.getElementById('ht-sdt').value   = khDangNhap.so_dien_thoai || '';
+  }
+}
+function dangXuat() { localStorage.removeItem('khach_hang'); window.location.href = 'index.html'; }
+
+// Đổi tab
+function doiTab(tab, el) {
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('tab-' + tab).classList.add('active');
+  el.classList.add('active');
+  if (tab === 'yeu-cau-cua-toi') loadYeuCau();
+  if (tab === 'faq') renderFAQ();
+}
+
+// Gửi yêu cầu
+async function guiYeuCau() {
+  const ten     = document.getElementById('ht-ten').value.trim();
+  const email   = document.getElementById('ht-email').value.trim();
+  const sdt     = document.getElementById('ht-sdt').value.trim();
+  const loai    = document.getElementById('ht-loai').value;
+  const tieuDe  = document.getElementById('ht-tieu-de').value.trim();
+  const noiDung = document.getElementById('ht-noi-dung').value.trim();
+  const maDatVe = document.getElementById('ht-ma-dat-ve').value.trim();
+
+  if (!ten || !email || !tieuDe || !noiDung) {
+    alert('Vui lòng điền đầy đủ thông tin!'); return;
+  }
+
+  const payload = {
+    khach_hang_id: khDangNhap ? khDangNhap.id : null,
+    ho_ten: ten, email, so_dien_thoai: sdt,
+    loai, tieu_de: tieuDe, noi_dung: noiDung,
+    dat_ve_id: null
+  };
+
+  // Nếu có mã đặt vé, tìm id
+  if (maDatVe) {
+    try {
+      const r = await fetch(`${API}/dat-ve/theo-ma/${maDatVe}`);
+      const d = await r.json();
+      if (d.id) payload.dat_ve_id = d.id;
+    } catch(e) {}
+  }
+
+  const res  = await fetch(`${API}/ho-tro/gui`, {
+    method: 'POST', headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(payload)
+  });
+  const data = await res.json();
+  if (data.success) {
+    document.getElementById('form-box').style.display  = 'none';
+    document.getElementById('success-box').style.display = 'block';
+  } else {
+    alert('Lỗi: ' + data.error);
+  }
+}
+
+// Load yêu cầu của tôi
+async function loadYeuCau() {
+  if (!khDangNhap) {
+    document.getElementById('ds-yeu-cau').innerHTML = `
+      <div style="text-align:center;padding:40px;color:#aaa">
+        <div style="font-size:48px;margin-bottom:16px">🔒</div>
+        <p>Vui lòng <a href="dang-nhap.html" style="color:#003580;font-weight:600">đăng nhập</a> để xem yêu cầu của bạn.</p>
+      </div>`;
+    return;
+  }
+  const res  = await fetch(`${API}/ho-tro/cua-toi/${khDangNhap.id}`);
+  const data = await res.json();
+  if (!data.length) {
+    document.getElementById('ds-yeu-cau').innerHTML = '<div style="text-align:center;padding:40px;color:#aaa">Chưa có yêu cầu nào.</div>';
+    return;
+  }
+  const LOAI = { hoi_thong_tin:'❓ Hỏi thông tin', doi_lich:'📅 Đổi lịch', huy_ve:'❌ Hủy vé', hoan_tien:'💰 Hoàn tiền', khieu_nai:'⚠️ Khiếu nại', khac:'📌 Khác' };
+  const TT   = { cho_xu_ly:'Chờ xử lý', dang_xu_ly:'Đang xử lý', da_xu_ly:'Đã xử lý', dong:'Đóng' };
+  document.getElementById('ds-yeu-cau').innerHTML = data.map(ht => `
+    <div class="ht-item">
+      <div class="ht-header">
+        <div>
+          <div class="ht-tieu-de">${ht.tieu_de}</div>
+          <div class="ht-loai">${LOAI[ht.loai] || ht.loai}</div>
+        </div>
+        <span class="badge ${ht.trang_thai}">${TT[ht.trang_thai] || ht.trang_thai}</span>
+      </div>
+      <div class="ht-noi-dung">${ht.noi_dung}</div>
+      ${ht.phan_hoi ? `<div class="ht-phan-hoi"><strong>💬 Phản hồi từ HaThanhF:</strong>${ht.phan_hoi}</div>` : ''}
+      <div class="ht-time">📅 Gửi: ${new Date(ht.ngay_gui).toLocaleString('vi-VN')}
+        ${ht.ngay_xu_ly ? ' &nbsp;|&nbsp; ✅ Xử lý: ' + new Date(ht.ngay_xu_ly).toLocaleString('vi-VN') : ''}
+      </div>
+    </div>`).join('');
+}
+
+// FAQ
+const FAQ_DATA = [
+  { q: 'Tôi có thể đổi ngày bay không?', a: 'Có thể đổi ngày bay trước 24 giờ so với giờ khởi hành. Phí đổi vé tùy theo hạng ghế và hãng bay. Vui lòng liên hệ hotline hoặc gửi yêu cầu để được hỗ trợ.' },
+  { q: 'Chính sách hoàn vé như thế nào?', a: 'Vé có thể hoàn trước 48 giờ so với giờ khởi hành. Phí hủy vé từ 10-30% tùy hạng ghế. Tiền hoàn về trong 7-14 ngày làm việc.' },
+  { q: 'Hành lý xách tay được mang bao nhiêu kg?', a: 'Hạng phổ thông: 7kg. Hạng thương gia: 14kg. Kích thước tối đa 56x36x23cm. Mỗi khách được mang 1 túi xách tay và 1 vật dụng cá nhân.' },
+  { q: 'Làm thế nào để check-in trực tuyến?', a: 'Check-in trực tuyến mở từ 24 giờ đến 1 giờ trước giờ bay. Vào trang web hãng hàng không, nhập mã đặt vé và họ tên để làm thủ tục.' },
+  { q: 'Trẻ em đi một mình có được không?', a: 'Trẻ em từ 5-12 tuổi có thể đi một mình với dịch vụ UM (Unaccompanied Minor). Cần đăng ký trước và có phụ huynh ký cam kết.' },
+  { q: 'Tôi quên mã đặt vé thì làm sao?', a: 'Vui lòng kiểm tra email đã dùng khi đặt vé. Mã đặt vé được gửi ngay sau khi thanh toán thành công. Nếu không tìm thấy, hãy liên hệ hotline 1900 1234.' },
+];
+
+function renderFAQ() {
+  document.getElementById('faq-list').innerHTML = FAQ_DATA.map((f, i) => `
+    <div class="faq-item">
+      <div class="faq-q" onclick="toggleFAQ(${i})">
+        <span>${f.q}</span><span id="faq-icon-${i}">▼</span>
+      </div>
+      <div class="faq-a" id="faq-a-${i}">${f.a}</div>
+    </div>`).join('');
+}
+
+function toggleFAQ(i) {
+  const el   = document.getElementById('faq-a-' + i);
+  const icon = document.getElementById('faq-icon-' + i);
+  el.classList.toggle('open');
+  icon.textContent = el.classList.contains('open') ? '▲' : '▼';
+}
+
+// Chat
+const BOT_REPLIES = {
+  'xin chào': 'Xin chào! Tôi là trợ lý HaThanhF. Tôi có thể giúp gì cho bạn? 😊',
+  'hủy vé':   'Để hủy vé, bạn vui lòng vào mục "Vé của tôi" → chọn vé cần hủy. Phí hủy từ 10-30% tùy hạng ghế.',
+  'đổi vé':   'Bạn có thể đổi ngày bay trước 24 giờ. Vui lòng vào "Vé của tôi" hoặc gửi yêu cầu tại tab "Gửi yêu cầu".',
+  'hoàn tiền':'Tiền hoàn về trong 7-14 ngày làm việc sau khi hủy vé thành công.',
+  'hành lý':  'Hạng phổ thông: 7kg xách tay + 23kg ký gửi. Hạng thương gia: 14kg + 32kg.',
+  'check-in': 'Check-in trực tuyến mở 24 giờ trước giờ bay trên website hãng.',
+  'hotline':  'Hotline HaThanhF: 1900 1234 (8:00 - 22:00 hàng ngày).',
+};
+
+function moChat() {
+  const overlay = document.getElementById('chat-overlay');
+  overlay.classList.add('show');
+  const msgs = document.getElementById('chat-messages');
+  if (!msgs.children.length) {
+    themMsg('bot', '👋 Xin chào! Tôi là trợ lý HaThanhF. Tôi có thể hỗ trợ bạn về: hủy vé, đổi vé, hành lý, check-in, hoàn tiền...');
+  }
+  setTimeout(() => document.getElementById('chat-input').focus(), 100);
+}
+
+function dongChat(e) {
+  if (!e || e.target === document.getElementById('chat-overlay')) {
+    document.getElementById('chat-overlay').classList.remove('show');
+  }
+}
+
+function themMsg(loai, text) {
+  const msgs = document.getElementById('chat-messages');
+  const div  = document.createElement('div');
+  div.className = 'msg ' + loai;
+  div.textContent = text;
+  msgs.appendChild(div);
+  msgs.scrollTop = msgs.scrollHeight;
+}
+
+function guiChat() {
+  const input = document.getElementById('chat-input');
+  const text  = input.value.trim();
+  if (!text) return;
+  themMsg('user', text);
+  input.value = '';
+
+  // Tìm câu trả lời phù hợp
+  const lower = text.toLowerCase();
+  let reply = 'Cảm ơn bạn đã liên hệ! Để được hỗ trợ chi tiết hơn, vui lòng gửi yêu cầu hoặc gọi hotline 1900 1234. 😊';
+  for (const [key, val] of Object.entries(BOT_REPLIES)) {
+    if (lower.includes(key)) { reply = val; break; }
+  }
+  setTimeout(() => themMsg('bot', reply), 600);
+}
+
+capNhatHeader();
+renderFAQ();
+</script>
+</body>
+</html>

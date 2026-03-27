@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FlightVN - Xem vé</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Segoe UI', sans-serif; background: #f0f4f8; }
+    header {
+      background: linear-gradient(135deg, #003580, #0066cc);
+      color: white; padding: 16px 40px;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    header .logo { font-size: 24px; font-weight: 700; }
+    header .logo span { color: #f5a623; }
+    header nav a { color: white; text-decoration: none; margin-left: 24px; font-size: 14px; }
+
+    .container { max-width: 700px; margin: 32px auto; padding: 0 16px; }
+
+    /* Vé điện tử */
+    .ticket {
+      background: white; border-radius: 16px;
+      overflow: hidden; box-shadow: 0 8px 32px rgba(0,0,0,0.12);
+      margin-bottom: 20px;
+    }
+    .ticket-header {
+      background: linear-gradient(135deg, #003580, #0066cc);
+      color: white; padding: 24px 32px;
+      display: flex; justify-content: space-between; align-items: center;
+    }
+    .ticket-header .hang-bay { font-size: 20px; font-weight: 700; }
+    .ticket-header .so-hieu  { font-size: 14px; opacity: 0.85; margin-top: 4px; }
+    .ticket-header .ma-ve    { font-size: 14px; background: rgba(255,255,255,0.2); padding: 6px 14px; border-radius: 20px; }
+
+    .ticket-route {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 24px 32px; border-bottom: 1px dashed #e0e0e0;
+    }
+    .route-point { text-align: center; }
+    .route-code  { font-size: 36px; font-weight: 700; color: #003580; }
+    .route-city  { font-size: 13px; color: #888; margin-top: 4px; }
+    .route-time  { font-size: 20px; font-weight: 600; color: #333; margin-top: 8px; }
+
+    .route-middle { text-align: center; color: #aaa; }
+    .route-line  { width: 120px; height: 2px; background: #e0e0e0; position: relative; margin: 8px auto; }
+    .route-line::after { content: '✈'; position: absolute; right: -8px; top: -10px; font-size: 16px; color: #0066cc; }
+    .route-dur   { font-size: 13px; color: #888; }
+
+    .ticket-info {
+      display: grid; grid-template-columns: repeat(3, 1fr);
+      gap: 0; border-bottom: 1px dashed #e0e0e0;
+    }
+    .info-cell {
+      padding: 16px 20px; border-right: 1px dashed #e0e0e0;
+    }
+    .info-cell:last-child { border-right: none; }
+    .info-label { font-size: 11px; color: #aaa; text-transform: uppercase; font-weight: 600; margin-bottom: 4px; }
+    .info-value { font-size: 15px; font-weight: 600; color: #333; }
+
+    .ticket-passenger {
+      padding: 20px 32px; border-bottom: 1px dashed #e0e0e0;
+    }
+    .ticket-passenger h4 { font-size: 13px; color: #aaa; text-transform: uppercase; margin-bottom: 12px; }
+    .passenger-row {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 10px 0; border-bottom: 1px solid #f5f5f5; font-size: 14px;
+    }
+    .passenger-row:last-child { border-bottom: none; }
+    .passenger-name { font-weight: 600; color: #333; }
+    .passenger-type { color: #888; font-size: 13px; }
+    .passenger-gia  { font-weight: 600; color: #e84545; }
+
+    .ticket-footer {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 20px 32px; background: #f8f9ff;
+    }
+    .total-label { font-size: 14px; color: #666; }
+    .total-gia   { font-size: 24px; font-weight: 700; color: #e84545; }
+
+    .badge {
+      padding: 6px 16px; border-radius: 20px;
+      font-size: 13px; font-weight: 600;
+    }
+    .badge.da_xac_nhan  { background: #d4edda; color: #155724; }
+    .badge.da_thanh_toan{ background: #d4edda; color: #155724; }
+    .badge.cho_thanh_toan{background: #fff3cd; color: #856404; }
+    .badge.da_huy       { background: #f8d7da; color: #721c24; }
+
+    .btn-group { display: flex; gap: 12px; margin-bottom: 40px; }
+    .btn-print {
+      flex: 1; padding: 14px;
+      background: linear-gradient(135deg, #003580, #0066cc);
+      color: white; border: none; border-radius: 8px;
+      font-size: 15px; font-weight: 600; cursor: pointer;
+    }
+    .btn-back {
+      flex: 1; padding: 14px;
+      background: white; color: #003580;
+      border: 2px solid #003580; border-radius: 8px;
+      font-size: 15px; font-weight: 600; cursor: pointer;
+      text-decoration: none; text-align: center; display: flex; align-items: center; justify-content: center;
+    }
+
+    @media print {
+      header, .btn-group, footer { display: none; }
+      body { background: white; }
+      .ticket { box-shadow: none; }
+    }
+
+    footer { background: #002050; color: #aaa; text-align: center; padding: 24px; font-size: 13px; }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="logo">Flight<span>VN</span></div>
+  <nav>
+    <a href="lich-su-dat-ve.html">← Lịch sử đặt vé</a>
+  </nav>
+</header>
+
+<div class="container">
+  <div id="noi-dung-ve">
+    <p style="text-align:center;padding:48px;color:#aaa">⏳ Đang tải vé...</p>
+  </div>
+
+  <div class="btn-group">
+    <a class="btn-back" href="lich-su-dat-ve.html">← Quay lại</a>
+    <button class="btn-print" onclick="window.print()">🖨️ In vé / Lưu PDF</button>
+  </div>
+</div>
+
+<footer>© 2026 FlightVN</footer>
+
+<script>
+const API = 'http://127.0.0.1:5000/api';
+const params = new URLSearchParams(window.location.search);
+const ma = params.get('ma');
+
+if (!ma) { window.location.href = 'lich-su-dat-ve.html'; }
+
+const LOAI_HK = { Nguoi_lon: 'Người lớn', Tre_em: 'Trẻ em', Em_be: 'Em bé' };
+const TRANG_THAI_LABEL = {
+  cho_thanh_toan: 'Chờ thanh toán',
+  da_thanh_toan:  'Đã thanh toán',
+  da_xac_nhan:    'Đã xác nhận',
+  da_huy:         'Đã hủy'
+};
+
+async function loadVe() {
+  const res  = await fetch(`${API}/dat-ve/${ma}`);
+  const don  = await res.json();
+  if (don.error) { document.getElementById('noi-dung-ve').innerHTML = '<p style="text-align:center;color:red">Không tìm thấy vé!</p>'; return; }
+
+  const ve0     = don.ve[0];
+  const gioDi   = ve0.gio_cat_canh.split(' ')[1].slice(0,5);
+  const gioDen  = ve0.gio_ha_canh.split(' ')[1].slice(0,5);
+  const gioBay  = Math.floor(ve0.thoi_gian_bay/60)+'h'+(ve0.thoi_gian_bay%60?ve0.thoi_gian_bay%60+'m':'');
+  const ngayBay = new Date(ve0.gio_cat_canh).toLocaleDateString('vi-VN', {weekday:'long', year:'numeric', month:'long', day:'numeric'});
+  const tong    = parseInt(don.tong_tien).toLocaleString('vi-VN');
+  const badge   = don.trang_thai;
+  const label   = TRANG_THAI_LABEL[don.trang_thai] || don.trang_thai;
+
+  let passengers = '';
+  don.ve.forEach(v => {
+    passengers += `
+    <div class="passenger-row">
+      <div>
+        <div class="passenger-name">✈ ${v.ho_ten}</div>
+        <div class="passenger-type">${LOAI_HK[v.loai_hanh_khach]} ${v.so_ghe ? '· Ghế ' + v.so_ghe : ''}</div>
+      </div>
+      <div class="passenger-gia">${parseInt(v.gia_ve).toLocaleString('vi-VN')} ₫</div>
+    </div>`;
+  });
+
+  document.getElementById('noi-dung-ve').innerHTML = `
+  <div class="ticket">
+    <div class="ticket-header">
+      <div>
+        <div class="hang-bay">✈ ${ve0.ten_hang}</div>
+        <div class="so-hieu">${ve0.so_hieu_cb} · ${ve0.hang_ghe ? ve0.hang_ghe.replace(/_/g,' ') : ''}</div>
+      </div>
+      <div class="ma-ve">📋 ${don.ma_dat_ve}</div>
+    </div>
+
+    <div class="ticket-route">
+      <div class="route-point">
+        <div class="route-code">${ve0.tu}</div>
+        <div class="route-time">${gioDi}</div>
+      </div>
+      <div class="route-middle">
+        <div class="route-line"></div>
+        <div class="route-dur">${gioBay}</div>
+        <div class="route-dur">Bay thẳng</div>
+      </div>
+      <div class="route-point">
+        <div class="route-code">${ve0.den}</div>
+        <div class="route-time">${gioDen}</div>
+      </div>
+    </div>
+
+    <div class="ticket-info">
+      <div class="info-cell">
+        <div class="info-label">Ngày bay</div>
+        <div class="info-value">${ngayBay}</div>
+      </div>
+      <div class="info-cell">
+        <div class="info-label">Số hành khách</div>
+        <div class="info-value">${don.ve.length} người</div>
+      </div>
+      <div class="info-cell">
+        <div class="info-label">Trạng thái</div>
+        <div><span class="badge ${badge}">${label}</span></div>
+      </div>
+    </div>
+
+    <div class="ticket-passenger">
+      <h4>Danh sách hành khách</h4>
+      ${passengers}
+    </div>
+
+    <div class="ticket-footer">
+      <div>
+        <div class="total-label">Tổng tiền</div>
+        <div class="total-gia">${tong} ₫</div>
+      </div>
+      <div style="text-align:right;font-size:12px;color:#aaa">
+        Đặt ngày: ${new Date(don.ngay_dat).toLocaleDateString('vi-VN')}<br>
+        Khách hàng: ${don.ten_khach}
+      </div>
+    </div>
+  </div>`;
+}
+
+loadVe();
+</script>
+</body>
+</html>

@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HaThanh - Đặt Vé Máy Bay</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Segoe UI', sans-serif; background: #f0f4f8; }
+    header { background: linear-gradient(135deg, #003580, #0066cc); color: white; padding: 16px 40px; display: flex; align-items: center; justify-content: space-between; }
+    header .logo { font-size: 24px; font-weight: 700; letter-spacing: 1px; }
+    header .logo span { color: #f5a623; }
+    header nav a { color: white; text-decoration: none; margin-left: 24px; font-size: 14px; opacity: 0.9; }
+    header nav a:hover { opacity: 1; text-decoration: underline; }
+    .menu-chuc-nang { background: #002a6e; padding: 0 40px; }
+    .menu-inner { max-width: 900px; margin: 0 auto; display: flex; gap: 8px; }
+    .menu-tab { color: rgba(255,255,255,0.75); text-decoration: none; padding: 12px 20px; font-size: 14px; font-weight: 500; border-bottom: 3px solid transparent; transition: all 0.2s; display: flex; align-items: center; gap: 6px; cursor: pointer; }
+    .menu-tab:hover { color: white; border-bottom-color: rgba(255,255,255,0.5); }
+    .menu-tab.active { color: white; border-bottom-color: #f5a623; }
+    .hero { background: linear-gradient(135deg, #003580, #0066cc); padding: 40px 40px 80px; color: white; text-align: center; }
+    .hero h1 { font-size: 36px; margin-bottom: 8px; }
+    .hero p  { font-size: 16px; opacity: 0.85; }
+    .search-box { background: white; border-radius: 16px; padding: 32px; max-width: 900px; margin: -48px auto 40px; position: relative; box-shadow: 0 8px 32px rgba(0,0,0,0.12); }
+    .loai-chuyen { display: flex; gap: 24px; margin-bottom: 24px; }
+    .loai-chuyen label { display: flex; align-items: center; gap: 8px; cursor: pointer; font-weight: 500; color: #333; }
+    .loai-chuyen input[type=radio] { accent-color: #003580; width: 18px; height: 18px; }
+    .search-row-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px; }
+    .search-row-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; margin-bottom: 16px; }
+    .form-group { display: flex; flex-direction: column; gap: 6px; }
+    .form-group label { font-size: 12px; font-weight: 600; color: #666; text-transform: uppercase; }
+    .form-group select, .form-group input { padding: 12px 14px; border: 2px solid #e0e0e0; border-radius: 10px; font-size: 15px; color: #333; outline: none; transition: border-color 0.2s; }
+    .form-group select:focus, .form-group input:focus { border-color: #0066cc; }
+    .loai-tuyen-badge { display: inline-flex; align-items: center; gap: 6px; padding: 6px 14px; border-radius: 20px; font-size: 13px; font-weight: 600; margin-bottom: 20px; }
+    .loai-tuyen-badge.noi-dia { background: #e8f5e9; color: #2e7d32; }
+    .loai-tuyen-badge.quoc-te { background: #e8f0fe; color: #1565c0; }
+    .btn-search { width: 100%; padding: 16px; background: linear-gradient(135deg, #f5a623, #e8920e); color: white; border: none; border-radius: 10px; font-size: 18px; font-weight: 700; cursor: pointer; transition: transform 0.1s, box-shadow 0.2s; margin-top: 4px; }
+    .btn-search:hover { transform: translateY(-1px); box-shadow: 0 4px 16px rgba(245,166,35,0.4); }
+    .results { max-width: 900px; margin: 0 auto 60px; padding: 0 16px; }
+    .results h2 { font-size: 20px; color: #333; margin-bottom: 16px; }
+    .flight-card { background: white; border-radius: 12px; padding: 20px 24px; margin-bottom: 16px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); display: flex; align-items: center; justify-content: space-between; transition: box-shadow 0.2s; }
+    .flight-card:hover { box-shadow: 0 4px 16px rgba(0,0,0,0.14); }
+    .airline { display: flex; align-items: center; gap: 12px; min-width: 160px; }
+    .airline-code { width: 44px; height: 44px; border-radius: 10px; background: #003580; color: white; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 13px; }
+    .airline-name { font-size: 13px; color: #666; }
+    .flight-num { font-size: 14px; font-weight: 600; color: #333; }
+    .flight-time { text-align: center; flex: 1; }
+    .time-row { display: flex; align-items: center; justify-content: center; gap: 16px; }
+    .time { font-size: 22px; font-weight: 700; color: #333; }
+    .duration { font-size: 12px; color: #999; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 2px; }
+    .duration-line { width: 80px; height: 1px; background: #ddd; position: relative; }
+    .duration-line::after { content: '✈'; position: absolute; right: -8px; top: -8px; font-size: 14px; color: #0066cc; }
+    .airport { font-size: 13px; color: #888; margin-top: 4px; }
+    .price-box { text-align: right; min-width: 160px; }
+    .price { font-size: 24px; font-weight: 700; color: #e84545; }
+    .price-note { font-size: 12px; color: #999; margin-bottom: 10px; }
+    .seat-left { font-size: 12px; color: #f5a623; margin-bottom: 10px; }
+    .btn-chon { padding: 10px 24px; background: #003580; color: white; border: none; border-radius: 8px; font-size: 14px; font-weight: 600; cursor: pointer; transition: background 0.2s; }
+    .btn-chon:hover { background: #0055aa; }
+    .loading { text-align: center; padding: 40px; color: #666; font-size: 16px; display: none; }
+    .no-result { text-align: center; padding: 40px; color: #999; font-size: 16px; display: none; }
+    footer { background: #002050; color: #aaa; text-align: center; padding: 24px; font-size: 13px; }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="logo">HaThanh<span>Flight</span></div>
+  <nav id="nav-menu">
+    <a href="index.html">Trang chủ</a>
+    <a href="ho-tro.html">🎧 Hỗ trợ</a>
+    <a href="dang-nhap.html">Đăng nhập</a>
+    <a href="dang-ky.html">Đăng ký</a>
+  </nav>
+</header>
+
+<!-- Thanh menu chức năng -->
+<div class="menu-chuc-nang">
+  <div class="menu-inner">
+    <a class="menu-tab active" onclick="chonTab('noi_dia', this)">🛫 Bay trong nước</a>
+    <a class="menu-tab" onclick="chonTab('quoc_te', this)">🌏 Bay quốc tế</a>
+    <a class="menu-tab" href="lich-su-dat-ve.html">🎫 Lịch sử đặt vé</a>
+    <a class="menu-tab" onclick="theoDoi()">📍 Theo dõi chuyến bay</a>
+  </div>
+</div>
+
+<div class="hero">
+  <h1>✈ Đặt Vé Máy Bay Giá Tốt</h1>
+  <p>Hàng ngàn chuyến bay, giá rẻ mỗi ngày</p>
+</div>
+
+<div class="search-box">
+  <div id="badge-loai-tuyen" class="loai-tuyen-badge noi-dia">🛫 Bay trong nước</div>
+  <div class="loai-chuyen">
+    <label><input type="radio" name="loai" value="Mot_chieu" checked onchange="doiLoaiChuyen()"> Một chiều</label>
+    <label><input type="radio" name="loai" value="Khu_hoi" onchange="doiLoaiChuyen()"> Khứ hồi</label>
+  </div>
+
+  <div class="search-row-2">
+    <div class="form-group">
+      <label>Điểm đi</label>
+      <select id="san-bay-di"><option value="">-- Chọn sân bay --</option></select>
+    </div>
+    <div class="form-group">
+      <label>Điểm đến</label>
+      <select id="san-bay-den"><option value="">-- Chọn sân bay --</option></select>
+    </div>
+  </div>
+
+  <!-- Một chiều -->
+  <div class="search-row-2" id="hang-mot-chieu">
+    <div class="form-group">
+      <label>Ngày đi</label>
+      <input type="date" id="ngay-di">
+    </div>
+    <div class="form-group">
+      <label>Hạng ghế</label>
+      <select id="hang-ghe">
+        <option value="Pho_thong">Phổ thông</option>
+        <option value="Pho_thong_dac_biet">Phổ thông đặc biệt</option>
+        <option value="Thuong_gia">Thương gia</option>
+        <option value="Hang_nhat">Hạng nhất</option>
+      </select>
+    </div>
+  </div>
+
+  <!-- Khứ hồi -->
+  <div class="search-row-3" id="hang-khu-hoi" style="display:none">
+    <div class="form-group">
+      <label>Ngày đi</label>
+      <input type="date" id="ngay-di-kh">
+    </div>
+    <div class="form-group">
+      <label>Ngày về</label>
+      <input type="date" id="ngay-ve">
+    </div>
+    <div class="form-group">
+      <label>Hạng ghế</label>
+      <select id="hang-ghe-kh">
+        <option value="Pho_thong">Phổ thông</option>
+        <option value="Pho_thong_dac_biet">Phổ thông đặc biệt</option>
+        <option value="Thuong_gia">Thương gia</option>
+        <option value="Hang_nhat">Hạng nhất</option>
+      </select>
+    </div>
+  </div>
+
+  <!-- Số hành khách -->
+  <div class="search-row-3" style="margin-bottom:20px">
+    <div class="form-group">
+      <label>Người lớn</label>
+      <input type="number" id="so-nguoi-lon" value="1" min="1" max="9">
+    </div>
+    <div class="form-group">
+      <label>Trẻ em (2-11)</label>
+      <input type="number" id="so-tre-em" value="0" min="0" max="9">
+    </div>
+    <div class="form-group">
+      <label>Em bé (&lt;2)</label>
+      <input type="number" id="so-em-be" value="0" min="0" max="9">
+    </div>
+  </div>
+
+  <button class="btn-search" onclick="timChuyenBay()">🔍 Tìm chuyến bay</button>
+</div>
+
+<div class="results">
+  <div class="loading" id="loading">⏳ Đang tìm chuyến bay...</div>
+  <div class="no-result" id="no-result">😔 Không tìm thấy chuyến bay phù hợp.</div>
+  <div id="danh-sach-chuyen-bay"></div>
+</div>
+
+<footer>© 2026 HaThanhF - Hệ thống đặt vé máy bay</footer>
+
+<script>
+const API = 'http://127.0.0.1:5000/api';
+let loaiTuyenHienTai = 'noi_dia';
+
+function capNhatHeader() {
+  const kh  = JSON.parse(localStorage.getItem('khach_hang') || 'null');
+  const nav = document.getElementById('nav-menu');
+  if (kh) {
+    nav.innerHTML = `
+      <a href="index.html">Trang chủ</a>
+      <a href="trang-ca-nhan.html">👤 ${kh.ho_ten}</a>
+      <a href="lich-su-dat-ve.html">🎫 Vé của tôi</a>
+      <a href="ho-tro.html">🎧 Hỗ trợ</a>
+      <a href="#" onclick="dangXuat()">Đăng xuất</a>`;
+  }
+}
+
+function dangXuat() {
+  localStorage.removeItem('khach_hang');
+  window.location.href = 'index.html';
+}
+
+async function chonTab(loai, el) {
+  loaiTuyenHienTai = loai;
+  document.querySelectorAll('.menu-tab').forEach(t => t.classList.remove('active'));
+  el.classList.add('active');
+  const badge = document.getElementById('badge-loai-tuyen');
+  if (loai === 'noi_dia') {
+    badge.className   = 'loai-tuyen-badge noi-dia';
+    badge.textContent = '🛫 Bay trong nước';
+  } else {
+    badge.className   = 'loai-tuyen-badge quoc-te';
+    badge.textContent = '🌏 Bay quốc tế';
+  }
+  await loadSanBayTheoLoai(loai);
+  document.getElementById('danh-sach-chuyen-bay').innerHTML = '';
+  document.getElementById('no-result').style.display = 'none';
+}
+
+async function loadSanBayTheoLoai(loai) {
+  try {
+    const endpoint = loai === 'noi_dia'
+      ? `${API}/chuyen-bay/san-bay/noi-dia`
+      : `${API}/chuyen-bay/san-bay/quoc-te`;
+    const res  = await fetch(endpoint);
+    const data = await res.json();
+    const di   = document.getElementById('san-bay-di');
+    const den  = document.getElementById('san-bay-den');
+    di.innerHTML  = '<option value="">-- Chọn sân bay --</option>';
+    den.innerHTML = '<option value="">-- Chọn sân bay --</option>';
+    data.forEach(sb => {
+      const label = loai === 'noi_dia'
+        ? `${sb.ma_iata} - ${sb.thanh_pho}`
+        : `${sb.ma_iata} - ${sb.thanh_pho} (${sb.quoc_gia})`;
+      const opt = `<option value="${sb.ma_iata}">${label}</option>`;
+      di.innerHTML  += opt;
+      den.innerHTML += opt;
+    });
+  } catch(e) { console.log('Lỗi load sân bay:', e); }
+}
+
+async function loadSanBay() {
+  try {
+    await loadSanBayTheoLoai('noi_dia');
+    const today = new Date().toISOString().split('T')[0];
+    document.getElementById('ngay-di').value    = today;
+    document.getElementById('ngay-di-kh').value = today;
+  } catch(e) { console.log('Backend chưa chạy:', e); }
+}
+
+function doiLoaiChuyen() {
+  const loai     = document.querySelector('input[name=loai]:checked').value;
+  const motChieu = document.getElementById('hang-mot-chieu');
+  const khuHoi   = document.getElementById('hang-khu-hoi');
+  if (loai === 'Khu_hoi') {
+    motChieu.style.display = 'none';
+    khuHoi.style.display   = 'grid';
+    document.getElementById('ngay-di-kh').value = document.getElementById('ngay-di').value;
+    const d = new Date(document.getElementById('ngay-di').value);
+    d.setDate(d.getDate() + 3);
+    document.getElementById('ngay-ve').value = d.toISOString().split('T')[0];
+  } else {
+    motChieu.style.display = 'grid';
+    khuHoi.style.display   = 'none';
+  }
+}
+
+async function timChuyenBay() {
+  const loai  = document.querySelector('input[name=loai]:checked').value;
+  const tu    = document.getElementById('san-bay-di').value;
+  const den   = document.getElementById('san-bay-den').value;
+  const ngay  = loai === 'Khu_hoi'
+    ? document.getElementById('ngay-di-kh').value
+    : document.getElementById('ngay-di').value;
+  const hang  = loai === 'Khu_hoi'
+    ? document.getElementById('hang-ghe-kh').value
+    : document.getElementById('hang-ghe').value;
+  const so_hk = parseInt(document.getElementById('so-nguoi-lon').value) +
+                parseInt(document.getElementById('so-tre-em').value);
+
+  if (!tu || !den || !ngay) { alert('Vui lòng chọn đầy đủ điểm đi, điểm đến và ngày!'); return; }
+  if (tu === den) { alert('Điểm đi và điểm đến không được trùng nhau!'); return; }
+
+  document.getElementById('loading').style.display = 'block';
+  document.getElementById('no-result').style.display = 'none';
+  document.getElementById('danh-sach-chuyen-bay').innerHTML = '';
+
+  const url  = `${API}/chuyen-bay/tim-kiem?tu=${tu}&den=${den}&ngay=${ngay}&hang=${hang}&so_hk=${so_hk}&loai_tuyen=${loaiTuyenHienTai}`;
+  const res  = await fetch(url);
+  const data = await res.json();
+  document.getElementById('loading').style.display = 'none';
+
+  if (!data.length) { document.getElementById('no-result').style.display = 'block'; return; }
+
+  const loaiLabel = loaiTuyenHienTai === 'noi_dia' ? '🛫 Nội địa' : '🌏 Quốc tế';
+  let html = `<h2>Tìm thấy ${data.length} chuyến bay ${loaiLabel} ${loai === 'Khu_hoi' ? '(Chiều đi)' : ''}</h2>`;
+  data.forEach(cb => {
+    const gio_di  = cb.gio_cat_canh.split(' ')[1].slice(0,5);
+    const gio_den = cb.gio_ha_canh.split(' ')[1].slice(0,5);
+    const gio_bay = Math.floor(cb.thoi_gian_bay/60)+'h'+(cb.thoi_gian_bay%60?cb.thoi_gian_bay%60+'m':'');
+    const gia_fmt = cb.gia_nguoi_lon.toLocaleString('vi-VN') + ' ₫';
+    html += `
+      <div class="flight-card">
+        <div class="airline">
+          <div class="airline-code">${cb.ma_hang}</div>
+          <div>
+            <div class="flight-num">${cb.so_hieu_cb}</div>
+            <div class="airline-name">${cb.ten_hang}</div>
+          </div>
+        </div>
+        <div class="flight-time">
+          <div class="time-row">
+            <div><div class="time">${gio_di}</div><div class="airport">${cb.san_bay_di}</div></div>
+            <div class="duration">
+              <span>${gio_bay}</span>
+              <div class="duration-line"></div>
+              <span>Bay thẳng</span>
+            </div>
+            <div><div class="time">${gio_den}</div><div class="airport">${cb.san_bay_den}</div></div>
+          </div>
+          <div style="font-size:12px;color:#aaa;margin-top:6px;">🧳 Hành lý: ${cb.han_hanh_ly_kg}kg</div>
+        </div>
+        <div class="price-box">
+          <div class="price">${gia_fmt}</div>
+          <div class="price-note">/người lớn</div>
+          <div class="seat-left">Còn ${cb.so_ghe_con_lai} ghế</div>
+          <button class="btn-chon" onclick="chonChuyenBay(${JSON.stringify(cb).replace(/"/g,'&quot;')}, '${loai}')">Chọn</button>
+        </div>
+      </div>`;
+  });
+  document.getElementById('danh-sach-chuyen-bay').innerHTML = html;
+}
+
+function chonChuyenBay(cb, loai) {
+  localStorage.setItem('chuyen_bay_di', JSON.stringify(cb));
+  localStorage.setItem('loai_chuyen', loai);
+  localStorage.setItem('so_nguoi_lon', document.getElementById('so-nguoi-lon').value);
+  localStorage.setItem('so_tre_em', document.getElementById('so-tre-em').value);
+  if (loai === 'Khu_hoi') {
+    localStorage.setItem('ngay_ve',     document.getElementById('ngay-ve').value);
+    localStorage.setItem('san_bay_di',  document.getElementById('san-bay-di').value);
+    localStorage.setItem('san_bay_den', document.getElementById('san-bay-den').value);
+    localStorage.setItem('hang_ghe_kh', document.getElementById('hang-ghe-kh').value);
+  }
+  window.location.href = 'dat-ve.html';
+}
+
+function theoDoi() {
+  const ma = prompt('Nhập mã đặt vé của bạn:');
+  if (ma) window.location.href = `xem-ve.html?ma=${ma.trim().toUpperCase()}`;
+}
+
+capNhatHeader();
+loadSanBay();
+</script>
+</body>
+</html>

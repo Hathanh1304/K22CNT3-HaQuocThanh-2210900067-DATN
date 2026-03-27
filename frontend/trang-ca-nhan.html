@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FlightVN - Trang cá nhân</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Segoe UI', sans-serif; background: #f0f4f8; }
+    header {
+      background: linear-gradient(135deg, #003580, #0066cc);
+      color: white; padding: 16px 40px;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    header .logo { font-size: 24px; font-weight: 700; }
+    header .logo span { color: #f5a623; }
+    header nav a { color: white; text-decoration: none; margin-left: 24px; font-size: 14px; }
+
+    .container { max-width: 900px; margin: 32px auto; padding: 0 16px; display: grid; grid-template-columns: 260px 1fr; gap: 24px; }
+
+    /* Sidebar */
+    .sidebar { display: flex; flex-direction: column; gap: 12px; }
+    .profile-card {
+      background: white; border-radius: 12px; padding: 24px;
+      text-align: center; box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    }
+    .avatar {
+      width: 80px; height: 80px; border-radius: 50%;
+      background: linear-gradient(135deg, #003580, #0066cc);
+      color: white; font-size: 32px; font-weight: 700;
+      display: flex; align-items: center; justify-content: center;
+      margin: 0 auto 12px;
+    }
+    .profile-name { font-size: 16px; font-weight: 700; color: #333; }
+    .profile-email { font-size: 13px; color: #888; margin-top: 4px; }
+
+    .menu-card { background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+    .menu-item {
+      display: flex; align-items: center; gap: 12px;
+      padding: 14px 20px; cursor: pointer; font-size: 14px;
+      color: #555; border-bottom: 1px solid #f0f0f0;
+      text-decoration: none; transition: background 0.2s;
+    }
+    .menu-item:hover { background: #f0f4ff; color: #003580; }
+    .menu-item.active { background: #e8f0fe; color: #003580; font-weight: 600; border-left: 3px solid #003580; }
+    .menu-item .icon { font-size: 18px; width: 24px; text-align: center; }
+
+    /* Main content */
+    .main { display: flex; flex-direction: column; gap: 20px; }
+    .section {
+      background: white; border-radius: 12px; padding: 24px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    }
+    .section h3 {
+      font-size: 16px; font-weight: 700; color: #003580;
+      margin-bottom: 20px; padding-bottom: 12px;
+      border-bottom: 2px solid #f0f4f8;
+    }
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px; }
+    .form-group { display: flex; flex-direction: column; gap: 6px; }
+    .form-group label { font-size: 12px; font-weight: 600; color: #666; text-transform: uppercase; }
+    .form-group input,
+    .form-group select {
+      padding: 12px 14px; border: 2px solid #e0e0e0;
+      border-radius: 8px; font-size: 14px; outline: none;
+      transition: border-color 0.2s;
+    }
+    .form-group input:focus { border-color: #0066cc; }
+    .form-group input:disabled { background: #f5f5f5; color: #888; }
+
+    .btn-save {
+      padding: 12px 32px; background: linear-gradient(135deg, #003580, #0066cc);
+      color: white; border: none; border-radius: 8px;
+      font-size: 14px; font-weight: 600; cursor: pointer;
+    }
+    .btn-danger {
+      padding: 12px 32px; background: #e84545;
+      color: white; border: none; border-radius: 8px;
+      font-size: 14px; font-weight: 600; cursor: pointer; margin-left: 12px;
+    }
+
+    .alert {
+      padding: 12px 16px; border-radius: 8px; font-size: 14px;
+      margin-bottom: 16px; display: none;
+    }
+    .alert.success { background: #e8f5e9; color: #2e7d32; border: 1px solid #a5d6a7; }
+    .alert.error   { background: #ffebee; color: #c62828; border: 1px solid #ef9a9a; }
+
+    footer { background: #002050; color: #aaa; text-align: center; padding: 24px; font-size: 13px; margin-top: 40px; }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="logo">HaThanhFlight<span>VN</span></div>
+  <nav>
+    <a href="index.html">🏠 Trang chủ</a>
+    <a href="#" onclick="dangXuat()">Đăng xuất</a>
+  </nav>
+</header>
+
+<div class="container">
+  <!-- Sidebar -->
+  <div class="sidebar">
+    <div class="profile-card">
+      <div class="avatar" id="avatar-text">?</div>
+      <div class="profile-name" id="profile-name">Đang tải...</div>
+      <div class="profile-email" id="profile-email"></div>
+    </div>
+    <div class="menu-card">
+      <a class="menu-item active" href="trang-ca-nhan.html"><span class="icon">👤</span> Thông tin cá nhân</a>
+      <a class="menu-item" href="lich-su-dat-ve.html"><span class="icon">🎫</span> Lịch sử đặt vé</a>
+      <a class="menu-item" href="#" onclick="dangXuat()"><span class="icon">🚪</span> Đăng xuất</a>
+    </div>
+  </div>
+
+  <!-- Main -->
+  <div class="main">
+    <!-- Thông tin cá nhân -->
+    <div class="section">
+      <h3>👤 Thông tin cá nhân</h3>
+      <div class="alert" id="alert-info"></div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Họ và tên</label>
+          <input type="text" id="ho-ten">
+        </div>
+        <div class="form-group">
+          <label>Email</label>
+          <input type="email" id="email" disabled>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Số điện thoại</label>
+          <input type="tel" id="so-dien-thoai">
+        </div>
+        <div class="form-group">
+          <label>Ngày sinh</label>
+          <input type="date" id="ngay-sinh">
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Giới tính</label>
+          <select id="gioi-tinh">
+            <option value="Nam">Nam</option>
+            <option value="Nu">Nữ</option>
+            <option value="Khac">Khác</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Quốc tịch</label>
+          <input type="text" id="quoc-tich" value="Việt Nam">
+        </div>
+      </div>
+      <div class="form-group" style="margin-bottom:16px">
+        <label>Số hộ chiếu</label>
+        <input type="text" id="so-ho-chieu" placeholder="B1234567">
+      </div>
+      <button class="btn-save" onclick="luuThongTin()">💾 Lưu thay đổi</button>
+    </div>
+
+    <!-- Đổi mật khẩu -->
+    <div class="section">
+      <h3>🔒 Đổi mật khẩu</h3>
+      <div class="alert" id="alert-mk"></div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Mật khẩu hiện tại</label>
+          <input type="password" id="mk-cu" placeholder="••••••••">
+        </div>
+        <div class="form-group">
+          <label>Mật khẩu mới</label>
+          <input type="password" id="mk-moi" placeholder="Tối thiểu 6 ký tự">
+        </div>
+      </div>
+      <div class="form-group" style="margin-bottom:16px; max-width:50%">
+        <label>Xác nhận mật khẩu mới</label>
+        <input type="password" id="mk-xacnhan" placeholder="Nhập lại mật khẩu mới">
+      </div>
+      <button class="btn-save" onclick="doiMatKhau()">🔑 Đổi mật khẩu</button>
+    </div>
+  </div>
+</div>
+
+<footer>© 2026 FlightVN</footer>
+
+<script>
+const API = 'http://127.0.0.1:5000/api';
+const kh  = JSON.parse(localStorage.getItem('khach_hang') || 'null');
+
+if (!kh) { window.location.href = 'dang-nhap.html'; }
+
+function hienThiThongTin() {
+  document.getElementById('avatar-text').textContent  = kh.ho_ten.charAt(0).toUpperCase();
+  document.getElementById('profile-name').textContent = kh.ho_ten;
+  document.getElementById('profile-email').textContent= kh.email;
+  document.getElementById('ho-ten').value        = kh.ho_ten        || '';
+  document.getElementById('email').value         = kh.email         || '';
+  document.getElementById('so-dien-thoai').value = kh.so_dien_thoai || '';
+  document.getElementById('ngay-sinh').value     = kh.ngay_sinh     || '';
+  document.getElementById('gioi-tinh').value     = kh.gioi_tinh     || 'Nam';
+  document.getElementById('quoc-tich').value     = kh.quoc_tich     || 'Việt Nam';
+  document.getElementById('so-ho-chieu').value   = kh.so_ho_chieu   || '';
+}
+
+function hienAlert(id, loai, msg) {
+  const el = document.getElementById(id);
+  el.className = `alert ${loai}`;
+  el.textContent = msg;
+  el.style.display = 'block';
+  setTimeout(() => el.style.display = 'none', 3000);
+}
+
+async function luuThongTin() {
+  const res = await fetch(`${API}/khach-hang/${kh.id}/cap-nhat`, {
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      ho_ten:        document.getElementById('ho-ten').value,
+      so_dien_thoai: document.getElementById('so-dien-thoai').value,
+      ngay_sinh:     document.getElementById('ngay-sinh').value,
+      gioi_tinh:     document.getElementById('gioi-tinh').value,
+      quoc_tich:     document.getElementById('quoc-tich').value,
+      so_ho_chieu:   document.getElementById('so-ho-chieu').value,
+    })
+  });
+  const data = await res.json();
+  if (data.success) {
+    kh.ho_ten = document.getElementById('ho-ten').value;
+    localStorage.setItem('khach_hang', JSON.stringify(kh));
+    hienAlert('alert-info', 'success', '✅ Cập nhật thông tin thành công!');
+  } else {
+    hienAlert('alert-info', 'error', '❌ ' + (data.error || 'Có lỗi xảy ra!'));
+  }
+}
+
+async function doiMatKhau() {
+  const mkCu      = document.getElementById('mk-cu').value;
+  const mkMoi     = document.getElementById('mk-moi').value;
+  const mkXacNhan = document.getElementById('mk-xacnhan').value;
+
+  if (!mkCu || !mkMoi) { hienAlert('alert-mk', 'error', '❌ Vui lòng nhập đầy đủ!'); return; }
+  if (mkMoi.length < 6) { hienAlert('alert-mk', 'error', '❌ Mật khẩu mới tối thiểu 6 ký tự!'); return; }
+  if (mkMoi !== mkXacNhan) { hienAlert('alert-mk', 'error', '❌ Mật khẩu xác nhận không khớp!'); return; }
+
+  const res = await fetch(`${API}/khach-hang/${kh.id}/doi-mat-khau`, {
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ mat_khau_cu: mkCu, mat_khau_moi: mkMoi })
+  });
+  const data = await res.json();
+  if (data.success) {
+    hienAlert('alert-mk', 'success', '✅ Đổi mật khẩu thành công!');
+    document.getElementById('mk-cu').value = '';
+    document.getElementById('mk-moi').value = '';
+    document.getElementById('mk-xacnhan').value = '';
+  } else {
+    hienAlert('alert-mk', 'error', '❌ ' + (data.error || 'Mật khẩu hiện tại không đúng!'));
+  }
+}
+
+function dangXuat() {
+  localStorage.removeItem('khach_hang');
+  window.location.href = 'index.html';
+}
+
+hienThiThongTin();
+</script>
+</body>
+</html>

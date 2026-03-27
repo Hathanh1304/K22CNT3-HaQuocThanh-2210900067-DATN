@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FlightVN - Đăng ký</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Segoe UI', sans-serif; background: #f0f4f8; min-height: 100vh; display: flex; flex-direction: column; }
+    header {
+      background: linear-gradient(135deg, #003580, #0066cc);
+      color: white; padding: 16px 40px;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    header .logo { font-size: 24px; font-weight: 700; }
+    header .logo span { color: #f5a623; }
+    header nav a { color: white; text-decoration: none; margin-left: 24px; font-size: 14px; }
+
+    .auth-container {
+      flex: 1; display: flex; align-items: center;
+      justify-content: center; padding: 40px 16px;
+    }
+    .auth-box {
+      background: white; border-radius: 16px; padding: 40px;
+      width: 100%; max-width: 420px;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.12);
+    }
+    .auth-box h2 { font-size: 24px; color: #003580; margin-bottom: 8px; }
+    .auth-box p  { color: #888; font-size: 14px; margin-bottom: 28px; }
+
+    .form-group { display: flex; flex-direction: column; gap: 6px; margin-bottom: 16px; }
+    .form-group label { font-size: 12px; font-weight: 600; color: #666; text-transform: uppercase; }
+    .form-group input {
+      padding: 14px; border: 2px solid #e0e0e0;
+      border-radius: 8px; font-size: 15px; outline: none;
+      transition: border-color 0.2s;
+    }
+    .form-group input:focus { border-color: #0066cc; }
+
+    .btn-auth {
+      width: 100%; padding: 16px;
+      background: linear-gradient(135deg, #f5a623, #e8920e);
+      color: white; border: none; border-radius: 8px;
+      font-size: 16px; font-weight: 700; cursor: pointer;
+      margin-top: 8px;
+    }
+    .auth-link { text-align: center; margin-top: 20px; font-size: 14px; color: #666; }
+    .auth-link a { color: #0066cc; text-decoration: none; font-weight: 600; }
+    .success-msg { color: #28a745; font-size: 13px; margin-top: 8px; display: none; }
+    footer { background: #002050; color: #aaa; text-align: center; padding: 24px; font-size: 13px; }
+  </style>
+</head>
+<body>
+<header>
+  <div class="logo">Flight<span>VN</span></div>
+  <nav><a href="index.html">← Trang chủ</a></nav>
+</header>
+
+<div class="auth-container">
+  <div class="auth-box">
+    <h2>✈ Đăng ký tài khoản</h2>
+    <p>Tạo tài khoản để đặt vé nhanh hơn!</p>
+
+    <div class="form-group">
+      <label>Họ và tên</label>
+      <input type="text" id="hoten" placeholder="Nguyễn Văn An">
+    </div>
+    <div class="form-group">
+      <label>Email</label>
+      <input type="email" id="email" placeholder="example@email.com">
+    </div>
+    <div class="form-group">
+      <label>Số điện thoại</label>
+      <input type="tel" id="sdt" placeholder="0901234567">
+    </div>
+    <div class="form-group">
+      <label>Mật khẩu</label>
+      <input type="password" id="matkhau" placeholder="Tối thiểu 6 ký tự">
+    </div>
+    <div class="success-msg" id="success-msg">✅ Đăng ký thành công! Đang chuyển hướng...</div>
+    <button class="btn-auth" onclick="dangKy()">Đăng ký</button>
+
+    <div class="auth-link">
+      Đã có tài khoản? <a href="dang-nhap.html">Đăng nhập</a>
+    </div>
+  </div>
+</div>
+
+<footer>© 2026 FlightVN</footer>
+
+<script>
+const API = 'http://127.0.0.1:5000/api';
+
+async function dangKy() {
+  const hoten   = document.getElementById('hoten').value.trim();
+  const email   = document.getElementById('email').value.trim();
+  const sdt     = document.getElementById('sdt').value.trim();
+  const matkhau = document.getElementById('matkhau').value;
+
+  if (!hoten || !email || !matkhau) { alert('Vui lòng nhập đầy đủ!'); return; }
+  if (matkhau.length < 6) { alert('Mật khẩu tối thiểu 6 ký tự!'); return; }
+
+  const res  = await fetch(`${API}/khach-hang/dang-ky`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ ho_ten: hoten, email, so_dien_thoai: sdt, mat_khau: matkhau })
+  });
+  const data = await res.json();
+  if (data.success) {
+    document.getElementById('success-msg').style.display = 'block';
+    setTimeout(() => window.location.href = 'dang-nhap.html', 1500);
+  } else {
+    alert(data.error || 'Đăng ký thất bại!');
+  }
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HaThanhF - Thanh Toán</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Segoe UI', sans-serif; background: #f0f4f8; }
+    header { background: linear-gradient(135deg, #003580, #0066cc); color: white; padding: 16px 40px; display: flex; align-items: center; justify-content: space-between; }
+    header .logo { font-size: 24px; font-weight: 700; }
+    header .logo span { color: #f5a623; }
+    header nav a { color: white; text-decoration: none; margin-left: 24px; font-size: 14px; }
+    .container { max-width: 800px; margin: 32px auto; padding: 0 16px; }
+    .section { background: white; border-radius: 12px; padding: 24px; margin-bottom: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+    .section h3 { font-size: 16px; font-weight: 700; color: #003580; margin-bottom: 20px; padding-bottom: 12px; border-bottom: 2px solid #f0f4f8; }
+    .form-group { display: flex; flex-direction: column; gap: 6px; margin-bottom: 16px; }
+    .form-group label { font-size: 12px; font-weight: 600; color: #666; text-transform: uppercase; }
+    .form-group input { padding: 12px 14px; border: 2px solid #e0e0e0; border-radius: 8px; font-size: 14px; outline: none; transition: border-color 0.2s; }
+    .form-group input:focus { border-color: #0066cc; }
+    .form-group input:disabled { background: #f5f5f5; color: #888; }
+    .phuong-thuc-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+    .pt-card { border: 2px solid #e0e0e0; border-radius: 10px; padding: 16px 12px; text-align: center; cursor: pointer; transition: all 0.2s; font-size: 13px; font-weight: 600; color: #555; }
+    .pt-card:hover { border-color: #0066cc; color: #0066cc; }
+    .pt-card.active { border-color: #003580; background: #e8f0fe; color: #003580; }
+    .pt-card .icon { font-size: 28px; margin-bottom: 8px; }
+    .order-summary { background: #f8f9ff; border-radius: 10px; padding: 16px; }
+    .sum-row { display: flex; justify-content: space-between; font-size: 14px; color: #555; margin-bottom: 8px; }
+    .sum-row.total { font-size: 20px; font-weight: 700; color: #e84545; border-top: 1px solid #ddd; padding-top: 12px; margin-top: 8px; }
+    .btn-thanh-toan { width: 100%; padding: 18px; background: linear-gradient(135deg, #28a745, #1e7e34); color: white; border: none; border-radius: 10px; font-size: 20px; font-weight: 700; cursor: pointer; margin-top: 20px; transition: transform 0.1s; }
+    .btn-thanh-toan:hover { transform: translateY(-1px); }
+    .btn-thanh-toan:disabled { background: #aaa; cursor: not-allowed; }
+    .dang-nhap-box { background: #fff3cd; border: 1px solid #f5a623; border-radius: 10px; padding: 16px; margin-bottom: 16px; font-size: 14px; color: #856404; display: flex; align-items: center; justify-content: space-between; }
+    .dang-nhap-box a { color: #003580; font-weight: 600; text-decoration: none; }
+    .success-screen { display: none; text-align: center; padding: 48px 24px; }
+    .success-icon { font-size: 72px; margin-bottom: 16px; }
+    .success-screen h2 { font-size: 28px; color: #28a745; margin-bottom: 8px; }
+    .success-screen p  { color: #666; font-size: 15px; margin-bottom: 8px; }
+    .ma-dat-ve { display: inline-block; background: #e8f5e9; border: 2px dashed #28a745; border-radius: 10px; padding: 12px 32px; font-size: 24px; font-weight: 700; color: #1e7e34; margin: 16px 0; letter-spacing: 2px; }
+    .btn-home { display: inline-block; margin-top: 24px; padding: 14px 40px; background: #003580; color: white; border-radius: 8px; text-decoration: none; font-weight: 600; font-size: 15px; }
+    footer { background: #002050; color: #aaa; text-align: center; padding: 24px; font-size: 13px; margin-top: 40px; }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="logo">HaThanh<span>F</span></div>
+  <nav><a href="dat-ve.html">← Quay lại</a></nav>
+</header>
+
+<div class="container" id="main-content">
+
+  <!-- Thông tin liên hệ -->
+  <div class="section">
+    <h3>📋 Thông tin liên hệ</h3>
+    <div id="thong-bao-dang-nhap"></div>
+    <div class="form-group">
+      <label>Họ và tên</label>
+      <input type="text" id="ten-lh" placeholder="Nguyễn Văn An">
+    </div>
+    <div class="form-group">
+      <label>Email nhận vé</label>
+      <input type="email" id="email-lh" placeholder="example@email.com">
+    </div>
+    <div class="form-group">
+      <label>Số điện thoại</label>
+      <input type="tel" id="sdt-lh" placeholder="0901234567">
+    </div>
+  </div>
+
+  <!-- Phương thức thanh toán -->
+  <div class="section">
+    <h3>💳 Chọn phương thức thanh toán</h3>
+    <div class="phuong-thuc-grid">
+      <div class="pt-card active" onclick="chonPT(this, 'Vi_dien_tu_Momo')"><div class="icon">📱</div>MoMo</div>
+      <div class="pt-card" onclick="chonPT(this, 'Vi_dien_tu_ZaloPay')"><div class="icon">💙</div>ZaloPay</div>
+      <div class="pt-card" onclick="chonPT(this, 'Vi_dien_tu_VNPay')"><div class="icon">🔴</div>VNPay</div>
+      <div class="pt-card" onclick="chonPT(this, 'The_tin_dung')"><div class="icon">💳</div>Thẻ tín dụng</div>
+      <div class="pt-card" onclick="chonPT(this, 'The_ghi_no')"><div class="icon">🏧</div>Thẻ ghi nợ</div>
+      <div class="pt-card" onclick="chonPT(this, 'Chuyen_khoan')"><div class="icon">🏦</div>Chuyển khoản</div>
+    </div>
+  </div>
+
+  <!-- Tóm tắt đơn hàng -->
+  <div class="section">
+    <h3>🧾 Tóm tắt đơn hàng</h3>
+    <div class="order-summary" id="order-summary">Đang tải...</div>
+    <button class="btn-thanh-toan" id="btn-tt" onclick="thanhToan()">🔒 Thanh toán ngay</button>
+  </div>
+</div>
+
+<!-- Màn hình thành công -->
+<div class="container">
+  <div class="section success-screen" id="success-screen">
+    <div class="success-icon">🎉</div>
+    <h2>Đặt vé thành công!</h2>
+    <p>Mã đặt vé của bạn:</p>
+    <div class="ma-dat-ve" id="ma-dat-ve-hien-thi">---</div>
+    <p>Vui lòng kiểm tra email để nhận vé điện tử.</p>
+    <p style="margin-top:8px;color:#f5a623;">Mã giao dịch: <strong id="ma-gd-hien-thi"></strong></p>
+    <a href="index.html" class="btn-home">🏠 Về trang chủ</a>
+  </div>
+</div>
+
+<footer>© 2026 HaThanhF</footer>
+
+<script>
+const API      = 'http://127.0.0.1:5000/api';
+const cb       = JSON.parse(localStorage.getItem('chuyen_bay_di') || '{}');
+const dsVe     = JSON.parse(localStorage.getItem('danh_sach_ve')  || '[]');
+const tongTien = parseInt(localStorage.getItem('tong_tien') || 0);
+const khDangNhap = JSON.parse(localStorage.getItem('khach_hang') || 'null');
+let phuongThuc = 'Vi_dien_tu_Momo';
+
+// Nếu đã đăng nhập thì điền sẵn thông tin
+function khoiTao() {
+  if (khDangNhap) {
+    document.getElementById('ten-lh').value   = khDangNhap.ho_ten  || '';
+    document.getElementById('email-lh').value = khDangNhap.email   || '';
+    document.getElementById('sdt-lh').value   = khDangNhap.so_dien_thoai || '';
+    document.getElementById('email-lh').disabled = true;
+    document.getElementById('thong-bao-dang-nhap').innerHTML = `
+      <div class="dang-nhap-box">
+        ✅ Đang đặt vé với tài khoản: <strong>${khDangNhap.email}</strong>
+      </div>`;
+  } else {
+    document.getElementById('thong-bao-dang-nhap').innerHTML = `
+      <div class="dang-nhap-box">
+        ⚠️ Bạn chưa đăng nhập. <a href="dang-nhap.html">Đăng nhập</a> để quản lý vé dễ hơn!
+      </div>`;
+  }
+}
+
+function chonPT(el, pt) {
+  document.querySelectorAll('.pt-card').forEach(c => c.classList.remove('active'));
+  el.classList.add('active');
+  phuongThuc = pt;
+}
+
+function hienThiTomTat() {
+  if (!cb.so_hieu_cb) { window.location.href = 'index.html'; return; }
+  const gioDi  = cb.gio_cat_canh.split(' ')[1].slice(0,5);
+  const gioDen = cb.gio_ha_canh.split(' ')[1].slice(0,5);
+  document.getElementById('order-summary').innerHTML = `
+    <div class="sum-row"><span>✈ ${cb.so_hieu_cb} (${cb.ten_hang})</span><span>${gioDi} → ${gioDen}</span></div>
+    <div class="sum-row"><span>🛫 ${cb.thanh_pho_di} → ${cb.thanh_pho_den}</span><span>${cb.hang_ghe.replace(/_/g,' ')}</span></div>
+    <div class="sum-row"><span>👥 Số hành khách</span><span>${dsVe.length} người</span></div>
+    <div class="sum-row total"><span>Tổng tiền</span><span>${tongTien.toLocaleString('vi-VN')} ₫</span></div>`;
+}
+
+async function thanhToan() {
+  const ten   = document.getElementById('ten-lh').value.trim();
+  const email = document.getElementById('email-lh').value.trim();
+  const sdt   = document.getElementById('sdt-lh').value.trim();
+
+  if (!ten || !email || !sdt) {
+    alert('Vui lòng điền đầy đủ thông tin liên hệ!');
+    return;
+  }
+
+  const btn = document.getElementById('btn-tt');
+  btn.disabled = true;
+  btn.textContent = '⏳ Đang xử lý...';
+
+  try {
+    // Bước 1: Lấy khách hàng ID
+    let khachHangId;
+
+    if (khDangNhap) {
+      // Đã đăng nhập → dùng luôn
+      khachHangId = khDangNhap.id;
+    } else {
+      // Chưa đăng nhập → thử đăng ký mới
+      let khRes  = await fetch(`${API}/khach-hang/dang-ky`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ ho_ten: ten, email: email, mat_khau: sdt, so_dien_thoai: sdt })
+      });
+      let khData = await khRes.json();
+
+      if (khData.success) {
+        khachHangId = khData.khach_hang.id;
+      } else {
+        // Email đã tồn tại → thử đăng nhập
+        let loginRes  = await fetch(`${API}/khach-hang/dang-nhap`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email: email, mat_khau: sdt })
+        });
+        let loginData = await loginRes.json();
+        if (loginData.success) {
+          khachHangId = loginData.khach_hang.id;
+        } else {
+          alert('Email đã tồn tại nhưng mật khẩu không đúng!\nVui lòng đăng nhập trước.');
+          window.location.href = 'dang-nhap.html';
+          return;
+        }
+      }
+    }
+
+    // Bước 2: Tạo đặt vé
+    const dvRes  = await fetch(`${API}/dat-ve/tao`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        khach_hang_id: khachHangId,
+        loai_chuyen:   localStorage.getItem('loai_chuyen') || 'Mot_chieu',
+        ve: dsVe
+      })
+    });
+    const dvData = await dvRes.json();
+    if (!dvData.success) throw new Error(dvData.error);
+
+    // Bước 3: Thanh toán
+    const ttRes  = await fetch(`${API}/thanh-toan/thanh-toan`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        dat_ve_id:   dvData.dat_ve_id,
+        phuong_thuc: phuongThuc,
+        so_tien:     tongTien
+      })
+    });
+    const ttData = await ttRes.json();
+    if (!ttData.success) throw new Error(ttData.error);
+
+    // Thành công
+    document.getElementById('main-content').style.display = 'none';
+    document.getElementById('success-screen').style.display = 'block';
+    document.getElementById('ma-dat-ve-hien-thi').textContent = dvData.ma_dat_ve;
+    document.getElementById('ma-gd-hien-thi').textContent     = ttData.ma_giao_dich;
+
+    ['chuyen_bay_di','danh_sach_ve','tong_tien','so_nguoi_lon','so_tre_em','loai_chuyen'].forEach(k => localStorage.removeItem(k));
+
+  } catch(e) {
+    alert('Lỗi: ' + e.message);
+    btn.disabled = false;
+    btn.textContent = '🔒 Thanh toán ngay';
+  }
+}
+
+khoiTao();
+hienThiTomTat();
+</script>
+</body>
+</html>
