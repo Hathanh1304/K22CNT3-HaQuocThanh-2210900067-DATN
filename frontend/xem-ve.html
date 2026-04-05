@@ -102,6 +102,13 @@
       text-decoration: none; text-align: center; display: flex; align-items: center; justify-content: center;
     }
 
+        .qr-section {
+      text-align: center; padding: 20px 32px;
+      border-top: 1px dashed #e0e0e0; background: #f8f9ff;
+    }
+    .qr-section h4 { font-size: 13px; color: #aaa; text-transform: uppercase; margin-bottom: 12px; }
+    #qr-code { display: inline-block; padding: 12px; background: white; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+    .qr-ma-ve { font-size: 16px; font-weight: 700; color: #003580; margin-top: 10px; letter-spacing: 2px; }
     @media print {
       header, .btn-group, footer { display: none; }
       body { background: white; }
@@ -110,13 +117,14 @@
 
     footer { background: #002050; color: #aaa; text-align: center; padding: 24px; font-size: 13px; }
   </style>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 </head>
 <body>
 
 <header>
   <div class="logo">Flight<span>VN</span></div>
   <nav>
-    <a href="lich-su-dat-ve.html">← Lịch sử đặt vé</a>
+    <a href="#" onclick="quayLai()">← Quay lại</a>
   </nav>
 </header>
 
@@ -126,7 +134,7 @@
   </div>
 
   <div class="btn-group">
-    <a class="btn-back" href="lich-su-dat-ve.html">← Quay lại</a>
+    <a class="btn-back" href="#" onclick="quayLai()">← Quay lại</a>
     <button class="btn-print" onclick="window.print()">🖨️ In vé / Lưu PDF</button>
   </div>
 </div>
@@ -220,6 +228,12 @@ async function loadVe() {
       ${passengers}
     </div>
 
+    <div class="qr-section">
+      <h4>Mã QR vé điện tử</h4>
+      <div id="qr-code"></div>
+      <div class="qr-ma-ve">${don.ma_dat_ve}</div>
+    </div>
+
     <div class="ticket-footer">
       <div>
         <div class="total-label">Tổng tiền</div>
@@ -231,6 +245,31 @@ async function loadVe() {
       </div>
     </div>
   </div>`;
+
+  // Tạo QR code
+  setTimeout(() => {
+    const qrEl = document.getElementById('qr-code');
+    if (qrEl) {
+      qrEl.innerHTML = '';
+      new QRCode(qrEl, {
+        text: don.ma_dat_ve + '|' + ve0.so_hieu_cb + '|' + ve0.tu + '-' + ve0.den,
+        width: 140,
+        height: 140,
+        colorDark: '#003580',
+        colorLight: '#ffffff',
+        correctLevel: QRCode.CorrectLevel.M
+      });
+    }
+  }, 300);
+}
+
+function quayLai() {
+  const admin = JSON.parse(localStorage.getItem('admin') || 'null');
+  if (admin) {
+    window.location.href = 'admin.html';
+  } else {
+    window.location.href = 'lich-su-dat-ve.html';
+  }
 }
 
 loadVe();

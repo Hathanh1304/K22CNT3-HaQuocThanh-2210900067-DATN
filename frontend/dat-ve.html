@@ -115,7 +115,7 @@
         <span id="tong-tien">0 ₫</span>
       </div>
     </div>
-    <button class="btn-tiep" onclick="tiepTucThanhToan()">Tiếp tục thanh toán →</button>
+    <button class="btn-tiep" onclick="tiepTucThanhToan()" id="btn-thanh-toan">Tiếp tục thanh toán →</button>
   </div>
 </div>
 
@@ -123,27 +123,218 @@
 
 <script>
 const API = 'http://127.0.0.1:5000/api';
-const cb  = JSON.parse(localStorage.getItem('chuyen_bay_di') || '{}');
+const cb         = JSON.parse(localStorage.getItem('chuyen_bay_di') || '{}');
+const loaiChuyen = localStorage.getItem('loai_chuyen') || 'Mot_chieu';
 const soNguoiLon = parseInt(localStorage.getItem('so_nguoi_lon') || 1);
-const soTreEm   = parseInt(localStorage.getItem('so_tre_em')   || 0);
+const soTreEm    = parseInt(localStorage.getItem('so_tre_em')   || 0);
+// Đọc chiều về từ localStorage (đã chọn sẵn ở trang tìm kiếm)
+let cbVe = loaiChuyen === 'Khu_hoi'
+  ? JSON.parse(localStorage.getItem('chuyen_bay_ve') || 'null')
+  : null;
 
-// Hiển thị thông tin chuyến bay
+// ===== HIỂN THỊ THÔNG TIN CHUYẾN BAY =====
 function hienThiChuyenBay() {
   if (!cb.so_hieu_cb) { window.location.href = 'index.html'; return; }
-  const gioDi  = cb.gio_cat_canh.split(' ')[1].slice(0,5);
-  const gioDen = cb.gio_ha_canh.split(' ')[1].slice(0,5);
-  const gioBay = Math.floor(cb.thoi_gian_bay/60)+'h'+(cb.thoi_gian_bay%60?cb.thoi_gian_bay%60+'m':'');
 
-  document.getElementById('flight-route').innerHTML =
-    `${cb.thanh_pho_di} <span>(${cb.san_bay_di})</span> → ${cb.thanh_pho_den} <span>(${cb.san_bay_den})</span>`;
-  document.getElementById('flight-details').innerHTML =
-    `<span>✈ ${cb.so_hieu_cb} - ${cb.ten_hang}</span>
-     <span>🕐 ${gioDi} → ${gioDen} (${gioBay})</span>
-     <span>💺 ${cb.hang_ghe.replace(/_/g,' ')}</span>
-     <span>🧳 Hành lý ${cb.han_hanh_ly_kg}kg</span>`;
+  if (loaiChuyen === 'Khu_hoi') {
+    // Hiển thị thông tin cả 2 chiều
+    const container = document.querySelector('.container');
+    const infoBar = document.createElement('div');
+    infoBar.style.cssText = 'background:white;border-radius:12px;padding:16px 24px;margin-bottom:16px;box-shadow:0 2px 8px rgba(0,0,0,0.08);';
+
+    const gioDi1  = cb.gio_cat_canh.split(' ')[1].slice(0,5);
+    const gioDen1 = cb.gio_ha_canh.split(' ')[1].slice(0,5);
+    let veInfo = '';
+    if (cbVe) {
+      const gioDi2  = cbVe.gio_cat_canh.split(' ')[1].slice(0,5);
+      const gioDen2 = cbVe.gio_ha_canh.split(' ')[1].slice(0,5);
+      veInfo = `<div style="display:flex;align-items:center;gap:12px;margin-top:10px;padding-top:10px;border-top:1px dashed #e0e0e0;">
+        <span style="background:#fff3e0;color:#e65100;padding:4px 10px;border-radius:12px;font-size:12px;font-weight:600;">↩ Chiều về</span>
+        <span style="font-weight:600;">${cbVe.so_hieu_cb}</span>
+        <span>${cbVe.san_bay_di} → ${cbVe.san_bay_den}</span>
+        <span style="color:#888;">${gioDi2} → ${gioDen2}</span>
+        <span style="color:#e84545;font-weight:700;margin-left:auto;">${cbVe.gia_nguoi_lon.toLocaleString('vi-VN')} ₫</span>
+      </div>`;
+    }
+
+    infoBar.innerHTML = `
+      <div style="display:flex;align-items:center;gap:12px;">
+        <span style="background:#e8f0fe;color:#003580;padding:4px 10px;border-radius:12px;font-size:12px;font-weight:600;">✈ Chiều đi</span>
+        <span style="font-weight:600;">${cb.so_hieu_cb}</span>
+        <span>${cb.san_bay_di} → ${cb.san_bay_den}</span>
+        <span style="color:#888;">${gioDi1} → ${gioDen1}</span>
+        <span style="color:#e84545;font-weight:700;margin-left:auto;">${cb.gia_nguoi_lon.toLocaleString('vi-VN')} ₫</span>
+      </div>
+      ${veInfo}`;
+    container.insertBefore(infoBar, container.firstChild);
+  }
+
+  hienThiThongTinCB(cb, 'flight-route', 'flight-details', loaiChuyen === 'Khu_hoi' ? '✈ Chiều đi' : '✈ Thông tin chuyến bay');
 }
 
-// Tạo form hành khách
+function hienThiThongTinCB(chuyenBay, routeId, detailId, tieuDe) {
+  const gioDi  = chuyenBay.gio_cat_canh.split(' ')[1].slice(0,5);
+  const gioDen = chuyenBay.gio_ha_canh.split(' ')[1].slice(0,5);
+  const gioBay = Math.floor(chuyenBay.thoi_gian_bay/60)+'h'+(chuyenBay.thoi_gian_bay%60?chuyenBay.thoi_gian_bay%60+'m':'');
+
+  document.getElementById('flight-info').querySelector('h2').textContent = tieuDe;
+  document.getElementById(routeId).innerHTML =
+    `${chuyenBay.thanh_pho_di} <span>(${chuyenBay.san_bay_di})</span> → ${chuyenBay.thanh_pho_den} <span>(${chuyenBay.san_bay_den})</span>`;
+  document.getElementById(detailId).innerHTML =
+    `<span>✈ ${chuyenBay.so_hieu_cb} - ${chuyenBay.ten_hang}</span>
+     <span>🕐 ${gioDi} → ${gioDen} (${gioBay})</span>
+     <span>💺 ${chuyenBay.hang_ghe.replace(/_/g,' ')}</span>
+     <span>🧳 Hành lý ${chuyenBay.han_hanh_ly_kg}kg</span>`;
+}
+
+// ===== BƯỚC 2: CHỌN CHUYẾN CHIỀU VỀ =====
+async function hienThiChonChieuVe() {
+  buoc = 2;
+  // Cập nhật thanh bước
+  document.getElementById('buoc1-label').style.cssText = 'color:#28a745;background:#e8f5e9;padding:6px 16px;border-radius:20px;';
+  document.getElementById('buoc1-label').textContent = '✅ Bước 1: Chiều đi đã chọn';
+  document.getElementById('buoc2-label').style.cssText = 'color:#003580;background:#e8f0fe;padding:6px 16px;border-radius:20px;';
+  document.getElementById('buoc2-label').textContent = '↩ Bước 2: Chọn chuyến chiều về';
+
+  // Ẩn form hành khách và giá
+  document.getElementById('danh-sach-hanh-khach').innerHTML = '';
+  document.getElementById('gia-chi-tiet').innerHTML = '';
+  document.getElementById('tong-tien').textContent = '0 ₫';
+
+  // Tìm chuyến về: đảo chiều di/den, dùng ngay_ve
+  const ngayVe  = localStorage.getItem('ngay_ve') || '';
+  const sanBayDi  = localStorage.getItem('san_bay_den') || cb.san_bay_den;
+  const sanBayDen = localStorage.getItem('san_bay_di')  || cb.san_bay_di;
+  const hangGhe   = localStorage.getItem('hang_ghe_kh') || 'Pho_thong';
+  const soHK = soNguoiLon + soTreEm;
+
+  // Hiển thị khung tìm chuyến về
+  const container = document.querySelector('.container');
+  let khungVe = document.getElementById('khung-chieu-ve');
+  if (!khungVe) {
+    khungVe = document.createElement('div');
+    khungVe.id = 'khung-chieu-ve';
+    khungVe.style.cssText = 'background:white;border-radius:12px;padding:24px;margin-bottom:20px;box-shadow:0 2px 8px rgba(0,0,0,0.08);';
+    container.insertBefore(khungVe, document.getElementById('danh-sach-hanh-khach'));
+  }
+  // Lấy loại tuyến từ chuyến đi
+  const loaiTuyen = cb.loai_tuyen || 'noi_dia';
+
+  khungVe.innerHTML = `
+    <h3 style="color:#003580;font-size:16px;margin-bottom:16px;padding-bottom:12px;border-bottom:2px solid #f0f4f8;">
+      ↩ Chọn chuyến bay chiều về: ${sanBayDi} → ${sanBayDen}
+    </h3>
+    <div style="display:flex;align-items:flex-end;gap:12px;margin-bottom:16px;flex-wrap:wrap;">
+      <div>
+        <label style="font-size:12px;font-weight:600;color:#666;text-transform:uppercase;display:block;margin-bottom:4px;">Ngày về</label>
+        <input type="date" id="ngay-ve-input" value="${ngayVe}"
+          style="padding:10px 14px;border:2px solid #e0e0e0;border-radius:8px;font-size:14px;outline:none;">
+      </div>
+      <button onclick="timLaiChieuVe()"
+        style="padding:10px 20px;background:#003580;color:white;border:none;border-radius:8px;font-size:14px;font-weight:600;cursor:pointer;">
+        🔍 Tìm chuyến về
+      </button>
+    </div>
+    <div id="ds-chuyen-ve" style="color:#666;text-align:center;padding:20px;">⏳ Đang tìm chuyến về...</div>
+  `;
+
+  await goiFindChieuVe(sanBayDi, sanBayDen, ngayVe, hangGhe, soHK, loaiTuyen);
+}
+
+async function timLaiChieuVe() {
+  const ngayMoi = document.getElementById('ngay-ve-input').value;
+  const sanBayDi  = localStorage.getItem('san_bay_den') || cb.san_bay_den;
+  const sanBayDen = localStorage.getItem('san_bay_di')  || cb.san_bay_di;
+  const hangGhe   = localStorage.getItem('hang_ghe_kh') || 'Pho_thong';
+  const soHK = soNguoiLon + soTreEm;
+  const loaiTuyen = cb.loai_tuyen || 'noi_dia';
+  document.getElementById('ds-chuyen-ve').innerHTML = '<div style="text-align:center;padding:20px;color:#666;">⏳ Đang tìm...</div>';
+  await goiFindChieuVe(sanBayDi, sanBayDen, ngayMoi, hangGhe, soHK, loaiTuyen);
+}
+
+async function goiFindChieuVe(sanBayDi, sanBayDen, ngayVe, hangGhe, soHK, loaiTuyen) {
+  try {
+    const url  = `${API}/chuyen-bay/tim-kiem?tu=${sanBayDi}&den=${sanBayDen}&ngay=${ngayVe}&hang=${hangGhe}&so_hk=${soHK}&loai_tuyen=${loaiTuyen}`;
+    const res  = await fetch(url);
+    const data = await res.json();
+
+    if (!data.length) {
+      document.getElementById('ds-chuyen-ve').innerHTML = `
+        <div style="background:#ffebee;border:1px solid #e84545;border-radius:8px;padding:16px;color:#c62828;">
+          😔 Không tìm thấy chuyến bay chiều về.<br>
+          <small style="color:#888;margin-top:8px;display:block;">
+            Tuyến: ${sanBayDi} → ${sanBayDen} | Ngày: ${ngayVe || 'Chưa chọn ngày về'}
+          </small>
+          ${!ngayVe ? '<br><strong>⚠️ Bạn chưa chọn ngày về khi tìm kiếm!</strong>' : ''}
+        </div>`;
+      return;
+    }
+
+    let html = '';
+    data.forEach(chuyenBay => {
+      const gioDi  = chuyenBay.gio_cat_canh.split(' ')[1].slice(0,5);
+      const gioDen = chuyenBay.gio_ha_canh.split(' ')[1].slice(0,5);
+      const gioBay = Math.floor(chuyenBay.thoi_gian_bay/60)+'h'+(chuyenBay.thoi_gian_bay%60?chuyenBay.thoi_gian_bay%60+'m':'');
+      const gia    = chuyenBay.gia_nguoi_lon.toLocaleString('vi-VN');
+      html += `
+        <div style="border:2px solid #e0e0e0;border-radius:10px;padding:16px;margin-bottom:12px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;transition:border-color 0.2s;"
+             id="ve-cb-${chuyenBay.id}"
+             onclick="chonChuyenVe(${JSON.stringify(chuyenBay).replace(/"/g,'&quot;')}, this)">
+          <div style="display:flex;align-items:center;gap:12px;">
+            <div style="width:44px;height:44px;border-radius:10px;background:#003580;color:white;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px;">${chuyenBay.ma_hang}</div>
+            <div>
+              <div style="font-weight:600;color:#333;">${chuyenBay.so_hieu_cb} - ${chuyenBay.ten_hang}</div>
+              <div style="font-size:13px;color:#888;">${gioDi} → ${gioDen} (${gioBay})</div>
+            </div>
+          </div>
+          <div style="text-align:right;">
+            <div style="font-size:20px;font-weight:700;color:#e84545;">${gia} ₫</div>
+            <div style="font-size:12px;color:#f5a623;">Còn ${chuyenBay.so_ghe_con_lai} ghế</div>
+          </div>
+        </div>`;
+    });
+    document.getElementById('ds-chuyen-ve').innerHTML = html;
+  } catch(e) {
+    document.getElementById('ds-chuyen-ve').innerHTML = '<p style="color:#e84545;">❌ Lỗi tải chuyến bay chiều về.</p>';
+  }
+}
+
+function chonChuyenVe(chuyenBay, el) {
+  // Bỏ highlight cũ
+  document.querySelectorAll('[id^="ve-cb-"]').forEach(e => {
+    e.style.borderColor = '#e0e0e0';
+    e.style.background  = 'white';
+  });
+  // Highlight chuyến được chọn
+  el.style.borderColor = '#003580';
+  el.style.background  = '#e8f0fe';
+  cbVe = chuyenBay;
+  localStorage.setItem('chuyen_bay_ve', JSON.stringify(cbVe));
+
+  // Hiện thông báo đã chọn chuyến về
+  const gioDi  = chuyenBay.gio_cat_canh.split(' ')[1].slice(0,5);
+  const gioDen = chuyenBay.gio_ha_canh.split(' ')[1].slice(0,5);
+  const notice = document.getElementById('chon-ve-notice');
+  if (!notice) {
+    const div = document.createElement('div');
+    div.id = 'chon-ve-notice';
+    div.style.cssText = 'background:#e8f5e9;border:1px solid #28a745;border-radius:10px;padding:12px 16px;margin-bottom:16px;color:#1b5e20;font-size:14px;font-weight:600;';
+    div.innerHTML = `✅ Đã chọn chiều về: <strong>${chuyenBay.so_hieu_cb}</strong> (${gioDi} → ${gioDen}) — ${chuyenBay.gia_nguoi_lon.toLocaleString('vi-VN')} ₫/người`;
+    document.getElementById('khung-chieu-ve').after(div);
+  } else {
+    notice.innerHTML = `✅ Đã chọn chiều về: <strong>${chuyenBay.so_hieu_cb}</strong> (${gioDi} → ${gioDen}) — ${chuyenBay.gia_nguoi_lon.toLocaleString('vi-VN')} ₫/người`;
+  }
+
+  // Hiện form hành khách + nút thanh toán + tính tổng
+  taoFormHanhKhach();
+  tinhGia();
+  document.getElementById('btn-thanh-toan').style.display = 'block';
+
+  // Scroll xuống form
+  document.getElementById('danh-sach-hanh-khach').scrollIntoView({ behavior: 'smooth' });
+}
+
+// ===== FORM HÀNH KHÁCH =====
 function taoFormHanhKhach() {
   let html = '';
   for (let i = 0; i < soNguoiLon; i++) {
@@ -190,27 +381,45 @@ function formHanhKhach(idx, loai, tieude) {
   </div>`;
 }
 
-// Tính giá
+// ===== TÍNH GIÁ =====
 function tinhGia() {
-  const giaNguoiLon = cb.gia_nguoi_lon || 0;
-  const giaTreEm   = cb.gia_tre_em    || 0;
-  const tongNL = soNguoiLon * giaNguoiLon;
-  const tongTE = soTreEm   * giaTreEm;
-  const tong   = tongNL + tongTE;
+  const giaNLDi = cb.gia_nguoi_lon  || 0;
+  const giaTEDi = cb.gia_tre_em     || 0;
+  const giaNLVe = cbVe ? (cbVe.gia_nguoi_lon || 0) : 0;
+  const giaTEVe = cbVe ? (cbVe.gia_tre_em    || 0) : 0;
+
+  const tongNLDi = soNguoiLon * giaNLDi;
+  const tongTEDi = soTreEm    * giaTEDi;
+  const tongNLVe = soNguoiLon * giaNLVe;
+  const tongTEVe = soTreEm    * giaTEVe;
+  const tong     = tongNLDi + tongTEDi + tongNLVe + tongTEVe;
 
   let html = '';
-  if (soNguoiLon > 0)
-    html += `<div class="gia-row"><span>Người lớn x${soNguoiLon}</span><span>${tongNL.toLocaleString('vi-VN')} ₫</span></div>`;
-  if (soTreEm > 0)
-    html += `<div class="gia-row"><span>Trẻ em x${soTreEm}</span><span>${tongTE.toLocaleString('vi-VN')} ₫</span></div>`;
+  if (loaiChuyen === 'Khu_hoi') {
+    html += `<div class="gia-row" style="font-weight:600;color:#003580;"><span>✈ Chiều đi</span><span></span></div>`;
+  }
+  if (soNguoiLon > 0) html += `<div class="gia-row"><span>Người lớn x${soNguoiLon}</span><span>${tongNLDi.toLocaleString('vi-VN')} ₫</span></div>`;
+  if (soTreEm    > 0) html += `<div class="gia-row"><span>Trẻ em x${soTreEm}</span><span>${tongTEDi.toLocaleString('vi-VN')} ₫</span></div>`;
+
+  if (loaiChuyen === 'Khu_hoi' && cbVe) {
+    html += `<div class="gia-row" style="font-weight:600;color:#003580;margin-top:8px;"><span>↩ Chiều về</span><span></span></div>`;
+    if (soNguoiLon > 0) html += `<div class="gia-row"><span>Người lớn x${soNguoiLon}</span><span>${tongNLVe.toLocaleString('vi-VN')} ₫</span></div>`;
+    if (soTreEm    > 0) html += `<div class="gia-row"><span>Trẻ em x${soTreEm}</span><span>${tongTEVe.toLocaleString('vi-VN')} ₫</span></div>`;
+  }
 
   document.getElementById('gia-chi-tiet').innerHTML = html;
   document.getElementById('tong-tien').textContent  = tong.toLocaleString('vi-VN') + ' ₫';
   return tong;
 }
 
-// Tiếp tục thanh toán
+// ===== TIẾP TỤC THANH TOÁN =====
 function tiepTucThanhToan() {
+  // Kiểm tra đã chọn chuyến về chưa (khứ hồi)
+  if (loaiChuyen === 'Khu_hoi' && !cbVe) {
+    alert('Vui lòng chọn chuyến bay chiều về!');
+    return;
+  }
+
   const tongHK = soNguoiLon + soTreEm;
   const dsVe   = [];
 
@@ -218,7 +427,8 @@ function tiepTucThanhToan() {
     const hoTen = document.getElementById(`hoten_${i}`).value.trim();
     if (!hoTen) { alert(`Vui lòng nhập họ tên hành khách ${i}!`); return; }
     const loai = document.getElementById(`loai_${i}`).value;
-    const gia  = loai === 'Nguoi_lon' ? cb.gia_nguoi_lon : cb.gia_tre_em;
+
+    // Vé chiều đi
     dsVe.push({
       chuyen_bay_id:   cb.id,
       hang_ghe_id:     cb.hang_ghe_id,
@@ -226,8 +436,21 @@ function tiepTucThanhToan() {
       ho_ten:          hoTen.toUpperCase(),
       ngay_sinh:       document.getElementById(`ngaysinh_${i}`).value,
       gioi_tinh:       document.getElementById(`gioitinh_${i}`).value,
-      gia_ve:          gia
+      gia_ve:          loai === 'Nguoi_lon' ? cb.gia_nguoi_lon : cb.gia_tre_em
     });
+
+    // Vé chiều về (nếu khứ hồi)
+    if (loaiChuyen === 'Khu_hoi' && cbVe) {
+      dsVe.push({
+        chuyen_bay_id:   cbVe.id,
+        hang_ghe_id:     cbVe.hang_ghe_id,
+        loai_hanh_khach: loai,
+        ho_ten:          hoTen.toUpperCase(),
+        ngay_sinh:       document.getElementById(`ngaysinh_${i}`).value,
+        gioi_tinh:       document.getElementById(`gioitinh_${i}`).value,
+        gia_ve:          loai === 'Nguoi_lon' ? cbVe.gia_nguoi_lon : cbVe.gia_tre_em
+      });
+    }
   }
 
   localStorage.setItem('danh_sach_ve', JSON.stringify(dsVe));
@@ -235,9 +458,17 @@ function tiepTucThanhToan() {
   window.location.href = 'thanh-toan.html';
 }
 
+// ===== KHỞI TẠO =====
 hienThiChuyenBay();
-taoFormHanhKhach();
-tinhGia();
+
+if (loaiChuyen === 'Khu_hoi' && !cbVe) {
+  // Chưa chọn chiều về -> quay lại tìm kiếm
+  alert('⚠️ Vui lòng chọn chuyến bay chiều về trước!');
+  window.location.href = 'index.html';
+} else {
+  taoFormHanhKhach();
+  tinhGia();
+}
 </script>
 </body>
 </html>

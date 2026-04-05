@@ -59,6 +59,42 @@
     .loading { text-align: center; padding: 40px; color: #666; font-size: 16px; display: none; }
     .no-result { text-align: center; padding: 40px; color: #999; font-size: 16px; display: none; }
     footer { background: #002050; color: #aaa; text-align: center; padding: 24px; font-size: 13px; }
+    /* Thông báo */
+    header nav { display: flex; align-items: center; }
+    .notif-btn {
+      position: relative; cursor: pointer; color: white;
+      font-size: 18px; margin-left: 24px; text-decoration: none;
+      display: inline-flex; align-items: center; vertical-align: middle;
+    }
+    .notif-badge {
+      position: absolute; top: -6px; right: -8px;
+      background: #e84545; color: white; border-radius: 50%;
+      font-size: 11px; font-weight: 700; min-width: 18px; height: 18px;
+      display: flex; align-items: center; justify-content: center; padding: 0 4px;
+    }
+    .notif-dropdown {
+      display: none; position: absolute; top: 36px; right: -16px;
+      background: white; border-radius: 12px; width: 340px;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.18); z-index: 9999;
+      max-height: 420px; overflow-y: auto;
+    }
+    .notif-dropdown.show { display: block; }
+    .notif-header {
+      padding: 14px 16px; border-bottom: 1px solid #f0f0f0;
+      font-weight: 700; color: #003580; font-size: 14px;
+      display: flex; justify-content: space-between; align-items: center;
+    }
+    .notif-item {
+      padding: 12px 16px; border-bottom: 1px solid #f5f5f5;
+      font-size: 13px; cursor: pointer; transition: background 0.2s;
+    }
+    .notif-item:hover { background: #f8f9ff; }
+    .notif-item.chua_doc { background: #e8f0fe; }
+    .notif-item .notif-title { font-weight: 600; color: #333; margin-bottom: 4px; }
+    .notif-item .notif-body  { color: #666; line-height: 1.4; }
+    .notif-item .notif-time  { color: #aaa; font-size: 11px; margin-top: 4px; }
+    .notif-mark-all { font-size: 12px; color: #0066cc; cursor: pointer; font-weight: 400; }
+    .notif-empty { padding: 24px; text-align: center; color: #aaa; font-size: 14px; }
   </style>
 </head>
 <body>
@@ -184,7 +220,19 @@ function capNhatHeader() {
       <a href="trang-ca-nhan.html">👤 ${kh.ho_ten}</a>
       <a href="lich-su-dat-ve.html">🎫 Vé của tôi</a>
       <a href="ho-tro.html">🎧 Hỗ trợ</a>
+      <span class="notif-btn" onclick="toggleNotif(event)" id="notif-btn">
+        🔔
+        <span class="notif-badge" id="notif-badge" style="display:none">0</span>
+        <div class="notif-dropdown" id="notif-dropdown">
+          <div class="notif-header">
+            🔔 Thông báo
+            <span class="notif-mark-all" onclick="danhDauTatCa(event)">Đánh dấu đã đọc</span>
+          </div>
+          <div id="notif-list"><div class="notif-empty">Đang tải...</div></div>
+        </div>
+      </span>
       <a href="#" onclick="dangXuat()">Đăng xuất</a>`;
+    loadThongBao();
   }
 }
 
@@ -345,6 +393,72 @@ function theoDoi() {
 
 capNhatHeader();
 loadSanBay();
+
+// ===== THÔNG BÁO =====
+const LOAI_ICON = { delay:'⏰', huy_chuyen:'❌', xac_nhan_ve:'✅', khuyen_mai:'🎁', he_thong:'⚙️' };
+
+async function loadThongBao() {
+  const kh = JSON.parse(localStorage.getItem('khach_hang') || 'null');
+  if (!kh) return;
+  try {
+    const res  = await fetch(`${API}/thong-bao/cua-toi/${kh.id}`);
+    const data = await res.json();
+    const badge = document.getElementById('notif-badge');
+    const list  = document.getElementById('notif-list');
+    if (!badge || !list) return;
+
+    const chuaDoc = data.filter(d => d.trang_thai === 'chua_doc').length;
+    if (chuaDoc > 0) {
+      badge.textContent = chuaDoc > 9 ? '9+' : chuaDoc;
+      badge.style.display = 'flex';
+    } else {
+      badge.style.display = 'none';
+    }
+
+    if (!data.length) {
+      list.innerHTML = '<div class="notif-empty">Chưa có thông báo nào</div>';
+      return;
+    }
+
+    list.innerHTML = data.slice(0, 10).map(tb => {
+      const icon = LOAI_ICON[tb.loai] || '🔔';
+      const ngay = new Date(tb.ngay_tao).toLocaleString('vi-VN');
+      return `<div class="notif-item ${tb.trang_thai}" onclick="xemThongBao(${tb.id}, this)">
+        <div class="notif-title">${icon} ${tb.tieu_de}</div>
+        <div class="notif-body">${tb.noi_dung}</div>
+        <div class="notif-time">${ngay}</div>
+      </div>`;
+    }).join('');
+  } catch(e) { console.log('Lỗi load thông báo:', e); }
+}
+
+function toggleNotif(e) {
+  e.preventDefault();
+  e.stopPropagation();
+  const dd = document.getElementById('notif-dropdown');
+  if (dd) dd.classList.toggle('show');
+}
+
+async function xemThongBao(id, el) {
+  el.classList.remove('chua_doc');
+  await fetch(`${API}/thong-bao/doc/${id}`, { method: 'PUT' });
+  await loadThongBao();
+}
+
+async function danhDauTatCa(e) {
+  e.stopPropagation();
+  const kh = JSON.parse(localStorage.getItem('khach_hang') || 'null');
+  if (!kh) return;
+  await fetch(`${API}/thong-bao/doc-tat-ca/${kh.id}`, { method: 'PUT' });
+  await loadThongBao();
+}
+
+// Đóng dropdown khi click ra ngoài
+document.addEventListener('click', function(e) {
+  const dd  = document.getElementById('notif-dropdown');
+  const btn = document.getElementById('notif-btn');
+  if (dd && btn && !btn.contains(e.target)) dd.classList.remove('show');
+});
 </script>
 </body>
 </html>

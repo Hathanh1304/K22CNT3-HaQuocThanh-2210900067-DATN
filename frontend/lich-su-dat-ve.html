@@ -106,6 +106,13 @@
       font-size: 13px; font-weight: 600; cursor: pointer; margin-right: 8px;
     }
     .btn-huy:hover { background: #ffebee; }
+    .btn-danhgia {
+      padding: 8px 20px; background: linear-gradient(135deg, #f5a623, #e8920e);
+      color: white; border: none; border-radius: 6px;
+      font-size: 13px; font-weight: 600; cursor: pointer; margin-right: 8px;
+      text-decoration: none; display: inline-block;
+    }
+    .btn-danhgia:hover { opacity: 0.9; }
 
     .empty { text-align: center; padding: 48px; color: #aaa; font-size: 15px; }
 
@@ -210,7 +217,8 @@ async function loadLichSu() {
     const gia  = parseInt(don.tong_tien).toLocaleString('vi-VN');
     const badge = don.trang_thai;
     const label = TRANG_THAI_LABEL[don.trang_thai] || don.trang_thai;
-    const coTheHuy = ['cho_thanh_toan','da_thanh_toan','da_xac_nhan'].includes(don.trang_thai);
+    const coTheHuy      = ['cho_thanh_toan','da_thanh_toan','da_xac_nhan'].includes(don.trang_thai);
+    const coTheDanhGia  = ['da_thanh_toan','da_xac_nhan'].includes(don.trang_thai);
 
     html += `
     <div class="booking-card">
@@ -230,6 +238,7 @@ async function loadLichSu() {
         <div class="booking-gia">${gia} ₫</div>
         <div>
           ${coTheHuy ? `<button class="btn-huy" onclick="moModalHuy('${don.ma_dat_ve}')">🚫 Hủy vé</button>` : ''}
+          ${coTheDanhGia ? `<a class="btn-danhgia" href="danh-gia.html?ma=${don.ma_dat_ve}">⭐ Đánh giá</a>` : ''}
           <a class="btn-xem" href="xem-ve.html?ma=${don.ma_dat_ve}">🎫 Xem vé</a>
         </div>
       </div>

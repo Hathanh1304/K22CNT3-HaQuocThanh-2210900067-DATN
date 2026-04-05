@@ -7,6 +7,8 @@ from routes.thanh_toan  import thanh_toan_bp
 from routes.admin       import admin_bp
 from routes.auth_admin  import auth_admin_bp
 from routes.ho_tro      import ho_tro_bp
+from routes.danh_gia    import danh_gia_bp
+from routes.thong_bao_kh import thong_bao_bp
 
 app = Flask(__name__)
 CORS(app)
@@ -18,6 +20,8 @@ app.register_blueprint(thanh_toan_bp, url_prefix='/api/thanh-toan')
 app.register_blueprint(auth_admin_bp, url_prefix='/api/auth-admin')
 app.register_blueprint(admin_bp,      url_prefix='/api/admin')
 app.register_blueprint(ho_tro_bp,     url_prefix='/api/ho-tro')
+app.register_blueprint(danh_gia_bp,   url_prefix='/api/danh-gia')
+app.register_blueprint(thong_bao_bp,  url_prefix='/api/thong-bao')
 
 @app.route('/')
 def index():

@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FlightVN - Đánh giá chuyến bay</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Segoe UI', sans-serif; background: #f0f4f8; }
+    header { background: linear-gradient(135deg, #003580, #0066cc); color: white; padding: 16px 40px; display: flex; align-items: center; justify-content: space-between; }
+    header .logo { font-size: 24px; font-weight: 700; }
+    header .logo span { color: #f5a623; }
+    header nav a { color: white; text-decoration: none; margin-left: 24px; font-size: 14px; }
+    .container { max-width: 700px; margin: 32px auto; padding: 0 16px; }
+    .section { background: white; border-radius: 12px; padding: 28px; margin-bottom: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+    .section h3 { font-size: 18px; font-weight: 700; color: #003580; margin-bottom: 20px; padding-bottom: 12px; border-bottom: 2px solid #f0f4f8; }
+    .cb-info { background: linear-gradient(135deg, #003580, #0066cc); color: white; border-radius: 12px; padding: 20px 24px; margin-bottom: 20px; }
+    .cb-route { font-size: 24px; font-weight: 700; margin-bottom: 8px; }
+    .cb-detail { font-size: 13px; opacity: 0.85; display: flex; gap: 20px; flex-wrap: wrap; }
+    .star-group { display: flex; gap: 8px; margin-bottom: 8px; }
+    .star { font-size: 36px; cursor: pointer; color: #ddd; transition: color 0.15s; }
+    .star.active { color: #f5a623; }
+    .criteria-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-bottom: 20px; }
+    .criteria-item { background: #f8f9ff; border-radius: 10px; padding: 16px; text-align: center; border: 2px solid #e0e0e0; cursor: pointer; transition: all 0.2s; }
+    .criteria-item.active { border-color: #003580; background: #e8f0fe; }
+    .criteria-item .icon { font-size: 28px; margin-bottom: 8px; }
+    .criteria-item .label { font-size: 13px; font-weight: 600; color: #333; }
+    .criteria-item .sub { font-size: 11px; color: #888; margin-top: 4px; }
+    .form-group { display: flex; flex-direction: column; gap: 8px; margin-bottom: 16px; }
+    .form-group label { font-size: 13px; font-weight: 600; color: #555; }
+    .form-group input, .form-group textarea { padding: 12px 14px; border: 2px solid #e0e0e0; border-radius: 8px; font-size: 14px; outline: none; font-family: inherit; transition: border-color 0.2s; }
+    .form-group input:focus, .form-group textarea:focus { border-color: #0066cc; }
+    .form-group textarea { resize: vertical; min-height: 100px; }
+    .btn-submit { width: 100%; padding: 16px; background: linear-gradient(135deg, #003580, #0066cc); color: white; border: none; border-radius: 10px; font-size: 16px; font-weight: 700; cursor: pointer; }
+    .btn-submit:hover { opacity: 0.9; }
+    .da-danh-gia { background: #e8f5e9; border: 2px solid #28a745; border-radius: 12px; padding: 24px; text-align: center; }
+    .loading-box { text-align: center; padding: 60px; color: #aaa; font-size: 16px; }
+    footer { background: #002050; color: #aaa; text-align: center; padding: 24px; font-size: 13px; margin-top: 40px; }
+  </style>
+</head>
+<body>
+<header>
+  <div class="logo">HaThanh<span>Flight</span></div>
+  <nav>
+    <a href="index.html">🏠 Trang chủ</a>
+    <a href="lich-su-dat-ve.html">🎫 Vé của tôi</a>
+  </nav>
+</header>
+
+<div class="container">
+  <div id="box-cb-info"></div>
+  <div id="box-form"></div>
+</div>
+
+<footer>© 2026 HaThanhF</footer>
+
+<script>
+const API = 'http://127.0.0.1:5000/api';
+const kh  = JSON.parse(localStorage.getItem('khach_hang') || 'null');
+const params  = new URLSearchParams(window.location.search);
+const maDatVe = params.get('ma');
+let soSaoChon = 0;
+const tieuChi = { dung_gio: 1, ve_sinh: 1, phuc_vu: 1 };
+
+if (!kh)      { window.location.href = 'dang-nhap.html'; }
+if (!maDatVe) { window.location.href = 'lich-su-dat-ve.html'; }
+
+document.getElementById('box-form').innerHTML = '<div class="loading-box">⏳ Đang tải...</div>';
+
+async function khoiTao() {
+  try {
+    const res = await fetch(API + '/dat-ve/' + maDatVe);
+    const don = await res.json();
+    if (don.error) { window.location.href = 'lich-su-dat-ve.html'; return; }
+
+    const ve0    = don.ve[0];
+    const cbId   = ve0.chuyen_bay_id;
+    const datVeId = don.id;
+    const gioDi  = ve0.gio_cat_canh.split(' ')[1].slice(0,5);
+    const ngayBay = new Date(ve0.gio_cat_canh).toLocaleDateString('vi-VN');
+
+    // Hiển thị thông tin chuyến bay
+    document.getElementById('box-cb-info').innerHTML =
+      '<div class="cb-info">' +
+        '<div class="cb-route">✈ ' + ve0.tu + ' → ' + ve0.den + '</div>' +
+        '<div class="cb-detail">' +
+          '<span>🛫 ' + ve0.so_hieu_cb + ' - ' + ve0.ten_hang + '</span>' +
+          '<span>📅 ' + ngayBay + ' | ' + gioDi + '</span>' +
+          '<span>📋 ' + don.ma_dat_ve + '</span>' +
+        '</div>' +
+      '</div>';
+
+    // Kiểm tra đã đánh giá chưa
+    const ktraRes  = await fetch(API + '/danh-gia/kiem-tra/' + datVeId);
+    const ktraData = await ktraRes.json();
+
+    if (ktraData.da_danh_gia) {
+      const dg  = ktraData.danh_gia;
+      const sao = '★'.repeat(dg.so_sao) + '☆'.repeat(5 - dg.so_sao);
+      document.getElementById('box-form').innerHTML =
+        '<div class="da-danh-gia">' +
+          '<div style="font-size:48px;margin-bottom:12px;">✅</div>' +
+          '<h3 style="color:#1b5e20;font-size:20px;margin-bottom:8px;">Bạn đã đánh giá chuyến bay này!</h3>' +
+          '<p style="color:#f5a623;font-size:28px;margin:12px 0;">' + sao + '</p>' +
+          (dg.tieu_de ? '<p><strong>' + dg.tieu_de + '</strong></p>' : '') +
+          (dg.noi_dung ? '<p style="margin-top:8px;">' + dg.noi_dung + '</p>' : '') +
+          '<a href="lich-su-dat-ve.html" style="display:inline-block;margin-top:16px;color:#003580;font-weight:600;">← Quay lại lịch sử đặt vé</a>' +
+        '</div>';
+      return;
+    }
+
+    // Form đánh giá
+    document.getElementById('box-form').innerHTML =
+      '<div class="section">' +
+        '<h3>⭐ Đánh giá chuyến bay của bạn</h3>' +
+        '<div class="form-group">' +
+          '<label>Số sao tổng thể</label>' +
+          '<div class="star-group">' +
+            '<span class="star" id="s1" onclick="chonSao(1)">★</span>' +
+            '<span class="star" id="s2" onclick="chonSao(2)">★</span>' +
+            '<span class="star" id="s3" onclick="chonSao(3)">★</span>' +
+            '<span class="star" id="s4" onclick="chonSao(4)">★</span>' +
+            '<span class="star" id="s5" onclick="chonSao(5)">★</span>' +
+          '</div>' +
+          '<div id="sao-label" style="font-size:13px;color:#888;">Chọn số sao</div>' +
+        '</div>' +
+        '<div class="form-group" style="margin-bottom:20px;">' +
+          '<label>Đánh giá chi tiết</label>' +
+          '<div class="criteria-grid">' +
+            '<div class="criteria-item active" id="c-dungio" onclick="toggleTieuChi(\'dung_gio\', this)">' +
+              '<div class="icon">⏰</div><div class="label">Đúng giờ</div><div class="sub" id="lb-dungio">Tốt</div>' +
+            '</div>' +
+            '<div class="criteria-item active" id="c-vesinh" onclick="toggleTieuChi(\'ve_sinh\', this)">' +
+              '<div class="icon">✨</div><div class="label">Vệ sinh</div><div class="sub" id="lb-vesinh">Sạch sẽ</div>' +
+            '</div>' +
+            '<div class="criteria-item active" id="c-phucvu" onclick="toggleTieuChi(\'phuc_vu\', this)">' +
+              '<div class="icon">🤝</div><div class="label">Phục vụ</div><div class="sub" id="lb-phucvu">Tốt</div>' +
+            '</div>' +
+          '</div>' +
+        '</div>' +
+        '<div class="form-group">' +
+          '<label>Tiêu đề đánh giá</label>' +
+          '<input type="text" id="inp-tieu-de" placeholder="VD: Chuyến bay tuyệt vời!">' +
+        '</div>' +
+        '<div class="form-group">' +
+          '<label>Nội dung đánh giá</label>' +
+          '<textarea id="inp-noi-dung" placeholder="Chia sẻ trải nghiệm của bạn..."></textarea>' +
+        '</div>' +
+        '<button class="btn-submit" onclick="guiDanhGia(' + datVeId + ',' + cbId + ')">📤 Gửi đánh giá</button>' +
+      '</div>';
+
+  } catch(err) {
+    document.getElementById('box-form').innerHTML =
+      '<div style="text-align:center;padding:40px;color:red;">❌ Lỗi: ' + err.message + '</div>';
+  }
+}
+
+const SAO_LABEL = ['','Rất tệ 😞','Tệ 😕','Bình thường 😐','Tốt 😊','Tuyệt vời 🤩'];
+
+function chonSao(n) {
+  soSaoChon = n;
+  for (var i = 1; i <= 5; i++) {
+    document.getElementById('s'+i).classList.toggle('active', i <= n);
+  }
+  var lb = document.getElementById('sao-label');
+  lb.textContent = SAO_LABEL[n];
+  lb.style.color = '#f5a623';
+}
+
+function toggleTieuChi(key, el) {
+  tieuChi[key] = tieuChi[key] ? 0 : 1;
+  el.classList.toggle('active', tieuChi[key] === 1);
+  var labelMap = { dung_gio: 'lb-dungio', ve_sinh: 'lb-vesinh', phuc_vu: 'lb-phucvu' };
+  var okMap    = { dung_gio: 'Tốt', ve_sinh: 'Sạch sẽ', phuc_vu: 'Tốt' };
+  var noMap    = { dung_gio: 'Trễ giờ', ve_sinh: 'Chưa sạch', phuc_vu: 'Chưa tốt' };
+  document.getElementById(labelMap[key]).textContent = tieuChi[key] ? okMap[key] : noMap[key];
+}
+
+async function guiDanhGia(datVeId, cbId) {
+  if (!soSaoChon) { alert('Vui lòng chọn số sao đánh giá!'); return; }
+
+  var tieuDe  = document.getElementById('inp-tieu-de').value.trim();
+  var noiDung = document.getElementById('inp-noi-dung').value.trim();
+
+  var payload = {
+    khach_hang_id: kh.id,
+    chuyen_bay_id: cbId,
+    dat_ve_id:     datVeId,
+    so_sao:        soSaoChon,
+    tieu_de:       tieuDe,
+    noi_dung:      noiDung,
+    dung_gio:      tieuChi.dung_gio,
+    ve_sinh:       tieuChi.ve_sinh,
+    phuc_vu:       tieuChi.phuc_vu
+  };
+
+  try {
+    var res  = await fetch(API + '/danh-gia/gui', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    });
+    var data = await res.json();
+    if (data.success) {
+      alert('✅ Cảm ơn bạn đã đánh giá!');
+      khoiTao();
+    } else {
+      alert('❌ ' + (data.error || 'Có lỗi xảy ra!'));
+    }
+  } catch(e) {
+    alert('❌ Không thể kết nối server!');
+  }
+}
+
+khoiTao();
+</script>
+</body>
+</html>
