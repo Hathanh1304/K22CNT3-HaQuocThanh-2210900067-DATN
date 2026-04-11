@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>HaThanhF - Quản trị</title>
+  <title>QT TICKET - Quản trị</title>
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body { font-family: 'Segoe UI', sans-serif; background: #f0f4f8; display: flex; min-height: 100vh; }
@@ -102,7 +102,6 @@
     .ht-meta { font-size: 12px; color: #888; margin-top: 2px; }
     .ht-noi-dung { font-size: 13px; color: #555; margin-bottom: 8px; line-height: 1.5; }
     .ht-phan-hoi { background: #e8f5e9; border-left: 3px solid #28a745; padding: 10px 14px; border-radius: 6px; font-size: 13px; color: #2e7d32; margin-top: 8px; }
-    /* Sửa vé */
     .ve-sua-card { border: 1px solid #e0e0e0; border-radius: 10px; padding: 20px; margin-bottom: 16px; background: #fafafa; }
     .ve-sua-title { font-weight: 700; color: #003580; margin-bottom: 16px; font-size: 14px; padding: 8px 12px; background: #e8f0fe; border-radius: 6px; }
     footer { background: #002050; color: #aaa; text-align: center; padding: 16px; font-size: 12px; }
@@ -111,7 +110,7 @@
 <body>
 
 <div class="sidebar">
-  <div class="sidebar-logo">HaThanh<span>F</span><small>Bảng điều khiển Admin</small></div>
+  <div class="sidebar-logo">QT<span>TICKET</span><small>Bảng điều khiển Admin</small></div>
   <div class="sidebar-menu">
     <a class="menu-item active" onclick="showTab('dashboard', this)"><span class="icon">📊</span> Dashboard</a>
     <a class="menu-item" onclick="showTab('chuyen-bay', this)"><span class="icon">✈️</span> Chuyến bay</a>
@@ -121,7 +120,7 @@
     <a class="menu-item" onclick="showTab('ho-tro', this)"><span class="icon">🎧</span> Hỗ trợ KH</a>
     <a class="menu-item" onclick="showTab('danh-gia', this)"><span class="icon">⭐</span> Đánh giá</a>
   </div>
-  <div class="sidebar-footer">© 2026 HaThanhF Admin</div>
+  <div class="sidebar-footer">© 2026 QT TICKET Admin</div>
 </div>
 
 <div class="main">
@@ -134,7 +133,6 @@
   </div>
 
   <div class="content">
-
     <!-- DASHBOARD -->
     <div class="tab-content active" id="tab-dashboard">
       <div class="stats-grid">
@@ -213,10 +211,7 @@
     <!-- THÔNG BÁO -->
     <div class="tab-content" id="tab-thong-bao">
       <div class="card">
-        <div class="card-header">
-          <h3>🔔 Lịch sử thông báo</h3>
-          <button class="btn-sm btn-primary" onclick="loadThongBao()">🔄 Làm mới</button>
-        </div>
+        <div class="card-header"><h3>🔔 Lịch sử thông báo</h3><button class="btn-sm btn-primary" onclick="loadThongBao()">🔄 Làm mới</button></div>
         <div id="ds-thong-bao"><div style="padding:32px;text-align:center;color:#aaa">Đang tải...</div></div>
       </div>
     </div>
@@ -232,18 +227,7 @@
           </div>
         </div>
         <table>
-          <thead>
-            <tr>
-              <th>Khách hàng</th>
-              <th>Chuyến bay</th>
-              <th>Tuyến</th>
-              <th>Số sao</th>
-              <th>Tiêu đề</th>
-              <th>Tiêu chí</th>
-              <th>Ngày đánh giá</th>
-              <th>Thao tác</th>
-            </tr>
-          </thead>
+          <thead><tr><th>Khách hàng</th><th>Chuyến bay</th><th>Tuyến</th><th>Số sao</th><th>Tiêu đề</th><th>Tiêu chí</th><th>Ngày đánh giá</th><th>Thao tác</th></tr></thead>
           <tbody id="table-danh-gia"></tbody>
         </table>
       </div>
@@ -268,7 +252,6 @@
         <div id="ds-ho-tro"><div style="padding:32px;text-align:center;color:#aaa">Đang tải...</div></div>
       </div>
     </div>
-
   </div>
   <footer>© 2026 HaThanhF - Hệ thống quản trị</footer>
 </div>
@@ -389,6 +372,24 @@
   </div>
 </div>
 
+<!-- Modal đổi chuyến bay -->
+<div class="modal-overlay" id="modal-doi-chuyen">
+  <div class="modal" style="max-width:680px">
+    <h3>✈️ Đổi chuyến bay</h3>
+    <div class="modal-info" id="doi-ve-info" style="margin-bottom:16px;"></div>
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr auto;gap:12px;align-items:flex-end;margin-bottom:16px;">
+      <div class="form-group" style="margin-bottom:0"><label>Sân bay đi</label><input type="text" id="doi-tuyen-di" placeholder="VD: HAN" style="text-transform:uppercase"></div>
+      <div class="form-group" style="margin-bottom:0"><label>Sân bay đến</label><input type="text" id="doi-tuyen-den" placeholder="VD: SGN" style="text-transform:uppercase"></div>
+      <div class="form-group" style="margin-bottom:0"><label>Ngày bay mới</label><input type="date" id="doi-ngay"></div>
+      <button class="btn-confirm" style="padding:12px 16px;white-space:nowrap" onclick="timChuyenMoi()">🔍 Tìm</button>
+    </div>
+    <div id="ds-chuyen-moi"></div>
+    <div class="modal-btns" style="margin-top:16px;">
+      <button class="btn-cancel" onclick="dongModal('modal-doi-chuyen')">Hủy</button>
+    </div>
+  </div>
+</div>
+
 <script>
 const API = 'http://127.0.0.1:5000/api';
 let allChuyenBay = [], allDonDatVe = [], allKhachHang = [], allHoTro = [], allDanhGia = [];
@@ -414,11 +415,7 @@ function showTab(tab, el) {
   document.querySelectorAll('.menu-item').forEach(m => m.classList.remove('active'));
   document.getElementById('tab-' + tab).classList.add('active');
   el.classList.add('active');
-  const titles = {
-    dashboard:'📊 Dashboard', 'chuyen-bay':'✈️ Chuyến bay',
-    'don-dat-ve':'🎫 Đơn đặt vé', 'khach-hang':'👥 Khách hàng',
-    'thong-bao':'🔔 Thông báo', 'ho-tro':'🎧 Hỗ trợ khách hàng', 'danh-gia':'⭐ Đánh giá'
-  };
+  const titles = { dashboard:'📊 Dashboard', 'chuyen-bay':'✈️ Chuyến bay', 'don-dat-ve':'🎫 Đơn đặt vé', 'khach-hang':'👥 Khách hàng', 'thong-bao':'🔔 Thông báo', 'ho-tro':'🎧 Hỗ trợ khách hàng', 'danh-gia':'⭐ Đánh giá' };
   document.getElementById('topbar-title').textContent = titles[tab];
   if (tab === 'chuyen-bay' && !allChuyenBay.length) loadChuyenBay();
   if (tab === 'don-dat-ve' && !allDonDatVe.length)  loadDonDatVe();
@@ -431,7 +428,6 @@ function showTab(tab, el) {
 function dongModal(id) { document.getElementById(id).classList.remove('show'); }
 function dangXuat() { localStorage.removeItem('admin'); window.location.href = 'dang-nhap-admin.html'; }
 
-// DASHBOARD
 async function loadDashboard() {
   const res  = await fetch(`${API}/admin/dashboard`);
   const data = await res.json();
@@ -447,7 +443,6 @@ async function loadDashboard() {
   document.getElementById('bar-chart').innerHTML = chart || '<div style="color:#aaa">Chưa có dữ liệu</div>';
 }
 
-// CHUYẾN BAY
 async function loadChuyenBay() {
   const res = await fetch(`${API}/admin/chuyen-bay`);
   allChuyenBay = await res.json();
@@ -568,7 +563,6 @@ async function xacNhanDelay() {
   else alert('❌ ' + data.error);
 }
 
-// ĐƠN ĐẶT VÉ
 async function loadDonDatVe() {
   const res = await fetch(`${API}/admin/don-dat-ve`);
   allDonDatVe = await res.json();
@@ -585,9 +579,9 @@ function renderDonDatVe(data) {
       <td>${new Date(d.ngay_dat).toLocaleDateString('vi-VN')}</td>
       <td><span class="badge ${d.trang_thai}">${TRANG_THAI[d.trang_thai]||d.trang_thai}</span></td>
       <td>
-        <a href="xem-ve.html?ma=${d.ma_dat_ve}"><button class="btn-sm btn-primary">👁 Xem</button></a>
-        <button class="btn-sm btn-info"    onclick="moModalSuaVe(${d.id}, '${d.ma_dat_ve}')">✏️ Sửa vé</button>
-        <button class="btn-sm btn-danger"  onclick="xoaDon(${d.id}, '${d.ma_dat_ve}')">🗑️ Xóa</button>
+        <a href="xem-ve.html?ma=${d.ma_dat_ve}&from=admin"><button class="btn-sm btn-primary">👁 Xem</button></a>
+        <button class="btn-sm btn-info"   onclick="moModalSuaVe(${d.id}, '${d.ma_dat_ve}')">✏️ Sửa vé</button>
+        <button class="btn-sm btn-danger" onclick="xoaDon(${d.id}, '${d.ma_dat_ve}')">🗑️ Xóa</button>
       </td>
     </tr>`).join('');
   document.getElementById('table-don-dat-ve').innerHTML = rows || '<tr><td colspan="8" style="text-align:center;color:#aaa">Không có dữ liệu</td></tr>';
@@ -595,70 +589,40 @@ function renderDonDatVe(data) {
 function locDonDatVe(q) { renderDonDatVe(allDonDatVe.filter(d => d.ma_dat_ve.toLowerCase().includes(q.toLowerCase()) || d.ten_khach.toLowerCase().includes(q.toLowerCase()))); }
 function locDonTheoTrangThai(tt) { renderDonDatVe(tt ? allDonDatVe.filter(d => d.trang_thai===tt) : allDonDatVe); }
 
-// XÓA ĐƠN ĐẶT VÉ
 async function xoaDon(datVeId, maDatVe) {
   if (!confirm(`Xác nhận xóa đơn đặt vé ${maDatVe}?\nToàn bộ vé trong đơn sẽ bị xóa!`)) return;
   try {
     const res  = await fetch(`${API}/admin/don-dat-ve/xoa/${datVeId}`, { method: 'DELETE' });
     const data = await res.json();
-    if (data.success) {
-      alert('✅ Đã xóa đơn đặt vé!');
-      allDonDatVe = [];
-      loadDonDatVe();
-    } else {
-      alert('❌ ' + data.error);
-    }
+    if (data.success) { alert('✅ Đã xóa đơn đặt vé!'); allDonDatVe = []; loadDonDatVe(); }
+    else alert('❌ ' + data.error);
   } catch(e) { alert('❌ Lỗi kết nối!'); }
 }
 
-// SỬA VÉ
 async function moModalSuaVe(datVeId, maDatVe) {
   document.getElementById('sua-ve-ma').textContent = maDatVe;
   document.getElementById('ds-ve-sua').innerHTML = '<div style="text-align:center;padding:20px;color:#aaa">⏳ Đang tải...</div>';
   document.getElementById('modal-sua-ve').classList.add('show');
-
   const res  = await fetch(`${API}/admin/ve-theo-don/${datVeId}`);
   const data = await res.json();
-
-  if (!data.length) {
-    document.getElementById('ds-ve-sua').innerHTML = '<div style="text-align:center;padding:20px;color:#aaa">Không có vé nào trong đơn này.</div>';
-    return;
-  }
-
+  if (!data.length) { document.getElementById('ds-ve-sua').innerHTML = '<div style="text-align:center;padding:20px;color:#aaa">Không có vé nào trong đơn này.</div>'; return; }
   document.getElementById('ds-ve-sua').innerHTML = data.map((v, i) => `
     <div class="ve-sua-card">
       <div class="ve-sua-title">🎫 Vé ${i+1}: ${v.so_hieu_cb} (${v.tu} → ${v.den}) — ${v.hang_ghe_ten.replace(/_/g,' ')}</div>
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
-        <div class="form-group" style="margin-bottom:8px">
-          <label>Họ tên hành khách</label>
-          <input type="text" id="ve-ten-${v.id}" value="${v.ho_ten||''}">
-        </div>
-        <div class="form-group" style="margin-bottom:8px">
-          <label>Ngày sinh</label>
-          <input type="date" id="ve-ns-${v.id}" value="${v.ngay_sinh||''}">
-        </div>
-        <div class="form-group" style="margin-bottom:8px">
-          <label>Giới tính</label>
+        <div class="form-group" style="margin-bottom:8px"><label>Họ tên hành khách</label><input type="text" id="ve-ten-${v.id}" value="${v.ho_ten||''}"></div>
+        <div class="form-group" style="margin-bottom:8px"><label>Ngày sinh</label><input type="date" id="ve-ns-${v.id}" value="${v.ngay_sinh||''}"></div>
+        <div class="form-group" style="margin-bottom:8px"><label>Giới tính</label>
           <select id="ve-gt-${v.id}">
             <option value="Nam"  ${v.gioi_tinh==='Nam'?'selected':''}>Nam</option>
             <option value="Nu"   ${v.gioi_tinh==='Nu'?'selected':''}>Nữ</option>
             <option value="Khac" ${v.gioi_tinh==='Khac'?'selected':''}>Khác</option>
           </select>
         </div>
-        <div class="form-group" style="margin-bottom:8px">
-          <label>Số hộ chiếu / CMND</label>
-          <input type="text" id="ve-hc-${v.id}" value="${v.so_ho_chieu||''}">
-        </div>
-        <div class="form-group" style="margin-bottom:8px">
-          <label>Số ghế</label>
-          <input type="text" id="ve-ghe-${v.id}" value="${v.so_ghe||''}">
-        </div>
-        <div class="form-group" style="margin-bottom:8px">
-          <label>Giá vé (₫)</label>
-          <input type="number" id="ve-gia-${v.id}" value="${v.gia_ve}">
-        </div>
-        <div class="form-group" style="margin-bottom:8px">
-          <label>Trạng thái vé</label>
+        <div class="form-group" style="margin-bottom:8px"><label>Số hộ chiếu / CMND</label><input type="text" id="ve-hc-${v.id}" value="${v.so_ho_chieu||''}"></div>
+        <div class="form-group" style="margin-bottom:8px"><label>Số ghế</label><input type="text" id="ve-ghe-${v.id}" value="${v.so_ghe||''}"></div>
+        <div class="form-group" style="margin-bottom:8px"><label>Giá vé (₫)</label><input type="number" id="ve-gia-${v.id}" value="${v.gia_ve}"></div>
+        <div class="form-group" style="margin-bottom:8px"><label>Trạng thái vé</label>
           <select id="ve-tt-${v.id}">
             <option value="cho_xac_nhan" ${v.trang_thai==='cho_xac_nhan'?'selected':''}>Chờ xác nhận</option>
             <option value="da_xac_nhan"  ${v.trang_thai==='da_xac_nhan'?'selected':''}>Đã xác nhận</option>
@@ -684,16 +648,12 @@ async function luuVe(veId) {
     gia_ve:      parseInt(document.getElementById(`ve-gia-${veId}`).value),
     trang_thai:  document.getElementById(`ve-tt-${veId}`).value,
   };
-  const res  = await fetch(`${API}/admin/ve/sua/${veId}`, {
-    method:'PUT', headers:{'Content-Type':'application/json'},
-    body: JSON.stringify(payload)
-  });
+  const res  = await fetch(`${API}/admin/ve/sua/${veId}`, { method:'PUT', headers:{'Content-Type':'application/json'}, body: JSON.stringify(payload) });
   const data = await res.json();
   if (data.success) alert('✅ Đã lưu vé thành công!');
   else alert('❌ ' + data.error);
 }
 
-// KHÁCH HÀNG
 async function loadKhachHang() {
   const res = await fetch(`${API}/admin/khach-hang`);
   allKhachHang = await res.json();
@@ -711,7 +671,6 @@ function renderKhachHang(data) {
 }
 function locKhachHang(q) { renderKhachHang(allKhachHang.filter(kh => kh.ho_ten.toLowerCase().includes(q.toLowerCase()) || kh.email.toLowerCase().includes(q.toLowerCase()))); }
 
-// THÔNG BÁO
 async function loadThongBao() {
   const res  = await fetch(`${API}/admin/thong-bao`);
   const data = await res.json();
@@ -728,7 +687,6 @@ async function loadThongBao() {
     </div>`).join('');
 }
 
-// HỖ TRỢ
 async function loadHoTro(trangThai = '') {
   const res  = await fetch(`${API}/ho-tro/admin/danh-sach?trang_thai=${trangThai}`);
   allHoTro   = await res.json();
@@ -741,12 +699,7 @@ function renderHoTro(data) {
       <div class="ht-header">
         <div>
           <div class="ht-tieu-de">${ht.tieu_de}</div>
-          <div class="ht-meta">
-            👤 ${ht.ho_ten} &nbsp;|&nbsp; 📧 ${ht.email}
-            ${ht.so_dien_thoai?' &nbsp;|&nbsp; 📱 '+ht.so_dien_thoai:''}
-            &nbsp;|&nbsp; ${LOAI_HT[ht.loai]||ht.loai}
-            &nbsp;|&nbsp; 📅 ${new Date(ht.ngay_gui).toLocaleString('vi-VN')}
-          </div>
+          <div class="ht-meta">👤 ${ht.ho_ten} &nbsp;|&nbsp; 📧 ${ht.email}${ht.so_dien_thoai?' &nbsp;|&nbsp; 📱 '+ht.so_dien_thoai:''} &nbsp;|&nbsp; ${LOAI_HT[ht.loai]||ht.loai} &nbsp;|&nbsp; 📅 ${new Date(ht.ngay_gui).toLocaleString('vi-VN')}</div>
         </div>
         <div style="display:flex;gap:8px;align-items:center;flex-shrink:0">
           <span class="badge ${ht.trang_thai}">${TRANG_THAI[ht.trang_thai]||ht.trang_thai}</span>
@@ -764,7 +717,7 @@ function moModalTraLoi(id, tieuDe, noiDung, trangThai) {
   document.getElementById('ht-info').innerHTML = `📋 <strong>${tieuDe}</strong>`;
   document.getElementById('ht-noi-dung-hien').textContent = noiDung;
   document.getElementById('ht-phan-hoi').value = '';
-  document.getElementById('ht-trang-thai').value = trangThai==='cho_xu_ly'?'dang_xu_ly':'da_xu_ly';
+  document.getElementById('ht-trang-thai').value = trangThai === 'cho_xu_ly' ? 'dang_xu_ly' : trangThai;
   document.getElementById('modal-tra-loi').classList.add('show');
 }
 
@@ -773,42 +726,45 @@ async function guiTraLoi() {
   const phanHoi  = document.getElementById('ht-phan-hoi').value.trim();
   const trangThai= document.getElementById('ht-trang-thai').value;
   if (!phanHoi) { alert('Vui lòng nhập nội dung phản hồi!'); return; }
-  const res  = await fetch(`${API}/ho-tro/admin/tra-loi/${id}`, {
-    method:'PUT', headers:{'Content-Type':'application/json'},
-    body: JSON.stringify({ phan_hoi: phanHoi, trang_thai: trangThai })
-  });
+  const res  = await fetch(`${API}/ho-tro/admin/tra-loi/${id}`, { method:'PUT', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ phan_hoi: phanHoi, trang_thai: trangThai }) });
   const data = await res.json();
   if (data.success) { alert('✅ Đã gửi phản hồi!'); dongModal('modal-tra-loi'); loadHoTro(); }
   else alert('❌ ' + data.error);
 }
 
-// XÓA VÉ
-async function xoaVe(veId, hoTen) {
-  if (!confirm(`Xác nhận xóa vé của ${hoTen}?\nHành động này không thể hoàn tác!`)) return;
-  try {
-    const res  = await fetch(`${API}/admin/ve/xoa/${veId}`, { method: 'DELETE' });
-    const data = await res.json();
-    if (data.success) {
-      alert('✅ Đã xóa vé!');
-      // Reload lại danh sách vé trong modal
-      const maDatVe = document.getElementById('sua-ve-ma').textContent;
-      const don = document.querySelector(`[data-ma="${maDatVe}"]`);
-      // Reload modal
-      const card = document.getElementById(`ve-card-${veId}`);
-      if (card) card.remove();
-    } else {
-      alert('❌ ' + data.error);
-    }
-  } catch(e) { alert('❌ Lỗi kết nối!'); }
+async function loadDanhGia() {
+  const res = await fetch(`${API}/danh-gia/admin/danh-sach`);
+  allDanhGia = await res.json();
+  renderDanhGia(allDanhGia);
+}
+function renderDanhGia(data) {
+  const SAO = ['','★☆☆☆☆','★★☆☆☆','★★★☆☆','★★★★☆','★★★★★'];
+  const rows = data.map(dg => `
+    <tr>
+      <td><strong>${dg.ten_khach}</strong><br><small style="color:#888">${dg.email}</small></td>
+      <td><strong>${dg.so_hieu_cb}</strong></td>
+      <td>${dg.tu} → ${dg.den}</td>
+      <td style="color:#f5a623;font-size:16px;">${SAO[dg.so_sao] || dg.so_sao + '★'}</td>
+      <td>${dg.tieu_de || '<span style="color:#aaa">—</span>'}</td>
+      <td><span style="font-size:11px;">⏰${dg.dung_gio?'✅':'❌'} ✨${dg.ve_sinh?'✅':'❌'} 🤝${dg.phuc_vu?'✅':'❌'}</span></td>
+      <td>${new Date(dg.ngay_danh_gia).toLocaleDateString('vi-VN')}</td>
+      <td><button class="btn-sm btn-danger" onclick="xoaDanhGia(${dg.id})">🗑️ Xóa</button></td>
+    </tr>`).join('');
+  document.getElementById('table-danh-gia').innerHTML = rows || '<tr><td colspan="8" style="text-align:center;color:#aaa">Chưa có đánh giá nào</td></tr>';
+}
+function locDanhGia(q) { renderDanhGia(allDanhGia.filter(dg => dg.ten_khach.toLowerCase().includes(q.toLowerCase()) || dg.so_hieu_cb.toLowerCase().includes(q.toLowerCase()))); }
+async function xoaDanhGia(id) {
+  if (!confirm('Xác nhận xóa đánh giá này?')) return;
+  const res  = await fetch(`${API}/danh-gia/admin/xoa/${id}`, { method: 'DELETE' });
+  const data = await res.json();
+  if (data.success) { alert('✅ Đã xóa!'); allDanhGia=[]; loadDanhGia(); }
+  else alert('❌ ' + data.error);
 }
 
-// ĐỔI CHUYẾN BAY
 let doiChuyenVeId = null;
-
 function moModalDoiChuyen(veId, soHieu, tu, den) {
   doiChuyenVeId = veId;
-  document.getElementById('doi-ve-info').innerHTML =
-    `🎫 Vé hiện tại: <strong>${soHieu}</strong> (${tu} → ${den})`;
+  document.getElementById('doi-ve-info').innerHTML = `🎫 Vé hiện tại: <strong>${soHieu}</strong> (${tu} → ${den})`;
   document.getElementById('doi-tuyen-di').value  = tu;
   document.getElementById('doi-tuyen-den').value = den;
   document.getElementById('doi-ngay').value = '';
@@ -821,15 +777,11 @@ async function timChuyenMoi() {
   const den  = document.getElementById('doi-tuyen-den').value.trim().toUpperCase();
   const ngay = document.getElementById('doi-ngay').value;
   if (!tu || !den || !ngay) { alert('Vui lòng nhập đủ thông tin!'); return; }
-
   document.getElementById('ds-chuyen-moi').innerHTML = '<div style="text-align:center;padding:16px;color:#aaa">⏳ Đang tìm...</div>';
   try {
     const res  = await fetch(`${API}/chuyen-bay/tim-kiem?tu=${tu}&den=${den}&ngay=${ngay}&hang=Pho_thong&so_hk=1`);
     const data = await res.json();
-    if (!data.length) {
-      document.getElementById('ds-chuyen-moi').innerHTML = '<div style="text-align:center;padding:16px;color:#e84545">😔 Không tìm thấy chuyến bay phù hợp.</div>';
-      return;
-    }
+    if (!data.length) { document.getElementById('ds-chuyen-moi').innerHTML = '<div style="text-align:center;padding:16px;color:#e84545">😔 Không tìm thấy chuyến bay phù hợp.</div>'; return; }
     document.getElementById('ds-chuyen-moi').innerHTML = data.map(cb => {
       const gioDi  = cb.gio_cat_canh.split(' ')[1].slice(0,5);
       const gioDen = cb.gio_ha_canh.split(' ')[1].slice(0,5);
@@ -846,105 +798,25 @@ async function timChuyenMoi() {
         </div>
       </div>`;
     }).join('');
-  } catch(e) {
-    document.getElementById('ds-chuyen-moi').innerHTML = '<div style="color:#e84545;text-align:center;padding:16px;">❌ Lỗi kết nối!</div>';
-  }
+  } catch(e) { document.getElementById('ds-chuyen-moi').innerHTML = '<div style="color:#e84545;text-align:center;padding:16px;">❌ Lỗi kết nối!</div>'; }
 }
 
 async function xacNhanDoiChuyen(cbMoiId, hangGheMoiId, soHieuMoi) {
   if (!confirm(`Xác nhận đổi sang chuyến ${soHieuMoi}?`)) return;
   try {
-    const res  = await fetch(`${API}/admin/ve/doi-chuyen/${doiChuyenVeId}`, {
-      method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ chuyen_bay_id: cbMoiId, hang_ghe_id: hangGheMoiId })
-    });
+    const res  = await fetch(`${API}/admin/ve/doi-chuyen/${doiChuyenVeId}`, { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ chuyen_bay_id: cbMoiId, hang_ghe_id: hangGheMoiId }) });
     const data = await res.json();
     if (data.success) {
       alert(`✅ Đã đổi sang chuyến ${soHieuMoi} thành công!`);
       dongModal('modal-doi-chuyen');
-      // Reload modal sửa vé
       const maDatVe = document.getElementById('sua-ve-ma').textContent;
-      // Tìm dat_ve_id từ allDonDatVe
       const don = allDonDatVe.find(d => d.ma_dat_ve === maDatVe);
       if (don) moModalSuaVe(don.id, maDatVe);
-    } else {
-      alert('❌ ' + data.error);
-    }
+    } else { alert('❌ ' + data.error); }
   } catch(e) { alert('❌ Lỗi kết nối!'); }
-}
-
-// ĐÁNH GIÁ
-async function loadDanhGia() {
-  const res = await fetch(`${API}/danh-gia/admin/danh-sach`);
-  allDanhGia = await res.json();
-  renderDanhGia(allDanhGia);
-}
-
-function renderDanhGia(data) {
-  const SAO = ['','★☆☆☆☆','★★☆☆☆','★★★☆☆','★★★★☆','★★★★★'];
-  const rows = data.map(dg => `
-    <tr>
-      <td><strong>${dg.ten_khach}</strong><br><small style="color:#888">${dg.email}</small></td>
-      <td><strong>${dg.so_hieu_cb}</strong></td>
-      <td>${dg.tu} → ${dg.den}</td>
-      <td style="color:#f5a623;font-size:16px;">${SAO[dg.so_sao] || dg.so_sao + '★'}</td>
-      <td>${dg.tieu_de || '<span style="color:#aaa">—</span>'}</td>
-      <td>
-        <span style="font-size:11px;">⏰${dg.dung_gio?'✅':'❌'} ✨${dg.ve_sinh?'✅':'❌'} 🤝${dg.phuc_vu?'✅':'❌'}</span>
-      </td>
-      <td>${new Date(dg.ngay_danh_gia).toLocaleDateString('vi-VN')}</td>
-      <td>
-        <button class="btn-sm btn-danger" onclick="xoaDanhGia(${dg.id})">🗑️ Xóa</button>
-      </td>
-    </tr>`).join('');
-  document.getElementById('table-danh-gia').innerHTML = rows ||
-    '<tr><td colspan="8" style="text-align:center;color:#aaa">Chưa có đánh giá nào</td></tr>';
-}
-
-function locDanhGia(q) {
-  renderDanhGia(allDanhGia.filter(dg =>
-    dg.ten_khach.toLowerCase().includes(q.toLowerCase()) ||
-    dg.so_hieu_cb.toLowerCase().includes(q.toLowerCase())
-  ));
-}
-
-async function xoaDanhGia(id) {
-  if (!confirm('Xác nhận xóa đánh giá này?')) return;
-  const res  = await fetch(`${API}/danh-gia/admin/xoa/${id}`, { method: 'DELETE' });
-  const data = await res.json();
-  if (data.success) { alert('✅ Đã xóa!'); allDanhGia=[]; loadDanhGia(); }
-  else alert('❌ ' + data.error);
 }
 
 loadDashboard();
 </script>
-<!-- Modal đổi chuyến bay -->
-<div class="modal-overlay" id="modal-doi-chuyen">
-  <div class="modal" style="max-width:680px">
-    <h3>✈️ Đổi chuyến bay</h3>
-    <div class="modal-info" id="doi-ve-info" style="margin-bottom:16px;"></div>
-    <div style="display:grid;grid-template-columns:1fr 1fr 1fr auto;gap:12px;align-items:flex-end;margin-bottom:16px;">
-      <div class="form-group" style="margin-bottom:0">
-        <label>Sân bay đi</label>
-        <input type="text" id="doi-tuyen-di" placeholder="VD: HAN" style="text-transform:uppercase">
-      </div>
-      <div class="form-group" style="margin-bottom:0">
-        <label>Sân bay đến</label>
-        <input type="text" id="doi-tuyen-den" placeholder="VD: SGN" style="text-transform:uppercase">
-      </div>
-      <div class="form-group" style="margin-bottom:0">
-        <label>Ngày bay mới</label>
-        <input type="date" id="doi-ngay">
-      </div>
-      <button class="btn-confirm" style="padding:12px 16px;white-space:nowrap" onclick="timChuyenMoi()">🔍 Tìm</button>
-    </div>
-    <div id="ds-chuyen-moi"></div>
-    <div class="modal-btns" style="margin-top:16px;">
-      <button class="btn-cancel" onclick="dongModal('modal-doi-chuyen')">Hủy</button>
-    </div>
-  </div>
-</div>
-
 </body>
 </html>

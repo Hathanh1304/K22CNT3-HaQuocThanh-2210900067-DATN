@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>QT TICKET - Về chúng tôi</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Segoe UI', sans-serif; background: #f5f5f5; color: #333; }
+
+    /* HEADER - giống trang chủ */
+    header { background: white; padding: 14px 40px; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 2px 8px rgba(0,0,0,0.08); position: sticky; top: 0; z-index: 100; }
+    header .logo { font-size: 22px; font-weight: 700; color: #003580; }
+    header .logo span { color: #f5a623; }
+    header nav { display: flex; align-items: center; gap: 8px; }
+    header nav a { color: #555; text-decoration: none; padding: 8px 14px; font-size: 14px; border-radius: 8px; transition: all 0.2s; }
+    header nav a:hover { background: #f0f4f8; color: #003580; }
+
+    /* HERO với ảnh thật */
+    .hero {
+      background-image: url('images/hinhnen.jpg');
+      background-size: cover; background-position: center;
+      color: white; text-align: center; padding: 80px 40px 100px;
+      position: relative; overflow: hidden;
+    }
+    .hero::before { content: ''; position: absolute; inset: 0; background: rgba(0, 20, 60, 0.62); pointer-events: none; }
+    .hero-tag { display: inline-block; background: rgba(245,166,35,0.3); color: #f5a623; font-size: 13px; font-weight: 600; padding: 6px 18px; border-radius: 20px; margin-bottom: 20px; letter-spacing: 1px; text-transform: uppercase; position: relative; z-index: 1; }
+    .hero h1 { font-size: 48px; font-weight: 800; margin-bottom: 16px; line-height: 1.15; position: relative; z-index: 1; }
+    .hero h1 span { color: #f5a623; }
+    .hero p { font-size: 17px; opacity: 0.9; max-width: 560px; margin: 0 auto; line-height: 1.7; position: relative; z-index: 1; }
+
+    /* STATS */
+    .stats-bar {
+      background: white; max-width: 900px; margin: -40px auto 60px;
+      border-radius: 16px; box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+      display: grid; grid-template-columns: repeat(4, 1fr);
+      position: relative; z-index: 10;
+    }
+    .stat-item { padding: 28px 20px; text-align: center; border-right: 1px solid #f0f0f0; }
+    .stat-item:last-child { border-right: none; }
+    .stat-num { font-size: 36px; font-weight: 800; color: #003580; }
+    .stat-num span { color: #f5a623; }
+    .stat-lbl { font-size: 13px; color: #888; margin-top: 4px; }
+
+    /* SECTIONS */
+    .container { max-width: 960px; margin: 0 auto; padding: 0 24px; }
+    .section { margin-bottom: 72px; }
+    .section-tag { font-size: 12px; font-weight: 700; color: #f5a623; text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 10px; }
+    .section-title { font-size: 32px; font-weight: 800; color: #003580; margin-bottom: 16px; line-height: 1.2; }
+    .section-desc { font-size: 15px; color: #666; line-height: 1.8; max-width: 600px; }
+
+    /* SỨ MỆNH */
+    .mission-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; align-items: center; }
+    .mission-img { background: linear-gradient(135deg, #003580, #1a75d2); border-radius: 20px; padding: 48px 32px; text-align: center; color: white; }
+    .mission-img .big-icon { font-size: 80px; display: block; margin-bottom: 16px; }
+    .mission-img h3 { font-size: 22px; font-weight: 700; margin-bottom: 8px; }
+    .mission-img p { font-size: 14px; opacity: 0.8; line-height: 1.6; }
+
+    /* GIÁ TRỊ */
+    .values-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+    .value-card { background: white; border-radius: 16px; padding: 28px 24px; box-shadow: 0 2px 12px rgba(0,0,0,0.06); transition: transform 0.2s, box-shadow 0.2s; border-top: 4px solid #003580; }
+    .value-card:nth-child(2) { border-top-color: #f5a623; }
+    .value-card:nth-child(3) { border-top-color: #28a745; }
+    .value-card:nth-child(4) { border-top-color: #e84545; }
+    .value-card:nth-child(5) { border-top-color: #17a2b8; }
+    .value-card:nth-child(6) { border-top-color: #9b59b6; }
+    .value-card:hover { transform: translateY(-4px); box-shadow: 0 8px 24px rgba(0,0,0,0.1); }
+    .value-icon { font-size: 36px; margin-bottom: 12px; display: block; }
+    .value-title { font-size: 16px; font-weight: 700; color: #003580; margin-bottom: 8px; }
+    .value-desc { font-size: 13px; color: #777; line-height: 1.6; }
+
+    /* ĐỘI NGŨ */
+    .team-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+    .team-card { background: white; border-radius: 16px; padding: 28px 20px; text-align: center; box-shadow: 0 2px 12px rgba(0,0,0,0.06); transition: transform 0.2s; }
+    .team-card:hover { transform: translateY(-4px); }
+    .team-avatar { width: 72px; height: 72px; border-radius: 50%; background: linear-gradient(135deg, #003580, #1a75d2); color: white; font-size: 28px; font-weight: 700; display: flex; align-items: center; justify-content: center; margin: 0 auto 14px; }
+    .team-name { font-size: 16px; font-weight: 700; color: #333; }
+    .team-role { font-size: 13px; color: #f5a623; font-weight: 600; margin: 4px 0 8px; }
+    .team-desc { font-size: 12px; color: #888; line-height: 1.5; }
+
+    /* LIÊN HỆ */
+    .contact-box { background: linear-gradient(135deg, #003580, #1a75d2); border-radius: 20px; padding: 48px 40px; color: white; text-align: center; }
+    .contact-box h3 { font-size: 28px; font-weight: 800; margin-bottom: 12px; }
+    .contact-box p { font-size: 15px; opacity: 0.85; margin-bottom: 28px; }
+    .contact-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-bottom: 28px; }
+    .contact-item { background: rgba(255,255,255,0.12); border-radius: 12px; padding: 16px; }
+    .contact-item .ci-icon { font-size: 24px; margin-bottom: 6px; }
+    .contact-item .ci-label { font-size: 11px; opacity: 0.7; text-transform: uppercase; letter-spacing: 0.5px; }
+    .contact-item .ci-value { font-size: 14px; font-weight: 600; margin-top: 4px; }
+    .btn-contact { display: inline-block; background: #f5a623; color: white; padding: 14px 36px; border-radius: 10px; font-size: 15px; font-weight: 700; text-decoration: none; transition: background 0.2s; }
+    .btn-contact:hover { background: #e8920e; }
+
+    /* FOOTER - giống trang chủ */
+    .footer-wrap { background: #111827; color: #9ca3af; font-size: 14px; padding: 48px 40px 24px; margin-top: 80px; }
+    .footer-grid { display: grid; grid-template-columns: 1.4fr 1fr 1fr; gap: 32px; max-width: 1100px; margin: 0 auto 32px; }
+    .footer-logo { font-size: 22px; font-weight: 700; color: white; margin-bottom: 12px; }
+    .footer-logo span { color: #f5a623; }
+    .footer-col h4 { color: white; font-size: 13px; font-weight: 500; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 16px; }
+    .footer-col a { display: block; color: #9ca3af; text-decoration: none; margin-bottom: 10px; font-size: 13px; transition: color 0.2s; }
+    .footer-col a:hover { color: white; }
+    .footer-bottom { border-top: 0.5px solid #374151; padding-top: 20px; text-align: center; font-size: 12px; color: #6b7280; max-width: 1100px; margin: 0 auto; }
+
+    @media (max-width: 700px) {
+      .hero h1 { font-size: 32px; }
+      .stats-bar { grid-template-columns: 1fr 1fr; }
+      .mission-grid, .values-grid, .team-grid, .contact-grid { grid-template-columns: 1fr; }
+      .footer-grid { grid-template-columns: 1fr 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="logo">QT <span>TICKET</span></div>
+  <nav id="nav-header">
+    <a href="index.html">🏠 Trang chủ</a>
+    <a href="ho-tro.html">🎧 Hỗ trợ</a>
+    <a href="dang-nhap.html">Đăng nhập</a>
+  </nav>
+</header>
+
+<div class="hero">
+  <div class="hero-tag">✈ Về chúng tôi</div>
+  <h1>Chuyến bay mơ ước —<br><span>Giá tốt nhất</span> cho bạn</h1>
+  <p>QT TICKET là nền tảng đặt vé máy bay trực tuyến hàng đầu, mang đến hàng ngàn chuyến bay với giá cả cạnh tranh và trải nghiệm đặt vé đơn giản nhất.</p>
+</div>
+
+<div class="container">
+  <div class="stats-bar">
+    <div class="stat-item"><div class="stat-num">10<span>K+</span></div><div class="stat-lbl">Khách hàng tin dùng</div></div>
+    <div class="stat-item"><div class="stat-num">500<span>+</span></div><div class="stat-lbl">Chuyến bay mỗi ngày</div></div>
+    <div class="stat-item"><div class="stat-num">50<span>+</span></div><div class="stat-lbl">Điểm đến trong nước</div></div>
+    <div class="stat-item"><div class="stat-num">99<span>%</span></div><div class="stat-lbl">Khách hàng hài lòng</div></div>
+  </div>
+</div>
+
+<div class="container">
+  <!-- SỨ MỆNH -->
+  <div class="section">
+    <div class="mission-grid">
+      <div>
+        <div class="section-tag">Sứ mệnh của chúng tôi</div>
+        <div class="section-title">Kết nối bạn với<br>mọi miền đất nước</div>
+        <p class="section-desc">Chúng tôi tin rằng việc di chuyển bằng máy bay phải dễ dàng và phải chăng với tất cả mọi người. QT TICKET ra đời để giúp bạn tìm kiếm, so sánh và đặt vé máy bay một cách nhanh chóng, tiện lợi và an toàn nhất.</p>
+        <br>
+        <p class="section-desc">Từ những chuyến bay nội địa đến các hành trình quốc tế, chúng tôi luôn đồng hành cùng bạn với mức giá tốt nhất và dịch vụ chăm sóc khách hàng tận tâm 24/7.</p>
+      </div>
+      <div class="mission-img">
+        <span class="big-icon">✈️</span>
+        <h3>Bay cùng QT TICKET</h3>
+        <p>Hàng ngàn chuyến bay, giá rẻ mỗi ngày — Đặt vé dễ dàng trong vài bước đơn giản</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- GIÁ TRỊ CỐT LÕI -->
+  <div class="section">
+    <div class="section-tag">Giá trị cốt lõi</div>
+    <div class="section-title">Tại sao chọn QT TICKET?</div>
+    <br>
+    <div class="values-grid">
+      <div class="value-card"><span class="value-icon">💰</span><div class="value-title">Giá tốt nhất</div><div class="value-desc">Chúng tôi luôn cam kết mang đến mức giá cạnh tranh nhất thị trường, giúp bạn tiết kiệm tối đa chi phí di chuyển.</div></div>
+      <div class="value-card"><span class="value-icon">⚡</span><div class="value-title">Đặt vé nhanh chóng</div><div class="value-desc">Quy trình đặt vé đơn giản, chỉ mất vài phút. Nhận xác nhận và vé điện tử ngay lập tức qua email.</div></div>
+      <div class="value-card"><span class="value-icon">🔒</span><div class="value-title">Thanh toán an toàn</div><div class="value-desc">Hệ thống thanh toán được mã hóa và bảo mật, đảm bảo thông tin cá nhân và tài chính của bạn luôn được bảo vệ.</div></div>
+      <div class="value-card"><span class="value-icon">🎧</span><div class="value-title">Hỗ trợ 24/7</div><div class="value-desc">Đội ngũ chăm sóc khách hàng luôn sẵn sàng hỗ trợ bạn mọi lúc, giải quyết mọi vấn đề phát sinh nhanh nhất.</div></div>
+      <div class="value-card"><span class="value-icon">📱</span><div class="value-title">Theo dõi chuyến bay</div><div class="value-desc">Cập nhật trạng thái chuyến bay theo thời gian thực. Thông báo ngay khi có thay đổi về lịch trình.</div></div>
+      <div class="value-card"><span class="value-icon">🌏</span><div class="value-title">Nhiều điểm đến</div><div class="value-desc">Kết nối hàng trăm điểm đến trong nước và quốc tế, với nhiều hãng hàng không uy tín để bạn lựa chọn.</div></div>
+    </div>
+  </div>
+
+  <!-- ĐỘI NGŨ -->
+  <div class="section">
+    <div class="section-tag">Con người của chúng tôi</div>
+    <div class="section-title">Đội ngũ sáng lập</div>
+    <br>
+    <div class="team-grid">
+      <div class="team-card">
+        <div class="team-avatar">H</div>
+        <div class="team-name">Hà Quốc Thanh</div>
+        <div class="team-role">Founder & CEO</div>
+        <div class="team-desc">Người sáng lập với đam mê công nghệ và du lịch. Định hướng phát triển sản phẩm và chiến lược kinh doanh.</div>
+      </div>
+      <div class="team-card">
+        <div class="team-avatar" style="background: linear-gradient(135deg, #f5a623, #e8920e);">L</div>
+        <div class="team-name">Nguyễn Đức Lợi</div>
+        <div class="team-role">CTO - Trưởng kỹ thuật</div>
+        <div class="team-desc">Chịu trách nhiệm xây dựng và vận hành hệ thống công nghệ, đảm bảo nền tảng luôn ổn định và bảo mật.</div>
+      </div>
+      <div class="team-card">
+        <div class="team-avatar" style="background: linear-gradient(135deg, #28a745, #1e7e34);">A</div>
+        <div class="team-name">Phạm Tuấn An</div>
+        <div class="team-role">Trưởng CSKH</div>
+        <div class="team-desc">Đảm bảo mọi khách hàng đều có trải nghiệm tốt nhất, giải quyết mọi vấn đề nhanh chóng và chuyên nghiệp.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- LIÊN HỆ -->
+  <div class="section">
+    <div class="contact-box">
+      <h3>Liên hệ với chúng tôi</h3>
+      <p>Chúng tôi luôn sẵn sàng lắng nghe và hỗ trợ bạn</p>
+      <div class="contact-grid">
+        <div class="contact-item"><div class="ci-icon">📍</div><div class="ci-label">Địa chỉ</div><div class="ci-value">số 208, đường Tuệ Tĩnh, TP. Hoa Lư, Ninh Bình</div></div>
+        <div class="contact-item"><div class="ci-icon">📞</div><div class="ci-label">Hotline</div><div class="ci-value">0986 830 471</div></div>
+        <div class="contact-item"><div class="ci-icon">📧</div><div class="ci-label">Email</div><div class="ci-value">haquocthanhnb@gmail.com</div></div>
+      </div>
+      <a href="ho-tro.html" class="btn-contact">🎧 Liên hệ hỗ trợ</a>
+    </div>
+  </div>
+</div>
+
+<footer class="footer-wrap">
+  <div class="footer-grid">
+    <div>
+      <div class="footer-logo">QT<span>TICKET</span></div>
+      <p style="font-size:13px;line-height:1.7;color:#9ca3af">Công ty TNHH Du Lịch và Dịch Vụ QT Ticket</p>
+      <p style="font-size:13px;color:#9ca3af;margin-top:4px">số nhà 208, đường Tuệ Tĩnh, phố Lê Lợi Nam Thành, TP. Hoa Lư, tỉnh Ninh Bình</p>
+      <p style="font-size:13px;color:#9ca3af;margin-top:10px">Hotline: <span style="color:white">0986 830 471</span></p>
+      <p style="font-size:13px;color:#9ca3af">Email: <span style="color:white">haquocthanhnb@gmail.com</span></p>
+    </div>
+    <div class="footer-col">
+      <h4>Giới thiệu</h4>
+      <a href="ve-chung-toi.html">Về chúng tôi</a>
+      <a href="#">Điều khoản và điều kiện</a>
+      <a href="#">Chính sách riêng tư</a>
+      <a href="ho-tro.html">Liên hệ</a>
+    </div>
+    <div class="footer-col">
+      <h4>Dịch vụ</h4>
+      <a href="index.html">Đặt vé máy bay</a>
+      <a href="lich-su-dat-ve.html">Lịch sử đặt vé</a>
+      <a href="ho-tro.html">Câu hỏi thường gặp</a>
+    </div>
+  </div>
+  <div class="footer-bottom">© 2026 QT Ticket. All rights reserved.</div>
+</footer>
+
+<script>
+const kh = JSON.parse(localStorage.getItem('khach_hang') || 'null');
+if (kh) {
+  document.getElementById('nav-header').innerHTML = `
+    <a href="index.html">🏠 Trang chủ</a>
+    <a href="trang-ca-nhan.html">👤 ${kh.ho_ten}</a>
+    <a href="ho-tro.html">🎧 Hỗ trợ</a>
+    <a href="#" onclick="dangXuat()">Đăng xuất</a>`;
+}
+function dangXuat() { localStorage.removeItem('khach_hang'); window.location.href = 'index.html'; }
+</script>
+</body>
+</html>

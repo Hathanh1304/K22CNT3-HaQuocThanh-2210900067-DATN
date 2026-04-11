@@ -3,77 +3,140 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>HaThanhF - Hỗ trợ khách hàng</title>
+  <title>QT TICKET - Hỗ trợ khách hàng</title>
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
-    body { font-family: 'Segoe UI', sans-serif; background: #f0f4f8; }
-    header { background: linear-gradient(135deg, #003580, #0066cc); color: white; padding: 16px 40px; display: flex; align-items: center; justify-content: space-between; }
-    header .logo { font-size: 24px; font-weight: 700; }
+    body { font-family: 'Segoe UI', sans-serif; background: #f5f5f5; }
+
+    /* HEADER - giống trang chủ */
+    header {
+      background: white; color: #333; padding: 14px 40px;
+      display: flex; align-items: center; justify-content: space-between;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08); position: sticky; top: 0; z-index: 100;
+    }
+    header .logo { font-size: 22px; font-weight: 700; letter-spacing: 1px; color: #003580; }
     header .logo span { color: #f5a623; }
-    header nav a { color: white; text-decoration: none; margin-left: 24px; font-size: 14px; }
+    header nav { display: flex; align-items: center; gap: 8px; }
+    header nav a { color: #555; text-decoration: none; padding: 8px 14px; font-size: 14px; border-radius: 8px; transition: all 0.2s; }
+    header nav a:hover { background: #f0f4f8; color: #003580; }
 
-    .hero { background: linear-gradient(135deg, #003580, #0066cc); padding: 40px; color: white; text-align: center; }
-    .hero h1 { font-size: 32px; margin-bottom: 8px; }
-    .hero p  { font-size: 15px; opacity: 0.85; }
+    /* HERO */
+    .hero {
+      background: linear-gradient(135deg, #003580 0%, #0055b3 60%, #1a75d2 100%);
+      padding: 56px 40px 80px; color: white; text-align: center; position: relative; overflow: hidden;
+    }
+    .hero::before { content: ''; position: absolute; top: -50%; left: -20%; width: 140%; height: 200%; background: radial-gradient(ellipse at 30% 50%, rgba(255,255,255,0.06) 0%, transparent 60%); pointer-events: none; }
+    .hero h1 { font-size: 36px; font-weight: 700; margin-bottom: 10px; }
+    .hero p  { font-size: 16px; opacity: 0.85; }
 
-    .container { max-width: 900px; margin: 32px auto; padding: 0 16px; }
+    /* Liên hệ nhanh nổi lên từ hero */
+    .contact-float {
+      max-width: 860px; margin: -36px auto 32px;
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px;
+      position: relative; z-index: 10; padding: 0 16px;
+    }
+    .contact-card {
+      background: white; border-radius: 14px; padding: 22px 16px;
+      text-align: center; box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+      text-decoration: none; color: inherit; display: block;
+      transition: all 0.2s; border: 1.5px solid transparent;
+      cursor: pointer;
+    }
+    .contact-card:hover { border-color: #003580; transform: translateY(-2px); box-shadow: 0 8px 24px rgba(0,0,0,0.12); }
+    .contact-icon  { font-size: 30px; margin-bottom: 8px; }
+    .contact-title { font-weight: 700; font-size: 14px; color: #003580; margin-bottom: 4px; }
+    .contact-desc  { font-size: 12px; color: #888; }
 
-    /* Tabs */
-    .tabs { display: flex; gap: 4px; margin-bottom: 24px; background: white; border-radius: 12px; padding: 6px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
-    .tab-btn { flex: 1; padding: 12px; border: none; background: none; border-radius: 8px; font-size: 14px; font-weight: 600; color: #666; cursor: pointer; transition: all 0.2s; }
+    .container { max-width: 860px; margin: 0 auto; padding: 0 16px; }
+
+    /* TABS */
+    .tabs {
+      display: flex; gap: 4px; margin-bottom: 20px;
+      background: white; border-radius: 12px; padding: 6px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+    }
+    .tab-btn {
+      flex: 1; padding: 11px; border: none; background: none;
+      border-radius: 8px; font-size: 14px; font-weight: 600;
+      color: #666; cursor: pointer; transition: all 0.2s;
+    }
     .tab-btn.active { background: #003580; color: white; }
+    .tab-btn:hover:not(.active) { background: #f0f4f8; color: #003580; }
 
     .tab-panel { display: none; }
     .tab-panel.active { display: block; }
 
-    .card { background: white; border-radius: 12px; padding: 28px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); margin-bottom: 20px; }
-    .card h3 { font-size: 18px; font-weight: 700; color: #003580; margin-bottom: 20px; padding-bottom: 12px; border-bottom: 2px solid #f0f4f8; }
+    /* CARD */
+    .card {
+      background: white; border-radius: 14px; padding: 28px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.06); margin-bottom: 20px;
+    }
+    .card h3 {
+      font-size: 15px; font-weight: 700; color: #003580;
+      margin-bottom: 20px; padding-bottom: 12px;
+      border-bottom: 2px solid #f0f4f8;
+    }
 
+    /* FORM - giống trang chủ */
     .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px; }
     .form-group { display: flex; flex-direction: column; gap: 6px; margin-bottom: 16px; }
-    .form-group label { font-size: 12px; font-weight: 600; color: #666; text-transform: uppercase; }
+    .form-group label { font-size: 11px; font-weight: 600; color: #999; text-transform: uppercase; letter-spacing: 0.5px; }
     .form-group input, .form-group select, .form-group textarea {
-      padding: 12px 14px; border: 2px solid #e0e0e0; border-radius: 8px;
-      font-size: 14px; outline: none; transition: border-color 0.2s; font-family: inherit;
+      padding: 12px 14px; background: #f7f8fa;
+      border: 1.5px solid #e8e8e8; border-radius: 12px;
+      font-size: 14px; outline: none; transition: all 0.2s; font-family: inherit; color: #333;
     }
-    .form-group input:focus, .form-group select:focus, .form-group textarea:focus { border-color: #0066cc; }
+    .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
+      border-color: #003580; background: white; box-shadow: 0 0 0 3px rgba(0,53,128,0.08);
+    }
     .form-group textarea { resize: vertical; min-height: 120px; }
 
-    .btn-submit { width: 100%; padding: 16px; background: linear-gradient(135deg, #003580, #0066cc); color: white; border: none; border-radius: 10px; font-size: 16px; font-weight: 700; cursor: pointer; }
-    .btn-submit:hover { opacity: 0.9; }
+    .btn-submit {
+      width: 100%; padding: 15px; background: #f5a623;
+      color: white; border: none; border-radius: 12px;
+      font-size: 15px; font-weight: 700; cursor: pointer; transition: all 0.2s;
+    }
+    .btn-submit:hover { background: #e8920e; box-shadow: 0 4px 16px rgba(245,166,35,0.4); transform: translateY(-1px); }
 
     /* FAQ */
-    .faq-item { border: 1px solid #e8e8e8; border-radius: 10px; margin-bottom: 12px; overflow: hidden; }
-    .faq-q { padding: 16px 20px; font-weight: 600; font-size: 14px; color: #333; cursor: pointer; display: flex; justify-content: space-between; align-items: center; background: #fafafa; }
+    .faq-item { border: 1.5px solid #e8e8e8; border-radius: 12px; margin-bottom: 10px; overflow: hidden; transition: border-color 0.2s; }
+    .faq-item:hover { border-color: #c0ccf0; }
+    .faq-q { padding: 16px 20px; font-weight: 600; font-size: 14px; color: #333; cursor: pointer; display: flex; justify-content: space-between; align-items: center; background: #f7f8fa; }
     .faq-q:hover { background: #f0f4f8; }
     .faq-a { padding: 0 20px; max-height: 0; overflow: hidden; transition: all 0.3s; font-size: 14px; color: #555; line-height: 1.6; }
     .faq-a.open { padding: 16px 20px; max-height: 300px; }
 
     /* Yêu cầu của tôi */
-    .ht-item { border: 1px solid #e8e8e8; border-radius: 10px; padding: 16px 20px; margin-bottom: 12px; }
+    .ht-item { border: 1.5px solid #e8e8e8; border-radius: 12px; padding: 16px 20px; margin-bottom: 12px; transition: border-color 0.2s; }
+    .ht-item:hover { border-color: #c0ccf0; }
     .ht-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px; }
     .ht-tieu-de { font-weight: 700; font-size: 15px; color: #333; }
-    .ht-loai { font-size: 12px; color: #888; margin-top: 2px; }
-    .ht-noi-dung { font-size: 13px; color: #555; margin-bottom: 10px; line-height: 1.5; }
-    .ht-phan-hoi { background: #e8f5e9; border-left: 3px solid #28a745; padding: 10px 14px; border-radius: 6px; font-size: 13px; color: #2e7d32; margin-top: 8px; }
-    .ht-phan-hoi strong { display: block; margin-bottom: 4px; }
-    .ht-time { font-size: 12px; color: #aaa; margin-top: 8px; }
+    .ht-loai    { font-size: 12px; color: #888; margin-top: 2px; }
+    .ht-noi-dung{ font-size: 13px; color: #555; margin-bottom: 10px; line-height: 1.5; }
+    .ht-phan-hoi{ background: #e8f5e9; border-left: 3px solid #28a745; padding: 10px 14px; border-radius: 8px; font-size: 13px; color: #2e7d32; margin-top: 8px; }
+    .ht-time    { font-size: 12px; color: #aaa; margin-top: 8px; }
 
-    .badge { padding: 4px 10px; border-radius: 20px; font-size: 12px; font-weight: 600; }
+    .badge { padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: 600; }
     .badge.cho_xu_ly  { background: #fff3cd; color: #856404; }
     .badge.dang_xu_ly { background: #cce5ff; color: #004085; }
     .badge.da_xu_ly   { background: #d4edda; color: #155724; }
     .badge.dong       { background: #e2e3e5; color: #383d41; }
 
-    /* Liên hệ nhanh */
-    .contact-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
-    .contact-card { border: 2px solid #e0e0e0; border-radius: 10px; padding: 20px; text-align: center; transition: all 0.2s; cursor: pointer; text-decoration: none; color: inherit; display: block; }
-    .contact-card:hover { border-color: #003580; background: #f0f4ff; }
-    .contact-icon { font-size: 32px; margin-bottom: 10px; }
-    .contact-title { font-weight: 700; font-size: 15px; color: #333; margin-bottom: 4px; }
-    .contact-desc  { font-size: 13px; color: #888; }
+    .success-box { background: #e8f5e9; border: 1px solid #a5d6a7; border-radius: 12px; padding: 24px; text-align: center; display: none; }
+    .success-box h3 { color: #2e7d32; font-size: 18px; margin-bottom: 8px; }
+    .success-box p  { color: #2e7d32; font-size: 14px; line-height: 1.6; }
 
-    /* Chat box */
+    /* CHAT */
+    .chat-fab {
+      position: fixed; bottom: 24px; right: 24px;
+      width: 56px; height: 56px;
+      background: linear-gradient(135deg, #003580, #0066cc);
+      color: white; border: none; border-radius: 50%; font-size: 22px;
+      cursor: pointer; box-shadow: 0 4px 16px rgba(0,53,128,0.4); z-index: 99;
+      transition: transform 0.2s;
+    }
+    .chat-fab:hover { transform: scale(1.1); }
+
     .chat-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.4); z-index: 100; }
     .chat-overlay.show { display: flex; align-items: flex-end; justify-content: flex-end; padding: 24px; }
     .chat-box { background: white; border-radius: 16px; width: 360px; height: 500px; display: flex; flex-direction: column; box-shadow: 0 8px 32px rgba(0,0,0,0.2); }
@@ -85,25 +148,34 @@
     .msg.bot  { background: #f0f4f8; color: #333; align-self: flex-start; border-bottom-left-radius: 4px; }
     .msg.user { background: #003580; color: white; align-self: flex-end; border-bottom-right-radius: 4px; }
     .chat-input { padding: 12px 16px; border-top: 1px solid #f0f0f0; display: flex; gap: 8px; }
-    .chat-input input { flex: 1; padding: 10px 14px; border: 2px solid #e0e0e0; border-radius: 20px; font-size: 14px; outline: none; }
-    .chat-input input:focus { border-color: #0066cc; }
-    .chat-input button { padding: 10px 16px; background: #003580; color: white; border: none; border-radius: 20px; font-size: 13px; font-weight: 600; cursor: pointer; }
+    .chat-input input { flex: 1; padding: 10px 14px; border: 1.5px solid #e8e8e8; border-radius: 20px; font-size: 14px; outline: none; background: #f7f8fa; }
+    .chat-input input:focus { border-color: #003580; background: white; }
+    .chat-input button { padding: 10px 16px; background: #f5a623; color: white; border: none; border-radius: 20px; font-size: 13px; font-weight: 700; cursor: pointer; }
+    .chat-input button:hover { background: #e8920e; }
 
-    .chat-fab { position: fixed; bottom: 24px; right: 24px; width: 56px; height: 56px; background: linear-gradient(135deg, #003580, #0066cc); color: white; border: none; border-radius: 50%; font-size: 24px; cursor: pointer; box-shadow: 0 4px 16px rgba(0,53,128,0.4); z-index: 99; }
+    /* FOOTER */
+    .footer-wrap { background: #111827; color: #9ca3af; font-size: 14px; padding: 48px 40px 24px; margin-top: 40px; }
+    .footer-grid { display: grid; grid-template-columns: 1.4fr 1fr 1fr; gap: 32px; max-width: 1100px; margin: 0 auto 32px; }
+    .footer-logo { font-size: 22px; font-weight: 700; color: white; margin-bottom: 12px; }
+    .footer-logo span { color: #f5a623; }
+    .footer-col h4 { color: white; font-size: 13px; font-weight: 500; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 16px; }
+    .footer-col a { display: block; color: #9ca3af; text-decoration: none; margin-bottom: 10px; font-size: 13px; transition: color 0.2s; }
+    .footer-col a:hover { color: white; }
+    .footer-bottom { border-top: 0.5px solid #374151; padding-top: 20px; text-align: center; font-size: 12px; color: #6b7280; max-width: 1100px; margin: 0 auto; }
 
-    footer { background: #002050; color: #aaa; text-align: center; padding: 24px; font-size: 13px; margin-top: 40px; }
-
-    .success-box { background: #d4edda; border: 1px solid #28a745; border-radius: 10px; padding: 20px; text-align: center; display: none; }
-    .success-box h3 { color: #155724; font-size: 18px; margin-bottom: 8px; }
-    .success-box p  { color: #155724; font-size: 14px; }
+    @media (max-width: 700px) {
+      .contact-float { grid-template-columns: 1fr; }
+      .form-row { grid-template-columns: 1fr; }
+      .footer-grid { grid-template-columns: 1fr 1fr; }
+    }
   </style>
 </head>
 <body>
 
 <header>
-  <div class="logo">HaThanh<span>F</span></div>
+  <div class="logo">QT <span>TICKET</span></div>
   <nav id="nav-menu">
-    <a href="index.html">Trang chủ</a>
+    <a href="index.html">🏠 Trang chủ</a>
     <a href="dang-nhap.html">Đăng nhập</a>
   </nav>
 </header>
@@ -113,31 +185,26 @@
   <p>Chúng tôi luôn sẵn sàng hỗ trợ bạn 24/7</p>
 </div>
 
-<div class="container">
-
-  <!-- Liên hệ nhanh -->
-  <div class="card">
-    <h3>📞 Liên hệ nhanh</h3>
-    <div class="contact-grid">
-      <a class="contact-card" onclick="moChat()">
-        <div class="contact-icon">💬</div>
-        <div class="contact-title">Chat trực tiếp</div>
-        <div class="contact-desc">Phản hồi trong vài phút</div>
-      </a>
-      <a class="contact-card" href="tel:0986830471">
-        <div class="contact-icon">📱</div>
-        <div class="contact-title">Hotline</div>
-        <div class="contact-desc">0986 830 471 (8:00 - 22:00)</div>
-      </a>
-      <a class="contact-card" href="mailto:haquocthanhnb@gmail.com">
-        <div class="contact-icon">📧</div>
-        <div class="contact-title">Email</div>
-        <div class="contact-desc">haquocthanhnb@gmail.com</div>
-      </a>
-    </div>
+<!-- Liên hệ nhanh nổi -->
+<div class="contact-float">
+  <div class="contact-card" onclick="moChat()">
+    <div class="contact-icon">💬</div>
+    <div class="contact-title">Chat trực tiếp</div>
+    <div class="contact-desc">Phản hồi trong vài phút</div>
   </div>
+  <a class="contact-card" href="tel:0986830471">
+    <div class="contact-icon">📱</div>
+    <div class="contact-title">Hotline</div>
+    <div class="contact-desc">0986 830 471 (8:00 - 22:00)</div>
+  </a>
+  <a class="contact-card" href="mailto:haquocthanhnb@gmail.com">
+    <div class="contact-icon">📧</div>
+    <div class="contact-title">Email</div>
+    <div class="contact-desc">haquocthanhnb@gmail.com</div>
+  </a>
+</div>
 
-  <!-- Tabs -->
+<div class="container">
   <div class="tabs">
     <button class="tab-btn active" onclick="doiTab('gui-yeu-cau', this)">📝 Gửi yêu cầu</button>
     <button class="tab-btn" onclick="doiTab('yeu-cau-cua-toi', this)">📋 Yêu cầu của tôi</button>
@@ -192,7 +259,7 @@
       </div>
       <div class="success-box" id="success-box">
         <h3>✅ Gửi yêu cầu thành công!</h3>
-        <p>Chúng tôi sẽ phản hồi trong vòng 24 giờ.<br>Bạn có thể theo dõi trạng thái tại tab <strong>"Yêu cầu của tôi"</strong>.</p>
+        <p>Chúng tôi sẽ phản hồi trong vòng 24 giờ.<br>Bạn có thể theo dõi tại tab <strong>"Yêu cầu của tôi"</strong>.</p>
       </div>
     </div>
   </div>
@@ -201,9 +268,7 @@
   <div class="tab-panel" id="tab-yeu-cau-cua-toi">
     <div class="card">
       <h3>📋 Yêu cầu hỗ trợ của tôi</h3>
-      <div id="ds-yeu-cau">
-        <div style="text-align:center;padding:40px;color:#aaa">Đang tải...</div>
-      </div>
+      <div id="ds-yeu-cau"><div style="text-align:center;padding:40px;color:#aaa">Đang tải...</div></div>
     </div>
   </div>
 
@@ -214,10 +279,8 @@
       <div id="faq-list"></div>
     </div>
   </div>
-
 </div>
 
-<!-- Chat box -->
 <button class="chat-fab" onclick="moChat()">💬</button>
 
 <div class="chat-overlay" id="chat-overlay" onclick="dongChat(event)">
@@ -225,7 +288,7 @@
     <div class="chat-header">
       <div>
         <h4>💬 Chat hỗ trợ trực tiếp</h4>
-        <small style="opacity:0.8">HaThanhF Support</small>
+        <small style="opacity:0.8">QT TICKET Support</small>
       </div>
       <button class="chat-close" onclick="dongChat()">✕</button>
     </div>
@@ -237,29 +300,51 @@
   </div>
 </div>
 
-<footer>© 2026 HaThanhF - Hệ thống đặt vé máy bay</footer>
+<footer class="footer-wrap">
+  <div class="footer-grid">
+    <div>
+      <div class="footer-logo">QT<span>TICKET</span></div>
+      <p style="font-size:13px;line-height:1.7;color:#9ca3af">Công ty TNHH Du Lịch và Dịch Vụ QT Ticket</p>
+      <p style="font-size:13px;color:#9ca3af;margin-top:4px">số nhà 208, đường Tuệ Tĩnh, phố Lê Lợi Nam Thành, TP. Hoa Lư, tỉnh Ninh Bình</p>
+      <p style="font-size:13px;color:#9ca3af;margin-top:10px">Hotline: <span style="color:white">0986 830 471</span></p>
+      <p style="font-size:13px;color:#9ca3af">Email: <span style="color:white">haquocthanhnb@gmail.com</span></p>
+    </div>
+    <div class="footer-col">
+      <h4>Giới thiệu</h4>
+      <a href="ve-chung-toi.html">Về chúng tôi</a>
+      <a href="#">Điều khoản và điều kiện</a>
+      <a href="#">Chính sách riêng tư</a>
+      <a href="#">Hình thức thanh toán</a>
+      <a href="ho-tro.html">Liên hệ</a>
+    </div>
+    <div class="footer-col">
+      <h4>Dịch vụ</h4>
+      <a href="index.html">Đặt vé máy bay</a>
+      <a href="lich-su-dat-ve.html">Lịch sử đặt vé</a>
+      <a href="ho-tro.html">Câu hỏi thường gặp</a>
+    </div>
+  </div>
+  <div class="footer-bottom">© 2026 QT Ticket. All rights reserved.</div>
+</footer>
 
 <script>
 const API = 'http://127.0.0.1:5000/api';
 const khDangNhap = JSON.parse(localStorage.getItem('khach_hang') || 'null');
 
-// Cập nhật header
 function capNhatHeader() {
   const nav = document.getElementById('nav-menu');
   if (khDangNhap) {
     nav.innerHTML = `
-      <a href="index.html">Trang chủ</a>
+      <a href="index.html">🏠 Trang chủ</a>
       <a href="trang-ca-nhan.html">👤 ${khDangNhap.ho_ten}</a>
       <a href="#" onclick="dangXuat()">Đăng xuất</a>`;
-    // Điền sẵn thông tin
-    document.getElementById('ht-ten').value   = khDangNhap.ho_ten  || '';
-    document.getElementById('ht-email').value = khDangNhap.email   || '';
+    document.getElementById('ht-ten').value   = khDangNhap.ho_ten || '';
+    document.getElementById('ht-email').value = khDangNhap.email  || '';
     document.getElementById('ht-sdt').value   = khDangNhap.so_dien_thoai || '';
   }
 }
 function dangXuat() { localStorage.removeItem('khach_hang'); window.location.href = 'index.html'; }
 
-// Đổi tab
 function doiTab(tab, el) {
   document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
   document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
@@ -269,7 +354,6 @@ function doiTab(tab, el) {
   if (tab === 'faq') renderFAQ();
 }
 
-// Gửi yêu cầu
 async function guiYeuCau() {
   const ten     = document.getElementById('ht-ten').value.trim();
   const email   = document.getElementById('ht-email').value.trim();
@@ -278,129 +362,82 @@ async function guiYeuCau() {
   const tieuDe  = document.getElementById('ht-tieu-de').value.trim();
   const noiDung = document.getElementById('ht-noi-dung').value.trim();
   const maDatVe = document.getElementById('ht-ma-dat-ve').value.trim();
-
-  if (!ten || !email || !tieuDe || !noiDung) {
-    alert('Vui lòng điền đầy đủ thông tin!'); return;
-  }
-
-  const payload = {
-    khach_hang_id: khDangNhap ? khDangNhap.id : null,
-    ho_ten: ten, email, so_dien_thoai: sdt,
-    loai, tieu_de: tieuDe, noi_dung: noiDung,
-    dat_ve_id: null
-  };
-
-  // Nếu có mã đặt vé, tìm id
+  if (!ten || !email || !tieuDe || !noiDung) { alert('Vui lòng điền đầy đủ thông tin!'); return; }
+  const payload = { khach_hang_id: khDangNhap ? khDangNhap.id : null, ho_ten: ten, email, so_dien_thoai: sdt, loai, tieu_de: tieuDe, noi_dung: noiDung, dat_ve_id: null };
   if (maDatVe) {
-    try {
-      const r = await fetch(`${API}/dat-ve/theo-ma/${maDatVe}`);
-      const d = await r.json();
-      if (d.id) payload.dat_ve_id = d.id;
-    } catch(e) {}
+    try { const r = await fetch(`${API}/dat-ve/theo-ma/${maDatVe}`); const d = await r.json(); if (d.id) payload.dat_ve_id = d.id; } catch(e) {}
   }
-
-  const res  = await fetch(`${API}/ho-tro/gui`, {
-    method: 'POST', headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(payload)
-  });
+  const res  = await fetch(`${API}/ho-tro/gui`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
   const data = await res.json();
   if (data.success) {
-    document.getElementById('form-box').style.display  = 'none';
+    document.getElementById('form-box').style.display   = 'none';
     document.getElementById('success-box').style.display = 'block';
-  } else {
-    alert('Lỗi: ' + data.error);
-  }
+  } else { alert('Lỗi: ' + data.error); }
 }
 
-// Load yêu cầu của tôi
 async function loadYeuCau() {
   if (!khDangNhap) {
-    document.getElementById('ds-yeu-cau').innerHTML = `
-      <div style="text-align:center;padding:40px;color:#aaa">
-        <div style="font-size:48px;margin-bottom:16px">🔒</div>
-        <p>Vui lòng <a href="dang-nhap.html" style="color:#003580;font-weight:600">đăng nhập</a> để xem yêu cầu của bạn.</p>
-      </div>`;
+    document.getElementById('ds-yeu-cau').innerHTML = `<div style="text-align:center;padding:40px;color:#aaa"><div style="font-size:48px;margin-bottom:16px">🔒</div><p>Vui lòng <a href="dang-nhap.html" style="color:#003580;font-weight:600">đăng nhập</a> để xem yêu cầu.</p></div>`;
     return;
   }
   const res  = await fetch(`${API}/ho-tro/cua-toi/${khDangNhap.id}`);
   const data = await res.json();
-  if (!data.length) {
-    document.getElementById('ds-yeu-cau').innerHTML = '<div style="text-align:center;padding:40px;color:#aaa">Chưa có yêu cầu nào.</div>';
-    return;
-  }
+  if (!data.length) { document.getElementById('ds-yeu-cau').innerHTML = '<div style="text-align:center;padding:40px;color:#aaa">Chưa có yêu cầu nào.</div>'; return; }
   const LOAI = { hoi_thong_tin:'❓ Hỏi thông tin', doi_lich:'📅 Đổi lịch', huy_ve:'❌ Hủy vé', hoan_tien:'💰 Hoàn tiền', khieu_nai:'⚠️ Khiếu nại', khac:'📌 Khác' };
   const TT   = { cho_xu_ly:'Chờ xử lý', dang_xu_ly:'Đang xử lý', da_xu_ly:'Đã xử lý', dong:'Đóng' };
   document.getElementById('ds-yeu-cau').innerHTML = data.map(ht => `
     <div class="ht-item">
       <div class="ht-header">
-        <div>
-          <div class="ht-tieu-de">${ht.tieu_de}</div>
-          <div class="ht-loai">${LOAI[ht.loai] || ht.loai}</div>
-        </div>
-        <span class="badge ${ht.trang_thai}">${TT[ht.trang_thai] || ht.trang_thai}</span>
+        <div><div class="ht-tieu-de">${ht.tieu_de}</div><div class="ht-loai">${LOAI[ht.loai]||ht.loai}</div></div>
+        <span class="badge ${ht.trang_thai}">${TT[ht.trang_thai]||ht.trang_thai}</span>
       </div>
       <div class="ht-noi-dung">${ht.noi_dung}</div>
-      ${ht.phan_hoi ? `<div class="ht-phan-hoi"><strong>💬 Phản hồi từ HaThanhF:</strong>${ht.phan_hoi}</div>` : ''}
-      <div class="ht-time">📅 Gửi: ${new Date(ht.ngay_gui).toLocaleString('vi-VN')}
-        ${ht.ngay_xu_ly ? ' &nbsp;|&nbsp; ✅ Xử lý: ' + new Date(ht.ngay_xu_ly).toLocaleString('vi-VN') : ''}
-      </div>
+      ${ht.phan_hoi?`<div class="ht-phan-hoi"><strong>💬 Phản hồi từ QT TICKET:</strong> ${ht.phan_hoi}</div>`:''}
+      <div class="ht-time">📅 Gửi: ${new Date(ht.ngay_gui).toLocaleString('vi-VN')}${ht.ngay_xu_ly?' &nbsp;|&nbsp; ✅ Xử lý: '+new Date(ht.ngay_xu_ly).toLocaleString('vi-VN'):''}</div>
     </div>`).join('');
 }
 
-// FAQ
 const FAQ_DATA = [
   { q: 'Tôi có thể đổi ngày bay không?', a: 'Có thể đổi ngày bay trước 24 giờ so với giờ khởi hành. Phí đổi vé tùy theo hạng ghế và hãng bay. Vui lòng liên hệ hotline hoặc gửi yêu cầu để được hỗ trợ.' },
   { q: 'Chính sách hoàn vé như thế nào?', a: 'Vé có thể hoàn trước 48 giờ so với giờ khởi hành. Phí hủy vé từ 10-30% tùy hạng ghế. Tiền hoàn về trong 7-14 ngày làm việc.' },
   { q: 'Hành lý xách tay được mang bao nhiêu kg?', a: 'Hạng phổ thông: 7kg. Hạng thương gia: 14kg. Kích thước tối đa 56x36x23cm. Mỗi khách được mang 1 túi xách tay và 1 vật dụng cá nhân.' },
   { q: 'Làm thế nào để check-in trực tuyến?', a: 'Check-in trực tuyến mở từ 24 giờ đến 1 giờ trước giờ bay. Vào trang web hãng hàng không, nhập mã đặt vé và họ tên để làm thủ tục.' },
   { q: 'Trẻ em đi một mình có được không?', a: 'Trẻ em từ 5-12 tuổi có thể đi một mình với dịch vụ UM (Unaccompanied Minor). Cần đăng ký trước và có phụ huynh ký cam kết.' },
-  { q: 'Tôi quên mã đặt vé thì làm sao?', a: 'Vui lòng kiểm tra email đã dùng khi đặt vé. Mã đặt vé được gửi ngay sau khi thanh toán thành công. Nếu không tìm thấy, hãy liên hệ hotline 1900 1234.' },
+  { q: 'Tôi quên mã đặt vé thì làm sao?', a: 'Vui lòng kiểm tra email đã dùng khi đặt vé. Mã đặt vé được gửi ngay sau khi thanh toán thành công. Nếu không tìm thấy, hãy liên hệ hotline 0986 830 471.' },
 ];
 
 function renderFAQ() {
   document.getElementById('faq-list').innerHTML = FAQ_DATA.map((f, i) => `
     <div class="faq-item">
-      <div class="faq-q" onclick="toggleFAQ(${i})">
-        <span>${f.q}</span><span id="faq-icon-${i}">▼</span>
-      </div>
+      <div class="faq-q" onclick="toggleFAQ(${i})"><span>${f.q}</span><span id="faq-icon-${i}">▼</span></div>
       <div class="faq-a" id="faq-a-${i}">${f.a}</div>
     </div>`).join('');
 }
 
 function toggleFAQ(i) {
-  const el   = document.getElementById('faq-a-' + i);
-  const icon = document.getElementById('faq-icon-' + i);
+  const el = document.getElementById('faq-a-' + i);
+  const ic = document.getElementById('faq-icon-' + i);
   el.classList.toggle('open');
-  icon.textContent = el.classList.contains('open') ? '▲' : '▼';
+  ic.textContent = el.classList.contains('open') ? '▲' : '▼';
 }
 
-// Chat
 const BOT_REPLIES = {
-  'xin chào': 'Xin chào! Tôi là trợ lý HaThanhF. Tôi có thể giúp gì cho bạn? 😊',
-  'hủy vé':   'Để hủy vé, bạn vui lòng vào mục "Vé của tôi" → chọn vé cần hủy. Phí hủy từ 10-30% tùy hạng ghế.',
-  'đổi vé':   'Bạn có thể đổi ngày bay trước 24 giờ. Vui lòng vào "Vé của tôi" hoặc gửi yêu cầu tại tab "Gửi yêu cầu".',
+  'xin chào':'Xin chào! Tôi là trợ lý QT TICKET. Tôi có thể giúp gì cho bạn? 😊',
+  'hủy vé':'Để hủy vé, vào mục "Vé của tôi" → chọn vé cần hủy. Phí hủy từ 10-30% tùy hạng ghế.',
+  'đổi vé':'Bạn có thể đổi ngày bay trước 24 giờ. Vào "Vé của tôi" hoặc gửi yêu cầu tại tab "Gửi yêu cầu".',
   'hoàn tiền':'Tiền hoàn về trong 7-14 ngày làm việc sau khi hủy vé thành công.',
-  'hành lý':  'Hạng phổ thông: 7kg xách tay + 23kg ký gửi. Hạng thương gia: 14kg + 32kg.',
-  'check-in': 'Check-in trực tuyến mở 24 giờ trước giờ bay trên website hãng.',
-  'hotline':  'Hotline HaThanhF: 1900 1234 (8:00 - 22:00 hàng ngày).',
+  'hành lý':'Hạng phổ thông: 7kg xách tay + 23kg ký gửi. Hạng thương gia: 14kg + 32kg.',
+  'check-in':'Check-in trực tuyến mở 24 giờ trước giờ bay trên website hãng.',
+  'hotline':'Hotline QT TICKET: 0986 830 471 (8:00 - 22:00 hàng ngày).',
 };
 
 function moChat() {
-  const overlay = document.getElementById('chat-overlay');
-  overlay.classList.add('show');
+  document.getElementById('chat-overlay').classList.add('show');
   const msgs = document.getElementById('chat-messages');
-  if (!msgs.children.length) {
-    themMsg('bot', '👋 Xin chào! Tôi là trợ lý HaThanhF. Tôi có thể hỗ trợ bạn về: hủy vé, đổi vé, hành lý, check-in, hoàn tiền...');
-  }
+  if (!msgs.children.length) themMsg('bot', '👋 Xin chào! Tôi có thể hỗ trợ bạn về: hủy vé, đổi vé, hành lý, check-in, hoàn tiền...');
   setTimeout(() => document.getElementById('chat-input').focus(), 100);
 }
-
-function dongChat(e) {
-  if (!e || e.target === document.getElementById('chat-overlay')) {
-    document.getElementById('chat-overlay').classList.remove('show');
-  }
-}
-
+function dongChat(e) { if (!e || e.target === document.getElementById('chat-overlay')) document.getElementById('chat-overlay').classList.remove('show'); }
 function themMsg(loai, text) {
   const msgs = document.getElementById('chat-messages');
   const div  = document.createElement('div');
@@ -409,20 +446,15 @@ function themMsg(loai, text) {
   msgs.appendChild(div);
   msgs.scrollTop = msgs.scrollHeight;
 }
-
 function guiChat() {
   const input = document.getElementById('chat-input');
   const text  = input.value.trim();
   if (!text) return;
   themMsg('user', text);
   input.value = '';
-
-  // Tìm câu trả lời phù hợp
   const lower = text.toLowerCase();
-  let reply = 'Cảm ơn bạn đã liên hệ! Để được hỗ trợ chi tiết hơn, vui lòng gửi yêu cầu hoặc gọi hotline 1900 1234. 😊';
-  for (const [key, val] of Object.entries(BOT_REPLIES)) {
-    if (lower.includes(key)) { reply = val; break; }
-  }
+  let reply = 'Cảm ơn bạn! Để được hỗ trợ chi tiết hơn, vui lòng gửi yêu cầu hoặc gọi hotline 0986 830 471. 😊';
+  for (const [key, val] of Object.entries(BOT_REPLIES)) { if (lower.includes(key)) { reply = val; break; } }
   setTimeout(() => themMsg('bot', reply), 600);
 }
 

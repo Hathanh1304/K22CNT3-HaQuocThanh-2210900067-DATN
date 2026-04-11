@@ -3,25 +3,38 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>FlightVN - Lịch sử đặt vé</title>
+  <title>QT TICKET - Lịch sử đặt vé</title>
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
-    body { font-family: 'Segoe UI', sans-serif; background: #f0f4f8; }
+    body { font-family: 'Segoe UI', sans-serif; background: #f5f5f5; }
+
+    /* HEADER - giống trang chủ */
     header {
-      background: linear-gradient(135deg, #003580, #0066cc);
-      color: white; padding: 16px 40px;
+      background: white; color: #333; padding: 14px 40px;
       display: flex; align-items: center; justify-content: space-between;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08); position: sticky; top: 0; z-index: 100;
     }
-    header .logo { font-size: 24px; font-weight: 700; }
+    header .logo { font-size: 22px; font-weight: 700; letter-spacing: 1px; color: #003580; }
     header .logo span { color: #f5a623; }
-    header nav a { color: white; text-decoration: none; margin-left: 24px; font-size: 14px; }
+    header nav { display: flex; align-items: center; gap: 8px; }
+    header nav a { color: #555; text-decoration: none; padding: 8px 14px; font-size: 14px; border-radius: 8px; transition: all 0.2s; }
+    header nav a:hover { background: #f0f4f8; color: #003580; }
 
-    .container { max-width: 900px; margin: 32px auto; padding: 0 16px; display: grid; grid-template-columns: 260px 1fr; gap: 24px; }
+    /* HERO nhỏ */
+    .hero-small {
+      background: linear-gradient(135deg, #003580 0%, #0055b3 60%, #1a75d2 100%);
+      padding: 32px 40px; color: white; text-align: center;
+    }
+    .hero-small h1 { font-size: 24px; font-weight: 700; }
+    .hero-small p  { font-size: 14px; opacity: 0.8; margin-top: 6px; }
 
+    .container { max-width: 960px; margin: 32px auto; padding: 0 16px; display: grid; grid-template-columns: 260px 1fr; gap: 24px; }
+
+    /* SIDEBAR */
     .sidebar { display: flex; flex-direction: column; gap: 12px; }
     .profile-card {
-      background: white; border-radius: 12px; padding: 24px;
-      text-align: center; box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+      background: white; border-radius: 14px; padding: 24px;
+      text-align: center; box-shadow: 0 2px 8px rgba(0,0,0,0.06);
     }
     .avatar {
       width: 80px; height: 80px; border-radius: 50%;
@@ -32,91 +45,93 @@
     }
     .profile-name  { font-size: 16px; font-weight: 700; color: #333; }
     .profile-email { font-size: 13px; color: #888; margin-top: 4px; }
-    .menu-card { background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+
+    .menu-card { background: white; border-radius: 14px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
     .menu-item {
       display: flex; align-items: center; gap: 12px;
       padding: 14px 20px; cursor: pointer; font-size: 14px;
       color: #555; border-bottom: 1px solid #f0f0f0;
       text-decoration: none; transition: background 0.2s;
     }
+    .menu-item:last-child { border-bottom: none; }
     .menu-item:hover  { background: #f0f4ff; color: #003580; }
     .menu-item.active { background: #e8f0fe; color: #003580; font-weight: 600; border-left: 3px solid #003580; }
     .menu-item .icon  { font-size: 18px; width: 24px; text-align: center; }
 
+    /* MAIN */
     .main { display: flex; flex-direction: column; gap: 20px; }
     .section {
-      background: white; border-radius: 12px; padding: 24px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+      background: white; border-radius: 14px; padding: 24px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.06);
     }
     .section h3 {
-      font-size: 16px; font-weight: 700; color: #003580;
+      font-size: 15px; font-weight: 700; color: #003580;
       margin-bottom: 20px; padding-bottom: 12px;
       border-bottom: 2px solid #f0f4f8;
     }
 
-    /* Booking card */
+    /* BOOKING CARD */
     .booking-card {
-      border: 1px solid #e8e8e8; border-radius: 10px;
-      margin-bottom: 16px; overflow: hidden;
-      transition: box-shadow 0.2s;
+      border: 1.5px solid #e8e8e8; border-radius: 12px;
+      margin-bottom: 14px; overflow: hidden; transition: all 0.2s;
     }
-    .booking-card:hover { box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+    .booking-card:hover { box-shadow: 0 4px 16px rgba(0,0,0,0.08); border-color: #d0d8f0; }
 
     .booking-header {
       display: flex; justify-content: space-between; align-items: center;
-      padding: 14px 20px; background: #f8f9ff;
+      padding: 12px 20px; background: #f7f8fa;
       border-bottom: 1px solid #e8e8e8;
     }
-    .booking-ma { font-weight: 700; color: #003580; font-size: 15px; }
-    .booking-ngay { font-size: 13px; color: #888; }
+    .booking-ma   { font-weight: 700; color: #003580; font-size: 14px; }
+    .booking-ngay { font-size: 12px; color: #aaa; margin-top: 2px; }
 
-    .badge {
-      padding: 4px 12px; border-radius: 20px;
-      font-size: 12px; font-weight: 600;
-    }
-    .badge.cho_thanh_toan  { background: #fff3cd; color: #856404; }
-    .badge.da_thanh_toan   { background: #d4edda; color: #155724; }
-    .badge.da_xac_nhan     { background: #d4edda; color: #155724; }
-    .badge.da_huy          { background: #f8d7da; color: #721c24; }
-    .badge.hoan_tien       { background: #e2e3e5; color: #383d41; }
+    .badge { padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: 600; }
+    .badge.cho_thanh_toan { background: #fff3cd; color: #856404; }
+    .badge.da_thanh_toan  { background: #d4edda; color: #155724; }
+    .badge.da_xac_nhan    { background: #d4edda; color: #155724; }
+    .badge.da_huy         { background: #f8d7da; color: #721c24; }
+    .badge.hoan_tien      { background: #e2e3e5; color: #383d41; }
 
-    .booking-body { padding: 16px 20px; }
-    .booking-route {
-      display: flex; align-items: center; gap: 12px;
-      font-size: 18px; font-weight: 700; color: #333; margin-bottom: 8px;
-    }
-    .booking-info { display: flex; gap: 24px; font-size: 13px; color: #666; }
+    .booking-body { padding: 14px 20px; }
+    .booking-info { display: flex; gap: 20px; font-size: 13px; color: #666; flex-wrap: wrap; }
+    .booking-info span { display: flex; align-items: center; gap: 4px; }
 
     .booking-footer {
       display: flex; justify-content: space-between; align-items: center;
-      padding: 12px 20px; background: #f8f9ff;
-      border-top: 1px solid #e8e8e8;
+      padding: 12px 20px; background: #f7f8fa; border-top: 1px solid #e8e8e8;
     }
     .booking-gia { font-size: 18px; font-weight: 700; color: #e84545; }
 
+    /* Buttons - giống trang chủ */
     .btn-xem {
-      padding: 8px 20px; background: #003580;
-      color: white; border: none; border-radius: 6px;
+      padding: 8px 18px; background: #003580;
+      color: white; border: none; border-radius: 8px;
       font-size: 13px; font-weight: 600; cursor: pointer;
-      text-decoration: none; display: inline-block;
+      text-decoration: none; display: inline-block; transition: background 0.2s;
     }
+    .btn-xem:hover { background: #0055aa; }
+
     .btn-huy {
-      padding: 8px 20px; background: white;
-      color: #e84545; border: 1px solid #e84545; border-radius: 6px;
-      font-size: 13px; font-weight: 600; cursor: pointer; margin-right: 8px;
+      padding: 8px 18px; background: white;
+      color: #e84545; border: 1.5px solid #e84545; border-radius: 8px;
+      font-size: 13px; font-weight: 600; cursor: pointer;
+      margin-right: 8px; transition: all 0.2s;
     }
     .btn-huy:hover { background: #ffebee; }
+
     .btn-danhgia {
-      padding: 8px 20px; background: linear-gradient(135deg, #f5a623, #e8920e);
-      color: white; border: none; border-radius: 6px;
-      font-size: 13px; font-weight: 600; cursor: pointer; margin-right: 8px;
-      text-decoration: none; display: inline-block;
+      padding: 8px 18px; background: #f5a623;
+      color: white; border: none; border-radius: 8px;
+      font-size: 13px; font-weight: 600; cursor: pointer;
+      margin-right: 8px; text-decoration: none;
+      display: inline-block; transition: all 0.2s;
     }
-    .btn-danhgia:hover { opacity: 0.9; }
+    .btn-danhgia:hover { background: #e8920e; }
 
     .empty { text-align: center; padding: 48px; color: #aaa; font-size: 15px; }
+    .empty a { color: #003580; font-weight: 600; }
 
-    /* Modal hủy vé */
+    /* MODAL */
     .modal-overlay {
       display: none; position: fixed; inset: 0;
       background: rgba(0,0,0,0.5); z-index: 1000;
@@ -128,23 +143,42 @@
       max-width: 420px; width: 90%; text-align: center;
     }
     .modal h3 { font-size: 20px; color: #333; margin-bottom: 12px; }
-    .modal p  { font-size: 14px; color: #666; margin-bottom: 24px; }
+    .modal p  { font-size: 14px; color: #666; margin-bottom: 24px; line-height: 1.6; }
     .modal-btns { display: flex; gap: 12px; justify-content: center; }
     .btn-confirm { padding: 12px 32px; background: #e84545; color: white; border: none; border-radius: 8px; font-size: 14px; font-weight: 600; cursor: pointer; }
     .btn-cancel  { padding: 12px 32px; background: #f0f4f8; color: #555; border: none; border-radius: 8px; font-size: 14px; cursor: pointer; }
 
-    footer { background: #002050; color: #aaa; text-align: center; padding: 24px; font-size: 13px; margin-top: 40px; }
+    /* FOOTER */
+    .footer-wrap { background: #111827; color: #9ca3af; font-size: 14px; padding: 48px 40px 24px; margin-top: 40px; }
+    .footer-grid { display: grid; grid-template-columns: 1.4fr 1fr 1fr; gap: 32px; max-width: 1100px; margin: 0 auto 32px; }
+    .footer-logo { font-size: 22px; font-weight: 700; color: white; margin-bottom: 12px; }
+    .footer-logo span { color: #f5a623; }
+    .footer-col h4 { color: white; font-size: 13px; font-weight: 500; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 16px; }
+    .footer-col a { display: block; color: #9ca3af; text-decoration: none; margin-bottom: 10px; font-size: 13px; transition: color 0.2s; }
+    .footer-col a:hover { color: white; }
+    .footer-bottom { border-top: 0.5px solid #374151; padding-top: 20px; text-align: center; font-size: 12px; color: #6b7280; max-width: 1100px; margin: 0 auto; }
+
+    @media (max-width: 700px) {
+      .container { grid-template-columns: 1fr; }
+      .footer-grid { grid-template-columns: 1fr 1fr; }
+    }
   </style>
 </head>
 <body>
 
 <header>
-  <div class="logo">Flight<span>VN</span></div>
+  <div class="logo">QT <span>TICKET</span></div>
   <nav>
     <a href="index.html">🏠 Trang chủ</a>
+    <a href="trang-ca-nhan.html">👤 Tài khoản</a>
     <a href="#" onclick="dangXuat()">Đăng xuất</a>
   </nav>
 </header>
+
+<div class="hero-small">
+  <h1>🎫 Lịch sử đặt vé</h1>
+  <p>Quản lý các chuyến bay đã đặt của bạn</p>
+</div>
 
 <div class="container">
   <div class="sidebar">
@@ -180,7 +214,32 @@
   </div>
 </div>
 
-<footer>© 2026 FlightVN</footer>
+<footer class="footer-wrap">
+  <div class="footer-grid">
+    <div>
+      <div class="footer-logo">QT<span>TICKET</span></div>
+      <p style="font-size:13px;line-height:1.7;color:#9ca3af">Công ty TNHH Du Lịch và Dịch Vụ QT Ticket</p>
+      <p style="font-size:13px;color:#9ca3af;margin-top:4px">số nhà 208, đường Tuệ Tĩnh, phố Lê Lợi Nam Thành, TP. Hoa Lư, tỉnh Ninh Bình</p>
+      <p style="font-size:13px;color:#9ca3af;margin-top:10px">Hotline: <span style="color:white">0986 830 471</span></p>
+      <p style="font-size:13px;color:#9ca3af">Email: <span style="color:white">haquocthanhnb@gmail.com</span></p>
+    </div>
+    <div class="footer-col">
+      <h4>Giới thiệu</h4>
+      <a href="ve-chung-toi.html">Về chúng tôi</a>
+      <a href="#">Điều khoản và điều kiện</a>
+      <a href="#">Chính sách riêng tư</a>
+      <a href="#">Hình thức thanh toán</a>
+      <a href="ho-tro.html">Liên hệ</a>
+    </div>
+    <div class="footer-col">
+      <h4>Dịch vụ</h4>
+      <a href="index.html">Đặt vé máy bay</a>
+      <a href="lich-su-dat-ve.html">Lịch sử đặt vé</a>
+      <a href="ho-tro.html">Câu hỏi thường gặp</a>
+    </div>
+  </div>
+  <div class="footer-bottom">© 2026 QT Ticket. All rights reserved.</div>
+</footer>
 
 <script>
 const API = 'http://127.0.0.1:5000/api';
@@ -207,18 +266,18 @@ async function loadLichSu() {
 
   if (!data.length) {
     document.getElementById('danh-sach-don').innerHTML =
-      '<div class="empty">😔 Bạn chưa có đơn đặt vé nào.<br><a href="index.html" style="color:#0066cc">Đặt vé ngay →</a></div>';
+      '<div class="empty">😔 Bạn chưa có đơn đặt vé nào.<br><br><a href="index.html">✈ Đặt vé ngay →</a></div>';
     return;
   }
 
   let html = '';
   data.forEach(don => {
-    const ngay = new Date(don.ngay_dat).toLocaleDateString('vi-VN');
-    const gia  = parseInt(don.tong_tien).toLocaleString('vi-VN');
+    const ngay  = new Date(don.ngay_dat).toLocaleDateString('vi-VN');
+    const gia   = parseInt(don.tong_tien).toLocaleString('vi-VN');
     const badge = don.trang_thai;
     const label = TRANG_THAI_LABEL[don.trang_thai] || don.trang_thai;
-    const coTheHuy      = ['cho_thanh_toan','da_thanh_toan','da_xac_nhan'].includes(don.trang_thai);
-    const coTheDanhGia  = ['da_thanh_toan','da_xac_nhan'].includes(don.trang_thai);
+    const coTheHuy     = ['cho_thanh_toan','da_thanh_toan','da_xac_nhan'].includes(don.trang_thai);
+    const coTheDanhGia = ['da_thanh_toan','da_xac_nhan'].includes(don.trang_thai);
 
     html += `
     <div class="booking-card">
@@ -231,7 +290,7 @@ async function loadLichSu() {
       </div>
       <div class="booking-body">
         <div class="booking-info">
-          <span>✈ ${don.loai_chuyen === 'Khu_hoi' ? 'Khứ hồi' : 'Một chiều'}</span>
+          <span>${don.loai_chuyen === 'Khu_hoi' ? '↔ Khứ hồi' : '✈ Một chiều'}</span>
         </div>
       </div>
       <div class="booking-footer">
@@ -261,12 +320,8 @@ async function xacNhanHuy() {
   const res  = await fetch(`${API}/dat-ve/huy/${maDatVeCanHuy}`, { method: 'PUT' });
   const data = await res.json();
   dongModal();
-  if (data.success) {
-    alert('✅ Hủy vé thành công!');
-    loadLichSu();
-  } else {
-    alert('❌ ' + (data.error || 'Không thể hủy vé!'));
-  }
+  if (data.success) { alert('✅ Hủy vé thành công!'); loadLichSu(); }
+  else alert('❌ ' + (data.error || 'Không thể hủy vé!'));
 }
 
 function dangXuat() {

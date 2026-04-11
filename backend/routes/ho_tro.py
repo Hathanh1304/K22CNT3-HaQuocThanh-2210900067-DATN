@@ -94,19 +94,30 @@ def admin_danh_sach():
 # Admin trả lời + cập nhật trạng thái
 @ho_tro_bp.route('/admin/tra-loi/<int:ht_id>', methods=['PUT'])
 def admin_tra_loi(ht_id):
-    data      = request.json
-    phan_hoi  = data.get('phan_hoi', '')
-    trang_thai= data.get('trang_thai', 'da_xu_ly')
+    data       = request.json
+    phan_hoi   = data.get('phan_hoi', '')
+    trang_thai = data.get('trang_thai', 'da_xu_ly')
 
     conn = get_connection()
     if not conn:
         return jsonify({'error': 'Không kết nối được database'}), 500
-    cursor = conn.cursor()
+    cursor = conn.cursor(dictionary=True)
     try:
-        # Cập nhật phản hồi VÀ trạng thái
+        # Lấy thông tin yêu cầu hỗ trợ + khách hàng
+        cursor.execute("""
+            SELECT ht.*, kh.ho_ten AS ten_kh
+            FROM ho_tro ht
+            LEFT JOIN khach_hang kh ON ht.khach_hang_id = kh.id
+            WHERE ht.id = %s
+        """, (ht_id,))
+        ht = cursor.fetchone()
+        if not ht:
+            return jsonify({'error': 'Không tìm thấy yêu cầu'}), 404
+
+        # Cập nhật phản hồi và trạng thái
         cursor.execute("""
             UPDATE ho_tro
-            SET phan_hoi  = %s,
+            SET phan_hoi   = %s,
                 trang_thai = %s,
                 ngay_xu_ly = %s
             WHERE id = %s
@@ -116,9 +127,29 @@ def admin_tra_loi(ht_id):
             datetime.now() if trang_thai in ('da_xu_ly', 'dong') else None,
             ht_id
         ))
+
+        # ✅ Tạo thông báo cho khách hàng nếu có khach_hang_id
+        if ht.get('khach_hang_id'):
+            trang_thai_label = {
+                'dang_xu_ly': 'Đang xử lý',
+                'da_xu_ly':   'Đã xử lý',
+                'dong':        'Đã đóng'
+            }.get(trang_thai, trang_thai)
+
+            tieu_de_tb = f'💬 Phản hồi yêu cầu hỗ trợ: {ht["tieu_de"]}'
+            noi_dung_tb = f'Yêu cầu của bạn đã được phản hồi ({trang_thai_label}): {phan_hoi}'
+
+            cursor.execute("""
+                INSERT INTO thong_bao (khach_hang_id, loai, tieu_de, noi_dung)
+                VALUES (%s, %s, %s, %s)
+            """, (
+                ht['khach_hang_id'],
+                'he_thong',
+                tieu_de_tb,
+                noi_dung_tb
+            ))
+
         conn.commit()
-        if cursor.rowcount == 0:
-            return jsonify({'error': 'Không tìm thấy yêu cầu'}), 404
         return jsonify({'success': True})
     except Exception as e:
         conn.rollback()

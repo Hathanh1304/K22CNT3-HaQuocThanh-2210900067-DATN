@@ -33,6 +33,38 @@ def thanh_toan():
             UPDATE ve SET trang_thai = 'da_xac_nhan' WHERE dat_ve_id = %s
         """, (dat_ve_id,))
 
+        # ✅ Lấy thông tin đơn đặt vé để tạo thông báo
+        cursor.execute("""
+            SELECT dv.ma_dat_ve, dv.khach_hang_id, dv.tong_tien, dv.loai_chuyen,
+                   v.ho_ten, cb.so_hieu_cb,
+                   sb_di.ma_iata AS tu, sb_den.ma_iata AS den,
+                   cb.gio_cat_canh
+            FROM dat_ve dv
+            JOIN ve v ON v.dat_ve_id = dv.id
+            JOIN chuyen_bay cb ON v.chuyen_bay_id = cb.id
+            JOIN tuyen_duong td ON cb.tuyen_duong_id = td.id
+            JOIN san_bay sb_di  ON td.san_bay_di_id  = sb_di.id
+            JOIN san_bay sb_den ON td.san_bay_den_id = sb_den.id
+            WHERE dv.id = %s
+            LIMIT 1
+        """, (dat_ve_id,))
+        don = cursor.fetchone()
+
+        # ✅ Tạo thông báo cho khách hàng
+        if don and don.get('khach_hang_id'):
+            gia_fmt = f"{int(so_tien):,}".replace(',', '.') + ' ₫'
+            tieu_de = f"✅ Đặt vé thành công - {don['ma_dat_ve']}"
+            noi_dung = (
+                f"Bạn đã đặt vé thành công chuyến bay {don['so_hieu_cb']} "
+                f"({don['tu']} → {don['den']}). "
+                f"Tổng tiền: {gia_fmt}. "
+                f"Mã giao dịch: {ma_gd}."
+            )
+            cursor.execute("""
+                INSERT INTO thong_bao (khach_hang_id, loai, tieu_de, noi_dung)
+                VALUES (%s, 'xac_nhan_ve', %s, %s)
+            """, (don['khach_hang_id'], tieu_de, noi_dung))
+
         conn.commit()
         return jsonify({
             'success': True,
