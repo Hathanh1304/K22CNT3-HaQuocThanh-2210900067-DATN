@@ -5,93 +5,221 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>QT TICKET - Thanh Toán</title>
   <style>
+    header { justify-content: space-between; }
+.header-nav { margin-left: auto; }
     * { margin: 0; padding: 0; box-sizing: border-box; }
-    body { font-family: 'Segoe UI', sans-serif; background: #f0f4f8; }
-    header { background: linear-gradient(135deg, #003580, #0066cc); color: white; padding: 16px 40px; display: flex; align-items: center; justify-content: space-between; }
-    header .logo { font-size: 24px; font-weight: 700; }
-    header .logo span { color: #f5a623; }
-    header nav a { color: white; text-decoration: none; margin-left: 24px; font-size: 14px; }
-    .container { max-width: 800px; margin: 32px auto; padding: 0 16px; }
-    .section { background: white; border-radius: 12px; padding: 24px; margin-bottom: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
-    .section h3 { font-size: 16px; font-weight: 700; color: #003580; margin-bottom: 20px; padding-bottom: 12px; border-bottom: 2px solid #f0f4f8; }
-    .form-group { display: flex; flex-direction: column; gap: 6px; margin-bottom: 16px; }
-    .form-group label { font-size: 12px; font-weight: 600; color: #666; text-transform: uppercase; }
-    .form-group input { padding: 12px 14px; border: 2px solid #e0e0e0; border-radius: 8px; font-size: 14px; outline: none; transition: border-color 0.2s; }
-    .form-group input:focus { border-color: #0066cc; }
-    .form-group input:disabled { background: #f5f5f5; color: #888; }
-    .phuong-thuc-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
-    .pt-card { border: 2px solid #e0e0e0; border-radius: 10px; padding: 16px 12px; text-align: center; cursor: pointer; transition: all 0.2s; font-size: 13px; font-weight: 600; color: #555; }
-    .pt-card:hover { border-color: #0066cc; color: #0066cc; }
+    body { font-family: 'Segoe UI', sans-serif; background: #f5f7fa; color: #333; }
+    header { background: white; padding: 0 48px; display: flex; align-items: center; justify-content: space-between; height: 60px; box-shadow: 0 1px 4px rgba(0,0,0,0.08); position: sticky; top: 0; z-index: 200; }
+    .logo { font-size: 20px; font-weight: 700; color: #003580; letter-spacing: 1px; }
+    .logo span { color: #f5a623; }
+    .header-nav { display: flex; align-items: center; gap: 4px; }
+    .header-nav a { color: #444; text-decoration: none; padding: 8px 16px; font-size: 14px; font-weight: 500; border-radius: 6px; transition: all 0.2s; }
+    .header-nav a:hover { background: #f0f4f8; color: #003580; }
+    .btn-signin { background: #003580; color: white !important; padding: 8px 20px !important; border-radius: 8px !important; font-weight: 600 !important; }
+    .steps-bar { background: white; border-bottom: 1px solid #eee; padding: 0 48px; }
+    .steps-inner { max-width: 1060px; margin: 0 auto; display: flex; align-items: center; padding: 18px 0; }
+    .step { display: flex; align-items: center; gap: 10px; flex: 1; }
+    .step-circle { width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 700; flex-shrink: 0; border: 2px solid #ddd; color: #aaa; background: white; }
+    .step-circle.done { background: #003580; color: white; border-color: #003580; }
+    .step-circle.active { background: #f5a623; color: white; border-color: #f5a623; }
+    .step-label { font-size: 13px; font-weight: 500; color: #aaa; }
+    .step-label.done { color: #003580; font-weight: 600; }
+    .step-label.active { color: #333; font-weight: 600; }
+    .step-line { flex: 1; height: 2px; background: #e0e0e0; margin: 0 12px; }
+    .step-line.done { background: #003580; }
+    .page-body { max-width: 1060px; margin: 32px auto; padding: 0 24px; display: grid; grid-template-columns: 1fr 320px; gap: 24px; align-items: start; }
+    .card { background: white; border-radius: 12px; padding: 24px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); margin-bottom: 16px; }
+    .card-title { font-size: 15px; font-weight: 700; color: #333; margin-bottom: 20px; display: flex; align-items: center; gap: 8px; }
+    .card-title .icon-circle { width: 28px; height: 28px; border-radius: 50%; background: #e8f0fe; display: flex; align-items: center; justify-content: center; font-size: 13px; }
+    .form-group { display: flex; flex-direction: column; gap: 6px; margin-bottom: 14px; }
+    .form-group label { font-size: 12px; font-weight: 600; color: #888; }
+    .form-group input { padding: 11px 14px; border: 1.5px solid #e0e0e0; border-radius: 8px; font-size: 14px; outline: none; transition: border-color 0.2s; background: #fafafa; font-family: inherit; }
+    .form-group input:focus { border-color: #003580; background: white; box-shadow: 0 0 0 3px rgba(0,53,128,0.07); }
+    .form-group input:disabled { background: #f0f0f0; color: #888; }
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+    .dang-nhap-box { display: flex; align-items: center; gap: 10px; background: #fff8e8; border: 1px solid #f5a623; border-radius: 8px; padding: 12px 14px; margin-bottom: 16px; font-size: 13px; color: #856404; }
+    .dang-nhap-box a { color: #003580; font-weight: 600; text-decoration: none; margin-left: 4px; }
+    .dang-nhap-box.ok { background: #e8f5e9; border-color: #28a745; color: #1b5e20; }
+    .pt-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+    .pt-card { border: 1.5px solid #e0e0e0; border-radius: 10px; padding: 14px 10px; text-align: center; cursor: pointer; transition: all 0.2s; font-size: 13px; font-weight: 600; color: #555; }
+    .pt-card:hover { border-color: #003580; color: #003580; background: #f8f9ff; }
     .pt-card.active { border-color: #003580; background: #e8f0fe; color: #003580; }
-    .pt-card .icon { font-size: 28px; margin-bottom: 8px; }
-    .order-summary { background: #f8f9ff; border-radius: 10px; padding: 16px; }
-    .sum-row { display: flex; justify-content: space-between; font-size: 14px; color: #555; margin-bottom: 8px; }
-    .sum-row.total { font-size: 20px; font-weight: 700; color: #e84545; border-top: 1px solid #ddd; padding-top: 12px; margin-top: 8px; }
-    .btn-thanh-toan { width: 100%; padding: 18px; background: linear-gradient(135deg, #28a745, #1e7e34); color: white; border: none; border-radius: 10px; font-size: 20px; font-weight: 700; cursor: pointer; margin-top: 20px; transition: transform 0.1s; }
-    .btn-thanh-toan:hover { transform: translateY(-1px); }
-    .btn-thanh-toan:disabled { background: #aaa; cursor: not-allowed; }
-    .dang-nhap-box { background: #fff3cd; border: 1px solid #f5a623; border-radius: 10px; padding: 16px; margin-bottom: 16px; font-size: 14px; color: #856404; display: flex; align-items: center; justify-content: space-between; }
-    .dang-nhap-box a { color: #003580; font-weight: 600; text-decoration: none; }
-    .success-screen { display: none; text-align: center; padding: 48px 24px; }
+    .pt-card .pt-icon { font-size: 26px; margin-bottom: 6px; }
+    .sidebar { position: sticky; top: 80px; }
+    .sidebar-card { background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.08); margin-bottom: 16px; }
+    .sidebar-header { background: #003580; color: white; padding: 14px 20px; font-size: 14px; font-weight: 700; }
+    .sidebar-body { padding: 18px 20px; }
+    .route-row { display: flex; align-items: center; gap: 8px; margin-bottom: 12px; }
+    .iata { font-size: 22px; font-weight: 700; color: #003580; }
+    .iata-city { font-size: 11px; color: #888; }
+    .route-arrow { flex: 1; display: flex; align-items: center; gap: 4px; color: #aaa; }
+    .route-line-h { flex: 1; height: 1px; background: #ddd; }
+    .cb-info-row { display: flex; align-items: center; gap: 8px; padding: 8px 0; border-top: 1px solid #f0f0f0; font-size: 13px; color: #555; }
+    .gia-row-s { display: flex; justify-content: space-between; font-size: 13px; color: #666; margin-bottom: 8px; }
+    .gia-row-s.total { font-size: 17px; font-weight: 700; color: #e84545; border-top: 1px solid #eee; padding-top: 12px; margin-top: 4px; }
+    .btn-thanh-toan { width: 100%; padding: 14px; background: #28a745; color: white; border: none; border-radius: 10px; font-size: 16px; font-weight: 700; cursor: pointer; margin-top: 16px; transition: all 0.2s; }
+    .btn-thanh-toan:hover { background: #1e7e34; transform: translateY(-1px); }
+    .btn-thanh-toan:disabled { background: #aaa; cursor: not-allowed; transform: none; }
+    .note-text { font-size: 11px; color: #aaa; text-align: center; margin-top: 10px; line-height: 1.5; }
+    .hotro-box { display: flex; align-items: center; gap: 12px; padding: 14px 20px; background: white; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
+    .hotro-icon { width: 40px; height: 40px; border-radius: 50%; background: #e8f0fe; display: flex; align-items: center; justify-content: center; font-size: 18px; flex-shrink: 0; }
+    .hotro-text strong { font-size: 13px; color: #333; display: block; }
+    .hotro-text span { font-size: 12px; color: #888; }
+    .success-screen { display: none; text-align: center; padding: 48px 24px; background: white; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
     .success-icon { font-size: 72px; margin-bottom: 16px; }
     .success-screen h2 { font-size: 28px; color: #28a745; margin-bottom: 8px; }
-    .success-screen p  { color: #666; font-size: 15px; margin-bottom: 8px; }
+    .success-screen p { color: #666; font-size: 15px; margin-bottom: 8px; }
     .ma-dat-ve { display: inline-block; background: #e8f5e9; border: 2px dashed #28a745; border-radius: 10px; padding: 12px 32px; font-size: 24px; font-weight: 700; color: #1e7e34; margin: 16px 0; letter-spacing: 2px; }
     .btn-home { display: inline-block; margin-top: 24px; padding: 14px 40px; background: #003580; color: white; border-radius: 8px; text-decoration: none; font-weight: 600; font-size: 15px; }
-    footer { background: #002050; color: #aaa; text-align: center; padding: 24px; font-size: 13px; margin-top: 40px; }
+    footer { background: #111827; color: #9ca3af; font-size: 14px; padding: 48px 48px 24px; margin-top: 40px; }
+    .footer-grid { display: grid; grid-template-columns: 1.4fr 1fr 1fr; gap: 32px; max-width: 1060px; margin: 0 auto 32px; text-align: left; }
+    .footer-logo { font-size: 20px; font-weight: 700; color: white; margin-bottom: 10px; }
+    .footer-logo span { color: #f5a623; }
+    .footer-col h4 { color: white; font-size: 12px; font-weight: 600; text-transform: uppercase; margin-bottom: 14px; }
+    .footer-col a { display: block; color: #9ca3af; text-decoration: none; margin-bottom: 8px; font-size: 13px; }
+    .footer-col a:hover { color: white; }
+    .footer-bottom { border-top: 0.5px solid #374151; padding-top: 16px; text-align: center; font-size: 12px; color: #6b7280; max-width: 1060px; margin: 0 auto; }
+    @media (max-width: 768px) {
+      .page-body { grid-template-columns: 1fr; }
+      .sidebar { position: static; }
+      header { padding: 0 16px; }
+      .steps-bar { padding: 0 16px; }
+      .pt-grid { grid-template-columns: repeat(2, 1fr); }
+    }
   </style>
 </head>
 <body>
 
+<!-- ===== HEADER ===== -->
 <header>
-  <div class="logo">QT<span>TICKET</span></div>
-  <nav><a href="dat-ve.html">← Quay lại</a></nav>
+  <div class="logo">QT <span>TICKET</span></div>
+  <nav class="header-nav">
+    <a href="index.html">Trang chủ</a>
+    <a href="ho-tro.html">Hỗ trợ</a>
+    <a href="dat-ve.html">← Quay lại</a>
+  </nav>
 </header>
-
-<div class="container" id="main-content">
-
-  <!-- Thông tin liên hệ -->
-  <div class="section">
-    <h3>📋 Thông tin liên hệ</h3>
-    <div id="thong-bao-dang-nhap"></div>
-    <div class="form-group">
-      <label>Họ và tên</label>
-      <input type="text" id="ten-lh" placeholder="Nguyễn Văn An">
+<!-- ===== THANH BƯỚC ===== -->
+<div class="steps-bar">
+  <div class="steps-inner">
+    <div class="step">
+      <div class="step-circle done">✓</div>
+      <div class="step-label done">1. Chọn chuyến bay</div>
     </div>
-    <div class="form-group">
-      <label>Email nhận vé</label>
-      <input type="email" id="email-lh" placeholder="example@email.com">
+    <div class="step-line done"></div>
+    <div class="step">
+      <div class="step-circle done">✓</div>
+      <div class="step-label done">2. Thông tin hành khách</div>
     </div>
-    <div class="form-group">
-      <label>Số điện thoại</label>
-      <input type="tel" id="sdt-lh" placeholder="0901234567">
+    <div class="step-line done"></div>
+    <div class="step">
+      <div class="step-circle active">3</div>
+      <div class="step-label active">3. Thanh toán</div>
     </div>
   </div>
+</div>
 
-  <!-- Phương thức thanh toán -->
-  <div class="section">
-    <h3>💳 Chọn phương thức thanh toán</h3>
-    <div class="phuong-thuc-grid">
-      <div class="pt-card active" onclick="chonPT(this, 'Vi_dien_tu_Momo')"><div class="icon">📱</div>MoMo</div>
-      <div class="pt-card" onclick="chonPT(this, 'Vi_dien_tu_ZaloPay')"><div class="icon">💙</div>ZaloPay</div>
-      <div class="pt-card" onclick="chonPT(this, 'Vi_dien_tu_VNPay')"><div class="icon">🔴</div>VNPay</div>
-      <div class="pt-card" onclick="chonPT(this, 'The_tin_dung')"><div class="icon">💳</div>Thẻ tín dụng</div>
-      <div class="pt-card" onclick="chonPT(this, 'The_ghi_no')"><div class="icon">🏧</div>Thẻ ghi nợ</div>
-      <div class="pt-card" onclick="chonPT(this, 'Chuyen_khoan')"><div class="icon">🏦</div>Chuyển khoản</div>
+<!-- ===== NỘI DUNG ===== -->
+<div class="page-body" id="main-content">
+
+  <!-- CỘT TRÁI -->
+  <div class="left-col">
+
+    <!-- Thông tin liên hệ -->
+    <div class="card">
+      <div class="card-title">
+        <div class="icon-circle">👤</div>
+        Thông tin liên hệ
+      </div>
+      <div id="thong-bao-dang-nhap"></div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Họ và tên</label>
+          <input type="text" id="ten-lh" placeholder="Nguyễn Văn An">
+        </div>
+        <div class="form-group">
+          <label>Số điện thoại</label>
+          <input type="tel" id="sdt-lh" placeholder="0901234567">
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Email nhận vé</label>
+        <input type="email" id="email-lh" placeholder="example@email.com">
+      </div>
     </div>
+
+    <!-- Phương thức thanh toán -->
+    <div class="card">
+      <div class="card-title">
+        <div class="icon-circle">💳</div>
+        Chọn phương thức thanh toán
+      </div>
+      <div class="pt-grid">
+        <div class="pt-card active" onclick="chonPT(this,'Vi_dien_tu_Momo')">
+          <div class="pt-icon">📱</div>MoMo
+        </div>
+        <div class="pt-card" onclick="chonPT(this,'Vi_dien_tu_ZaloPay')">
+          <div class="pt-icon">💙</div>ZaloPay
+        </div>
+        <div class="pt-card" onclick="chonPT(this,'Vi_dien_tu_VNPay')">
+          <div class="pt-icon">🔴</div>VNPay
+        </div>
+        <div class="pt-card" onclick="chonPT(this,'The_tin_dung')">
+          <div class="pt-icon">💳</div>Thẻ tín dụng
+        </div>
+        <div class="pt-card" onclick="chonPT(this,'The_ghi_no')">
+          <div class="pt-icon">🏧</div>Thẻ ghi nợ
+        </div>
+        <div class="pt-card" onclick="chonPT(this,'Chuyen_khoan')">
+          <div class="pt-icon">🏦</div>Chuyển khoản
+        </div>
+      </div>
+    </div>
+
   </div>
 
-  <!-- Tóm tắt đơn hàng -->
-  <div class="section">
-    <h3>🧾 Tóm tắt đơn hàng</h3>
-    <div class="order-summary" id="order-summary">Đang tải...</div>
-    <button class="btn-thanh-toan" id="btn-tt" onclick="thanhToan()">🔒 Thanh toán ngay</button>
+  <!-- CỘT PHẢI — SIDEBAR -->
+  <div class="sidebar">
+
+    <!-- Tóm tắt chuyến bay -->
+    <div class="sidebar-card">
+      <div class="sidebar-header">Tóm tắt chuyến bay</div>
+      <div class="sidebar-body" id="sidebar-cb-info">
+        <div style="color:#aaa;font-size:13px;">Đang tải...</div>
+      </div>
+    </div>
+
+    <!-- Chi tiết giá + Thanh toán -->
+    <div class="sidebar-card">
+      <div class="sidebar-header">Chi tiết giá</div>
+      <div class="sidebar-body">
+        <div id="order-summary">Đang tải...</div>
+        <div class="gia-row-s total">
+          <span>Tổng thanh toán</span>
+          <span id="tong-hien-thi">0 ₫</span>
+        </div>
+        <button class="btn-thanh-toan" id="btn-tt" onclick="thanhToan()">
+          🔒 Thanh toán ngay
+        </button>
+        <p class="note-text">Bằng cách nhấn Thanh toán, bạn đồng ý với Điều khoản &amp; Điều kiện của QT TICKET.</p>
+      </div>
+    </div>
+
+    <!-- Hỗ trợ -->
+    <div class="hotro-box">
+      <div class="hotro-icon">🎧</div>
+      <div class="hotro-text">
+        <strong>Cần hỗ trợ?</strong>
+        <span>Gọi ngay 1900 1234 (24/7)</span>
+      </div>
+    </div>
+
   </div>
 </div>
 
 <!-- Màn hình thành công -->
-<div class="container">
-  <div class="section success-screen" id="success-screen">
+<div style="max-width:600px;margin:40px auto;padding:0 24px;">
+  <div class="success-screen" id="success-screen">
     <div class="success-icon">🎉</div>
     <h2>Đặt vé thành công!</h2>
     <p>Mã đặt vé của bạn:</p>
@@ -102,31 +230,54 @@
   </div>
 </div>
 
-<footer>© 2026 HaThanhF</footer>
+<!-- ===== FOOTER ===== -->
+<footer>
+  <div class="footer-grid">
+    <div>
+      <div class="footer-logo">QT<span>TICKET</span></div>
+      <p style="font-size:12px;line-height:1.7">Công ty TNHH Du Lịch và Dịch Vụ QT Ticket</p>
+      <p style="font-size:12px;margin-top:8px">Hotline: <span style="color:white">0986 830 471</span></p>
+      <p style="font-size:12px">Email: <span style="color:white">haquocthanhnb@gmail.com</span></p>
+    </div>
+    <div class="footer-col">
+      <h4>Quick Links</h4>
+      <a href="ve-chung-toi.html">Company Info</a>
+      <a href="ve-chung-toi.html">About Us</a>
+      <a href="ho-tro.html">Services</a>
+    </div>
+    <div class="footer-col">
+      <h4>Support</h4>
+      <a href="#">Careers</a>
+      <a href="#">Privacy Policy</a>
+      <a href="ho-tro.html">Contact</a>
+    </div>
+  </div>
+  <div class="footer-bottom">© 2026 QT TICKET. All rights reserved.</div>
+</footer>
 
 <script>
-const API      = 'http://127.0.0.1:5000/api';
-const cb       = JSON.parse(localStorage.getItem('chuyen_bay_di') || '{}');
-const dsVe     = JSON.parse(localStorage.getItem('danh_sach_ve')  || '[]');
-const tongTien = parseInt(localStorage.getItem('tong_tien') || 0);
+const API        = 'http://127.0.0.1:5000/api';
+const cb         = JSON.parse(localStorage.getItem('chuyen_bay_di') || '{}');
+const dsVe       = JSON.parse(localStorage.getItem('danh_sach_ve')  || '[]');
+const tongTien   = parseInt(localStorage.getItem('tong_tien') || 0);
 const khDangNhap = JSON.parse(localStorage.getItem('khach_hang') || 'null');
-let phuongThuc = 'Vi_dien_tu_Momo';
+let phuongThuc   = 'Vi_dien_tu_Momo';
 
-// Nếu đã đăng nhập thì điền sẵn thông tin
 function khoiTao() {
   if (khDangNhap) {
-    document.getElementById('ten-lh').value   = khDangNhap.ho_ten  || '';
-    document.getElementById('email-lh').value = khDangNhap.email   || '';
+    document.getElementById('ten-lh').value   = khDangNhap.ho_ten || '';
+    document.getElementById('email-lh').value = khDangNhap.email  || '';
     document.getElementById('sdt-lh').value   = khDangNhap.so_dien_thoai || '';
     document.getElementById('email-lh').disabled = true;
     document.getElementById('thong-bao-dang-nhap').innerHTML = `
-      <div class="dang-nhap-box">
+      <div class="dang-nhap-box ok">
         ✅ Đang đặt vé với tài khoản: <strong>${khDangNhap.email}</strong>
       </div>`;
   } else {
     document.getElementById('thong-bao-dang-nhap').innerHTML = `
       <div class="dang-nhap-box">
-        ⚠️ Bạn chưa đăng nhập. <a href="dang-nhap.html">Đăng nhập</a> để quản lý vé dễ hơn!
+        ⚠️ Bạn chưa đăng nhập.
+        <a href="dang-nhap.html">Đăng nhập</a> để quản lý vé dễ hơn!
       </div>`;
   }
 }
@@ -137,15 +288,48 @@ function chonPT(el, pt) {
   phuongThuc = pt;
 }
 
-function hienThiTomTat() {
+function hienThiSidebar() {
   if (!cb.so_hieu_cb) { window.location.href = 'index.html'; return; }
-  const gioDi  = cb.gio_cat_canh.split(' ')[1].slice(0,5);
-  const gioDen = cb.gio_ha_canh.split(' ')[1].slice(0,5);
+  const gioDi   = cb.gio_cat_canh.split(' ')[1].slice(0,5);
+  const gioDen  = cb.gio_ha_canh.split(' ')[1].slice(0,5);
+  const ngayBay = new Date(cb.gio_cat_canh).toLocaleDateString('vi-VN', { weekday:'short', day:'2-digit', month:'2-digit', year:'numeric' });
+
+  document.getElementById('sidebar-cb-info').innerHTML = `
+    <div class="route-row">
+      <div>
+        <div class="iata">${cb.san_bay_di}</div>
+        <div class="iata-city">${cb.thanh_pho_di || cb.san_bay_di}</div>
+      </div>
+      <div class="route-arrow">
+        <div class="route-line-h"></div>
+        <span style="font-size:16px;">✈</span>
+        <div class="route-line-h"></div>
+      </div>
+      <div style="text-align:right;">
+        <div class="iata">${cb.san_bay_den}</div>
+        <div class="iata-city">${cb.thanh_pho_den || cb.san_bay_den}</div>
+      </div>
+    </div>
+    <div class="cb-info-row">
+      <span style="color:#003580;">📅</span>
+      <span>${ngayBay} &nbsp; <strong style="color:#003580;">${gioDi} - ${gioDen}</strong></span>
+    </div>
+    <div class="cb-info-row">
+      <span style="color:#003580;">✈</span>
+      <span>${cb.so_hieu_cb} - ${cb.ten_hang}</span>
+    </div>
+    <div class="cb-info-row">
+      <span style="color:#003580;">💺</span>
+      <span>${(cb.hang_ghe||'').replace(/_/g,' ')}</span>
+    </div>`;
+}
+
+function hienThiTomTat() {
   document.getElementById('order-summary').innerHTML = `
-    <div class="sum-row"><span>✈ ${cb.so_hieu_cb} (${cb.ten_hang})</span><span>${gioDi} → ${gioDen}</span></div>
-    <div class="sum-row"><span>🛫 ${cb.thanh_pho_di} → ${cb.thanh_pho_den}</span><span>${cb.hang_ghe.replace(/_/g,' ')}</span></div>
-    <div class="sum-row"><span>👥 Số hành khách</span><span>${dsVe.length} người</span></div>
-    <div class="sum-row total"><span>Tổng tiền</span><span>${tongTien.toLocaleString('vi-VN')} ₫</span></div>`;
+    <div class="gia-row-s"><span>Giá vé (x${dsVe.length} vé)</span><span>${tongTien.toLocaleString('vi-VN')} ₫</span></div>
+    <div class="gia-row-s"><span>Thuế &amp; Phí</span><span style="color:#28a745;">Miễn phí</span></div>
+    <div class="gia-row-s"><span>Phí dịch vụ</span><span style="color:#28a745;">Miễn phí</span></div>`;
+  document.getElementById('tong-hien-thi').textContent = tongTien.toLocaleString('vi-VN') + ' ₫';
 }
 
 async function thanhToan() {
@@ -153,55 +337,37 @@ async function thanhToan() {
   const email = document.getElementById('email-lh').value.trim();
   const sdt   = document.getElementById('sdt-lh').value.trim();
 
-  if (!ten || !email || !sdt) {
-    alert('Vui lòng điền đầy đủ thông tin liên hệ!');
-    return;
-  }
+  if (!ten || !email || !sdt) { alert('Vui lòng điền đầy đủ thông tin liên hệ!'); return; }
 
   const btn = document.getElementById('btn-tt');
   btn.disabled = true;
   btn.textContent = '⏳ Đang xử lý...';
 
   try {
-    // Bước 1: Lấy khách hàng ID
     let khachHangId;
-
     if (khDangNhap) {
-      // Đã đăng nhập → dùng luôn
       khachHangId = khDangNhap.id;
     } else {
-      // Chưa đăng nhập → thử đăng ký mới
       let khRes  = await fetch(`${API}/khach-hang/dang-ky`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ ho_ten: ten, email: email, mat_khau: sdt, so_dien_thoai: sdt })
       });
       let khData = await khRes.json();
-
       if (khData.success) {
         khachHangId = khData.khach_hang.id;
       } else {
-        // Email đã tồn tại → thử đăng nhập
         let loginRes  = await fetch(`${API}/khach-hang/dang-nhap`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          method: 'POST', headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ email: email, mat_khau: sdt })
         });
         let loginData = await loginRes.json();
-        if (loginData.success) {
-          khachHangId = loginData.khach_hang.id;
-        } else {
-          alert('Email đã tồn tại nhưng mật khẩu không đúng!\nVui lòng đăng nhập trước.');
-          window.location.href = 'dang-nhap.html';
-          return;
-        }
+        if (loginData.success) { khachHangId = loginData.khach_hang.id; }
+        else { alert('Email đã tồn tại nhưng mật khẩu không đúng!\nVui lòng đăng nhập trước.'); window.location.href = 'dang-nhap.html'; return; }
       }
     }
 
-    // Bước 2: Tạo đặt vé
     const dvRes  = await fetch(`${API}/dat-ve/tao`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         khach_hang_id: khachHangId,
         loai_chuyen:   localStorage.getItem('loai_chuyen') || 'Mot_chieu',
@@ -211,10 +377,8 @@ async function thanhToan() {
     const dvData = await dvRes.json();
     if (!dvData.success) throw new Error(dvData.error);
 
-    // Bước 3: Thanh toán
     const ttRes  = await fetch(`${API}/thanh-toan/thanh-toan`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         dat_ve_id:   dvData.dat_ve_id,
         phuong_thuc: phuongThuc,
@@ -224,12 +388,10 @@ async function thanhToan() {
     const ttData = await ttRes.json();
     if (!ttData.success) throw new Error(ttData.error);
 
-    // Thành công
     document.getElementById('main-content').style.display = 'none';
     document.getElementById('success-screen').style.display = 'block';
     document.getElementById('ma-dat-ve-hien-thi').textContent = dvData.ma_dat_ve;
     document.getElementById('ma-gd-hien-thi').textContent     = ttData.ma_giao_dich;
-
     ['chuyen_bay_di','danh_sach_ve','tong_tien','so_nguoi_lon','so_tre_em','loai_chuyen'].forEach(k => localStorage.removeItem(k));
 
   } catch(e) {
@@ -240,6 +402,7 @@ async function thanhToan() {
 }
 
 khoiTao();
+hienThiSidebar();
 hienThiTomTat();
 </script>
 </body>

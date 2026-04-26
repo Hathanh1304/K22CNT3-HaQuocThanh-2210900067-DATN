@@ -6,339 +6,375 @@
   <title>QT TICKET - Đặt Vé</title>
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
-    body { font-family: 'Segoe UI', sans-serif; background: #f0f4f8; }
+    body { font-family: 'Segoe UI', sans-serif; background: #f5f7fa; color: #333; }
+
+    /* ===== HEADER ===== */
     header {
-      background: linear-gradient(135deg, #003580, #0066cc);
-      color: white; padding: 16px 40px;
+      background: white; padding: 0 48px;
       display: flex; align-items: center; justify-content: space-between;
+      height: 60px; box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+      position: sticky; top: 0; z-index: 200;
     }
-    header .logo { font-size: 24px; font-weight: 700; }
-    header .logo span { color: #f5a623; }
-    header nav a { color: white; text-decoration: none; margin-left: 24px; font-size: 14px; }
-
-    .container { max-width: 900px; margin: 32px auto; padding: 0 16px; }
-
-    /* Thông tin chuyến bay */
-    .flight-info {
-      background: linear-gradient(135deg, #003580, #0066cc);
-      color: white; border-radius: 12px; padding: 24px; margin-bottom: 24px;
+    .logo { font-size: 20px; font-weight: 700; color: #003580; letter-spacing: 1px; }
+    .logo span { color: #f5a623; }
+    .header-nav { display: flex; align-items: center; gap: 4px; }
+    .header-nav a {
+      color: #444; text-decoration: none; padding: 8px 16px;
+      font-size: 14px; font-weight: 500; border-radius: 6px; transition: all 0.2s;
     }
-    .flight-info h2 { font-size: 18px; margin-bottom: 16px; }
-    .flight-route {
-      display: flex; align-items: center; gap: 16px;
-      font-size: 28px; font-weight: 700;
-    }
-    .flight-route span { font-size: 16px; opacity: 0.8; }
-    .flight-details {
-      display: flex; gap: 32px; margin-top: 12px; font-size: 14px; opacity: 0.9;
+    .header-nav a:hover { background: #f0f4f8; color: #003580; }
+    .header-nav a.active { color: #003580; border-bottom: 2px solid #003580; border-radius: 0; font-weight: 600; }
+    .btn-signin {
+      background: #003580; color: white !important;
+      padding: 8px 20px !important; border-radius: 8px !important; font-weight: 600 !important;
     }
 
-    /* Form hành khách */
-    .section {
-      background: white; border-radius: 12px;
-      padding: 24px; margin-bottom: 20px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    /* ===== THANH BƯỚC ===== */
+    .steps-bar { background: white; border-bottom: 1px solid #eee; padding: 0 48px; }
+    .steps-inner { max-width: 1060px; margin: 0 auto; display: flex; align-items: center; padding: 18px 0; gap: 0; }
+    .step { display: flex; align-items: center; gap: 10px; flex: 1; }
+    .step-circle {
+      width: 32px; height: 32px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 13px; font-weight: 700; flex-shrink: 0;
+      border: 2px solid #ddd; color: #aaa; background: white;
     }
-    .section h3 {
-      font-size: 16px; font-weight: 700; color: #003580;
-      margin-bottom: 20px; padding-bottom: 12px;
-      border-bottom: 2px solid #f0f4f8;
+    .step-circle.done { background: #003580; color: white; border-color: #003580; }
+    .step-circle.active { background: #f5a623; color: white; border-color: #f5a623; }
+    .step-label { font-size: 13px; font-weight: 500; color: #aaa; }
+    .step-label.done { color: #003580; font-weight: 600; }
+    .step-label.active { color: #333; font-weight: 600; }
+    .step-line { flex: 1; height: 2px; background: #e0e0e0; margin: 0 12px; }
+    .step-line.done { background: #003580; }
+
+    /* ===== LAYOUT 2 CỘT ===== */
+    .page-body { max-width: 1060px; margin: 32px auto; padding: 0 24px; display: grid; grid-template-columns: 1fr 320px; gap: 24px; align-items: start; }
+
+    /* ===== CỘT TRÁI — FORM ===== */
+    .card {
+      background: white; border-radius: 12px; padding: 24px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.06); margin-bottom: 16px;
+    }
+    .card-title {
+      font-size: 15px; font-weight: 700; color: #333;
+      margin-bottom: 20px; display: flex; align-items: center; gap: 8px;
+    }
+    .card-title .icon-circle {
+      width: 28px; height: 28px; border-radius: 50%;
+      background: #e8f0fe; display: flex; align-items: center; justify-content: center;
+      font-size: 13px;
     }
     .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px; }
     .form-row.three { grid-template-columns: 1fr 1fr 1fr; }
     .form-group { display: flex; flex-direction: column; gap: 6px; }
-    .form-group label { font-size: 12px; font-weight: 600; color: #666; text-transform: uppercase; }
-    .form-group input,
-    .form-group select {
-      padding: 12px 14px; border: 2px solid #e0e0e0;
+    .form-group label { font-size: 12px; font-weight: 600; color: #888; }
+    .form-group input, .form-group select {
+      padding: 11px 14px; border: 1.5px solid #e0e0e0;
       border-radius: 8px; font-size: 14px; outline: none;
-      transition: border-color 0.2s;
+      transition: border-color 0.2s; background: #fafafa;
+      font-family: inherit;
     }
-    .form-group input:focus,
-    .form-group select:focus { border-color: #0066cc; }
+    .form-group input:focus, .form-group select:focus {
+      border-color: #003580; background: white;
+      box-shadow: 0 0 0 3px rgba(0,53,128,0.07);
+    }
+    .form-group input::placeholder { color: #bbb; }
 
-    /* Tóm tắt giá */
-    .gia-tong {
-      background: #fff8e8; border: 2px solid #f5a623;
-      border-radius: 12px; padding: 20px;
+    /* Hành lý thêm */
+    .hanh-ly-box {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 14px 0;
     }
-    .gia-tong h3 { color: #e8920e; margin-bottom: 16px; }
-    .gia-row {
-      display: flex; justify-content: space-between;
-      font-size: 14px; color: #555; margin-bottom: 8px;
-    }
-    .gia-row.total {
-      font-size: 18px; font-weight: 700; color: #e84545;
-      border-top: 1px solid #f5a623; padding-top: 12px; margin-top: 8px;
-    }
+    .hanh-ly-left { display: flex; align-items: center; gap: 12px; }
+    .hanh-ly-icon { width: 36px; height: 36px; background: #e8f0fe; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 16px; }
+    .hanh-ly-text { font-size: 13px; color: #555; }
+    .hanh-ly-text strong { display: block; font-size: 14px; color: #333; margin-bottom: 2px; }
+    .btn-them-hanh-ly { color: #003580; font-size: 13px; font-weight: 600; background: none; border: none; cursor: pointer; text-decoration: underline; }
+
+    /* ===== CỘT PHẢI — SIDEBAR ===== */
+    .sidebar { position: sticky; top: 80px; }
+    .sidebar-card { background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.08); margin-bottom: 16px; }
+    .sidebar-header { background: #003580; color: white; padding: 16px 20px; font-size: 14px; font-weight: 700; }
+    .sidebar-body { padding: 18px 20px; }
+
+    .route-row { display: flex; align-items: center; gap: 8px; margin-bottom: 12px; }
+    .iata { font-size: 22px; font-weight: 700; color: #003580; }
+    .iata-city { font-size: 11px; color: #888; }
+    .route-arrow { flex: 1; display: flex; align-items: center; gap: 4px; color: #aaa; }
+    .route-line-h { flex: 1; height: 1px; background: #ddd; }
+
+    .cb-info-row { display: flex; align-items: center; gap: 8px; padding: 10px 0; border-top: 1px solid #f0f0f0; font-size: 13px; color: #555; }
+    .cb-info-row .icon { color: #003580; }
+
+    .gia-row-s { display: flex; justify-content: space-between; font-size: 13px; color: #666; margin-bottom: 8px; }
+    .gia-row-s.total { font-size: 16px; font-weight: 700; color: #e84545; border-top: 1px solid #eee; padding-top: 12px; margin-top: 4px; }
 
     .btn-tiep {
-      width: 100%; padding: 16px;
-      background: linear-gradient(135deg, #f5a623, #e8920e);
+      width: 100%; padding: 14px; background: #f5a623;
       color: white; border: none; border-radius: 10px;
-      font-size: 18px; font-weight: 700; cursor: pointer;
-      margin-top: 20px; transition: transform 0.1s;
+      font-size: 16px; font-weight: 700; cursor: pointer;
+      transition: all 0.2s; margin-top: 16px;
     }
-    .btn-tiep:hover { transform: translateY(-1px); }
+    .btn-tiep:hover { background: #e8920e; transform: translateY(-1px); }
 
-    footer { background: #002050; color: #aaa; text-align: center; padding: 24px; font-size: 13px; margin-top: 40px; }
+    .note-text { font-size: 11px; color: #aaa; text-align: center; margin-top: 10px; line-height: 1.5; }
+
+    /* Hỗ trợ box */
+    .hotro-box { display: flex; align-items: center; gap: 12px; padding: 14px 20px; background: white; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
+    .hotro-icon { width: 40px; height: 40px; border-radius: 50%; background: #e8f0fe; display: flex; align-items: center; justify-content: center; font-size: 18px; flex-shrink: 0; }
+    .hotro-text strong { font-size: 13px; color: #333; display: block; }
+    .hotro-text span { font-size: 12px; color: #888; }
+
+    /* Khứ hồi info bar */
+    .khu-hoi-bar { background: white; border-radius: 10px; padding: 14px 18px; margin-bottom: 16px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
+    .khu-hoi-row { display: flex; align-items: center; gap: 10px; font-size: 13px; }
+    .khu-hoi-row + .khu-hoi-row { margin-top: 10px; padding-top: 10px; border-top: 1px dashed #eee; }
+    .badge-chieu { padding: 3px 10px; border-radius: 12px; font-size: 11px; font-weight: 700; white-space: nowrap; }
+    .badge-di { background: #e8f0fe; color: #003580; }
+    .badge-ve { background: #fff3e0; color: #e65100; }
+
+    footer { background: #111827; color: #9ca3af; text-align: center; padding: 24px; font-size: 13px; margin-top: 40px; }
+    .footer-grid { display: grid; grid-template-columns: 1.4fr 1fr 1fr; gap: 32px; max-width: 1060px; margin: 0 auto 32px; text-align: left; }
+    .footer-logo { font-size: 20px; font-weight: 700; color: white; margin-bottom: 10px; }
+    .footer-logo span { color: #f5a623; }
+    .footer-col h4 { color: white; font-size: 12px; font-weight: 600; text-transform: uppercase; margin-bottom: 14px; }
+    .footer-col a { display: block; color: #9ca3af; text-decoration: none; margin-bottom: 8px; font-size: 13px; }
+    .footer-col a:hover { color: white; }
+    .footer-bottom { border-top: 0.5px solid #374151; padding-top: 16px; font-size: 12px; color: #6b7280; max-width: 1060px; margin: 0 auto; }
+
+    @media (max-width: 768px) {
+      .page-body { grid-template-columns: 1fr; }
+      .sidebar { position: static; }
+      header { padding: 0 16px; }
+      .steps-bar { padding: 0 16px; }
+    }
   </style>
 </head>
 <body>
 
+<!-- ===== HEADER ===== -->
 <header>
-  <div class="logo">QT<span>TICKET</span></div>
-  <nav>
-    <a href="index.html">← Quay lại</a>
-    <a href="dang-nhap.html">Đăng nhập</a>
+  <div class="logo">QT <span>TICKET</span></div>
+  <nav class="header-nav" id="nav-menu">
+    <a href="index.html">Trang chủ</a>
+    <a href="ho-tro.html">🎧 Hỗ trợ</a>
   </nav>
 </header>
-
-<div class="container">
-  <!-- Thông tin chuyến bay -->
-  <div class="flight-info" id="flight-info">
-    <h2>✈ Thông tin chuyến bay</h2>
-    <div class="flight-route" id="flight-route">Đang tải...</div>
-    <div class="flight-details" id="flight-details"></div>
-  </div>
-
-  <!-- Form thông tin hành khách -->
-  <div id="danh-sach-hanh-khach"></div>
-
-  <!-- Tóm tắt giá -->
-  <div class="section">
-    <div class="gia-tong">
-      <h3>💰 Tóm tắt giá</h3>
-      <div id="gia-chi-tiet"></div>
-      <div class="gia-row total">
-        <span>Tổng cộng</span>
-        <span id="tong-tien">0 ₫</span>
-      </div>
+<!-- ===== THANH BƯỚC ===== -->
+<div class="steps-bar">
+  <div class="steps-inner">
+    <div class="step">
+      <div class="step-circle done">✓</div>
+      <div class="step-label done">1. Chọn chuyến bay</div>
     </div>
-    <button class="btn-tiep" onclick="tiepTucThanhToan()" id="btn-thanh-toan">Tiếp tục thanh toán →</button>
+    <div class="step-line done"></div>
+    <div class="step">
+      <div class="step-circle active">2</div>
+      <div class="step-label active">2. Thông tin hành khách</div>
+    </div>
+    <div class="step-line"></div>
+    <div class="step">
+      <div class="step-circle">3</div>
+      <div class="step-label">3. Thanh toán</div>
+    </div>
   </div>
 </div>
 
-<footer>© 2026 FlightVN</footer>
+<!-- ===== NỘI DUNG CHÍNH ===== -->
+<div class="page-body">
+
+  <!-- CỘT TRÁI -->
+  <div class="left-col">
+
+    <!-- Thông tin khứ hồi (nếu có) -->
+    <div id="khu-hoi-info"></div>
+
+    <!-- Form hành khách -->
+    <div id="danh-sach-hanh-khach"></div>
+
+    <!-- Hành lý thêm -->
+    <div class="card">
+      <div class="hanh-ly-box">
+        <div class="hanh-ly-left">
+          <div class="hanh-ly-icon">🧳</div>
+          <div class="hanh-ly-text">
+            <strong>Hành lý thêm</strong>
+            <span id="hanh-ly-mac-dinh">Bao gồm 7kg xách tay và 20kg ký gửi mặc định.</span>
+          </div>
+        </div>
+        <button class="btn-them-hanh-ly">Thêm hành lý</button>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- CỘT PHẢI — SIDEBAR -->
+  <div class="sidebar">
+
+    <!-- Tóm tắt chuyến bay -->
+    <div class="sidebar-card">
+      <div class="sidebar-header">Tóm tắt chuyến bay</div>
+      <div class="sidebar-body" id="sidebar-cb-info">
+        <div style="color:#aaa;font-size:13px;">Đang tải...</div>
+      </div>
+    </div>
+
+    <!-- Tóm tắt giá -->
+    <div class="sidebar-card">
+      <div class="sidebar-header">Chi tiết giá</div>
+      <div class="sidebar-body">
+        <div id="gia-chi-tiet"></div>
+        <div class="gia-row-s total">
+          <span>Tổng cộng</span>
+          <span id="tong-tien">0 VND</span>
+        </div>
+        <button class="btn-tiep" onclick="tiepTucThanhToan()">Tiếp tục</button>
+        <p class="note-text">Bằng cách nhấn Tiếp tục, bạn đồng ý với Điều khoản &amp; Điều kiện của QT TICKET.</p>
+      </div>
+    </div>
+
+    <!-- Cần hỗ trợ -->
+    <div class="hotro-box">
+      <div class="hotro-icon">🎧</div>
+      <div class="hotro-text">
+        <strong>Cần hỗ trợ?</strong>
+        <span>Gọi ngay 0986 830 471 (24/7)</span>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ===== FOOTER ===== -->
+<footer class="footer-wrap">
+  <div class="footer-grid">
+    <div>
+      <div class="footer-logo">QT<span>TICKET</span></div>
+      <p style="font-size:13px;line-height:1.7">Công ty TNHH Du Lịch và Dịch Vụ QT Ticket</p>
+      <p style="font-size:13px;margin-top:4px">số nhà 208, đường Tuệ Tĩnh, phố Lê Lợi Nam Thành, TP. Hoa Lư, tỉnh Ninh Bình</p>
+      <p style="font-size:13px;margin-top:10px">Hotline: <span style="color:white">0986 830 471</span></p>
+      <p style="font-size:13px">Email: <span style="color:white">haquocthanhnb@gmail.com</span></p>
+    </div>
+    <div class="footer-col">
+      <h4>Liên kết nhanh</h4>
+      <a href="ve-chung-toi.html">Giới thiệu công ty</a>
+      <a href="ve-chung-toi.html">Về chúng tôi</a>
+      <a href="ho-tro.html">Dịch vụ</a>
+    </div>
+    <div class="footer-col">
+      <h4>Hỗ trợ</h4>
+      <a href="ho-tro.html">Câu hỏi thường gặp</a>
+      <a href="ho-tro.html">Chính sách bảo mật</a>
+      <a href="ho-tro.html">Liên hệ</a>
+    </div>
+  </div>
+  <div class="footer-bottom">© 2026 QT TICKET. Your trusted travel partner.</div>
+</footer>
 
 <script>
-const API = 'http://127.0.0.1:5000/api';
+const API        = 'http://127.0.0.1:5000/api';
 const cb         = JSON.parse(localStorage.getItem('chuyen_bay_di') || '{}');
 const loaiChuyen = localStorage.getItem('loai_chuyen') || 'Mot_chieu';
 const soNguoiLon = parseInt(localStorage.getItem('so_nguoi_lon') || 1);
 const soTreEm    = parseInt(localStorage.getItem('so_tre_em')   || 0);
-// Đọc chiều về từ localStorage (đã chọn sẵn ở trang tìm kiếm)
 let cbVe = loaiChuyen === 'Khu_hoi'
   ? JSON.parse(localStorage.getItem('chuyen_bay_ve') || 'null')
   : null;
 
-// ===== HIỂN THỊ THÔNG TIN CHUYẾN BAY =====
-function hienThiChuyenBay() {
+// ===== HIỂN THỊ SIDEBAR THÔNG TIN CHUYẾN BAY =====
+function hienThiSidebar() {
   if (!cb.so_hieu_cb) { window.location.href = 'index.html'; return; }
 
-  if (loaiChuyen === 'Khu_hoi') {
-    // Hiển thị thông tin cả 2 chiều
-    const container = document.querySelector('.container');
-    const infoBar = document.createElement('div');
-    infoBar.style.cssText = 'background:white;border-radius:12px;padding:16px 24px;margin-bottom:16px;box-shadow:0 2px 8px rgba(0,0,0,0.08);';
+  const gioDi  = cb.gio_cat_canh.split(' ')[1].slice(0,5);
+  const gioDen = cb.gio_ha_canh.split(' ')[1].slice(0,5);
+  const ngayBay = new Date(cb.gio_cat_canh).toLocaleDateString('vi-VN', { weekday:'short', day:'2-digit', month:'2-digit', year:'numeric' });
+  const gioBay = Math.floor(cb.thoi_gian_bay/60)+'h'+(cb.thoi_gian_bay%60?cb.thoi_gian_bay%60+'m':'');
 
-    const gioDi1  = cb.gio_cat_canh.split(' ')[1].slice(0,5);
-    const gioDen1 = cb.gio_ha_canh.split(' ')[1].slice(0,5);
-    let veInfo = '';
-    if (cbVe) {
-      const gioDi2  = cbVe.gio_cat_canh.split(' ')[1].slice(0,5);
-      const gioDen2 = cbVe.gio_ha_canh.split(' ')[1].slice(0,5);
-      veInfo = `<div style="display:flex;align-items:center;gap:12px;margin-top:10px;padding-top:10px;border-top:1px dashed #e0e0e0;">
-        <span style="background:#fff3e0;color:#e65100;padding:4px 10px;border-radius:12px;font-size:12px;font-weight:600;">↩ Chiều về</span>
-        <span style="font-weight:600;">${cbVe.so_hieu_cb}</span>
-        <span>${cbVe.san_bay_di} → ${cbVe.san_bay_den}</span>
-        <span style="color:#888;">${gioDi2} → ${gioDen2}</span>
-        <span style="color:#e84545;font-weight:700;margin-left:auto;">${cbVe.gia_nguoi_lon.toLocaleString('vi-VN')} ₫</span>
+  let html = `
+    <div class="route-row">
+      <div>
+        <div class="iata">${cb.san_bay_di}</div>
+        <div class="iata-city">${cb.thanh_pho_di || cb.san_bay_di}</div>
+      </div>
+      <div class="route-arrow">
+        <div class="route-line-h"></div>
+        <span style="font-size:16px;">✈</span>
+        <div class="route-line-h"></div>
+      </div>
+      <div style="text-align:right;">
+        <div class="iata">${cb.san_bay_den}</div>
+        <div class="iata-city">${cb.thanh_pho_den || cb.san_bay_den}</div>
+      </div>
+    </div>
+    <div class="cb-info-row">
+      <span class="icon">📅</span>
+      <span>${ngayBay} &nbsp; <strong style="color:#003580;">${gioDi} - ${gioDen}</strong></span>
+    </div>
+    <div class="cb-info-row">
+      <span class="icon">✈</span>
+      <span>${cb.so_hieu_cb} - ${cb.ten_hang}</span>
+    </div>
+    <div class="cb-info-row">
+      <span class="icon">💺</span>
+      <span>${(cb.hang_ghe||'').replace(/_/g,' ')} &nbsp;|&nbsp; 🧳 ${cb.han_hanh_ly_kg}kg</span>
+    </div>`;
+
+  // Nếu khứ hồi thêm thông tin chiều về
+  if (loaiChuyen === 'Khu_hoi' && cbVe) {
+    const gioDi2  = cbVe.gio_cat_canh.split(' ')[1].slice(0,5);
+    const gioDen2 = cbVe.gio_ha_canh.split(' ')[1].slice(0,5);
+    const ngayVe  = new Date(cbVe.gio_cat_canh).toLocaleDateString('vi-VN', { weekday:'short', day:'2-digit', month:'2-digit', year:'numeric' });
+    html += `
+      <div style="margin-top:14px;padding-top:14px;border-top:2px dashed #e0e0e0;">
+        <div style="font-size:11px;font-weight:700;color:#e65100;text-transform:uppercase;margin-bottom:10px;">↩ Chiều về</div>
+        <div class="route-row">
+          <div><div class="iata">${cbVe.san_bay_di}</div></div>
+          <div class="route-arrow"><div class="route-line-h"></div><span style="font-size:16px;">✈</span><div class="route-line-h"></div></div>
+          <div style="text-align:right;"><div class="iata">${cbVe.san_bay_den}</div></div>
+        </div>
+        <div class="cb-info-row"><span class="icon">📅</span><span>${ngayVe} &nbsp; <strong style="color:#003580;">${gioDi2} - ${gioDen2}</strong></span></div>
+        <div class="cb-info-row"><span class="icon">✈</span><span>${cbVe.so_hieu_cb} - ${cbVe.ten_hang}</span></div>
       </div>`;
-    }
+  }
 
-    infoBar.innerHTML = `
-      <div style="display:flex;align-items:center;gap:12px;">
-        <span style="background:#e8f0fe;color:#003580;padding:4px 10px;border-radius:12px;font-size:12px;font-weight:600;">✈ Chiều đi</span>
-        <span style="font-weight:600;">${cb.so_hieu_cb}</span>
+  document.getElementById('sidebar-cb-info').innerHTML = html;
+
+  // Cập nhật hành lý mặc định
+  document.getElementById('hanh-ly-mac-dinh').textContent =
+    `Bao gồm 7kg xách tay và ${cb.han_hanh_ly_kg || 20}kg ký gửi mặc định.`;
+}
+
+// ===== HIỂN THỊ THÔNG TIN KHỨ HỒI Ở CỘT TRÁI =====
+function hienThiKhuHoi() {
+  if (loaiChuyen !== 'Khu_hoi' || !cbVe) return;
+  const gioDi1  = cb.gio_cat_canh.split(' ')[1].slice(0,5);
+  const gioDen1 = cb.gio_ha_canh.split(' ')[1].slice(0,5);
+  const gioDi2  = cbVe.gio_cat_canh.split(' ')[1].slice(0,5);
+  const gioDen2 = cbVe.gio_ha_canh.split(' ')[1].slice(0,5);
+  document.getElementById('khu-hoi-info').innerHTML = `
+    <div class="khu-hoi-bar">
+      <div class="khu-hoi-row">
+        <span class="badge-chieu badge-di">✈ Chiều đi</span>
+        <strong>${cb.so_hieu_cb}</strong>
         <span>${cb.san_bay_di} → ${cb.san_bay_den}</span>
         <span style="color:#888;">${gioDi1} → ${gioDen1}</span>
-        <span style="color:#e84545;font-weight:700;margin-left:auto;">${cb.gia_nguoi_lon.toLocaleString('vi-VN')} ₫</span>
+        <span style="color:#e84545;font-weight:700;margin-left:auto;">${Number(cb.gia_nguoi_lon).toLocaleString('vi-VN')} ₫</span>
       </div>
-      ${veInfo}`;
-    container.insertBefore(infoBar, container.firstChild);
-  }
-
-  hienThiThongTinCB(cb, 'flight-route', 'flight-details', loaiChuyen === 'Khu_hoi' ? '✈ Chiều đi' : '✈ Thông tin chuyến bay');
-}
-
-function hienThiThongTinCB(chuyenBay, routeId, detailId, tieuDe) {
-  const gioDi  = chuyenBay.gio_cat_canh.split(' ')[1].slice(0,5);
-  const gioDen = chuyenBay.gio_ha_canh.split(' ')[1].slice(0,5);
-  const gioBay = Math.floor(chuyenBay.thoi_gian_bay/60)+'h'+(chuyenBay.thoi_gian_bay%60?chuyenBay.thoi_gian_bay%60+'m':'');
-
-  document.getElementById('flight-info').querySelector('h2').textContent = tieuDe;
-  document.getElementById(routeId).innerHTML =
-    `${chuyenBay.thanh_pho_di} <span>(${chuyenBay.san_bay_di})</span> → ${chuyenBay.thanh_pho_den} <span>(${chuyenBay.san_bay_den})</span>`;
-  document.getElementById(detailId).innerHTML =
-    `<span>✈ ${chuyenBay.so_hieu_cb} - ${chuyenBay.ten_hang}</span>
-     <span>🕐 ${gioDi} → ${gioDen} (${gioBay})</span>
-     <span>💺 ${chuyenBay.hang_ghe.replace(/_/g,' ')}</span>
-     <span>🧳 Hành lý ${chuyenBay.han_hanh_ly_kg}kg</span>`;
-}
-
-// ===== BƯỚC 2: CHỌN CHUYẾN CHIỀU VỀ =====
-async function hienThiChonChieuVe() {
-  buoc = 2;
-  // Cập nhật thanh bước
-  document.getElementById('buoc1-label').style.cssText = 'color:#28a745;background:#e8f5e9;padding:6px 16px;border-radius:20px;';
-  document.getElementById('buoc1-label').textContent = '✅ Bước 1: Chiều đi đã chọn';
-  document.getElementById('buoc2-label').style.cssText = 'color:#003580;background:#e8f0fe;padding:6px 16px;border-radius:20px;';
-  document.getElementById('buoc2-label').textContent = '↩ Bước 2: Chọn chuyến chiều về';
-
-  // Ẩn form hành khách và giá
-  document.getElementById('danh-sach-hanh-khach').innerHTML = '';
-  document.getElementById('gia-chi-tiet').innerHTML = '';
-  document.getElementById('tong-tien').textContent = '0 ₫';
-
-  // Tìm chuyến về: đảo chiều di/den, dùng ngay_ve
-  const ngayVe  = localStorage.getItem('ngay_ve') || '';
-  const sanBayDi  = localStorage.getItem('san_bay_den') || cb.san_bay_den;
-  const sanBayDen = localStorage.getItem('san_bay_di')  || cb.san_bay_di;
-  const hangGhe   = localStorage.getItem('hang_ghe_kh') || 'Pho_thong';
-  const soHK = soNguoiLon + soTreEm;
-
-  // Hiển thị khung tìm chuyến về
-  const container = document.querySelector('.container');
-  let khungVe = document.getElementById('khung-chieu-ve');
-  if (!khungVe) {
-    khungVe = document.createElement('div');
-    khungVe.id = 'khung-chieu-ve';
-    khungVe.style.cssText = 'background:white;border-radius:12px;padding:24px;margin-bottom:20px;box-shadow:0 2px 8px rgba(0,0,0,0.08);';
-    container.insertBefore(khungVe, document.getElementById('danh-sach-hanh-khach'));
-  }
-  // Lấy loại tuyến từ chuyến đi
-  const loaiTuyen = cb.loai_tuyen || 'noi_dia';
-
-  khungVe.innerHTML = `
-    <h3 style="color:#003580;font-size:16px;margin-bottom:16px;padding-bottom:12px;border-bottom:2px solid #f0f4f8;">
-      ↩ Chọn chuyến bay chiều về: ${sanBayDi} → ${sanBayDen}
-    </h3>
-    <div style="display:flex;align-items:flex-end;gap:12px;margin-bottom:16px;flex-wrap:wrap;">
-      <div>
-        <label style="font-size:12px;font-weight:600;color:#666;text-transform:uppercase;display:block;margin-bottom:4px;">Ngày về</label>
-        <input type="date" id="ngay-ve-input" value="${ngayVe}"
-          style="padding:10px 14px;border:2px solid #e0e0e0;border-radius:8px;font-size:14px;outline:none;">
+      <div class="khu-hoi-row">
+        <span class="badge-chieu badge-ve">↩ Chiều về</span>
+        <strong>${cbVe.so_hieu_cb}</strong>
+        <span>${cbVe.san_bay_di} → ${cbVe.san_bay_den}</span>
+        <span style="color:#888;">${gioDi2} → ${gioDen2}</span>
+        <span style="color:#e84545;font-weight:700;margin-left:auto;">${Number(cbVe.gia_nguoi_lon).toLocaleString('vi-VN')} ₫</span>
       </div>
-      <button onclick="timLaiChieuVe()"
-        style="padding:10px 20px;background:#003580;color:white;border:none;border-radius:8px;font-size:14px;font-weight:600;cursor:pointer;">
-        🔍 Tìm chuyến về
-      </button>
-    </div>
-    <div id="ds-chuyen-ve" style="color:#666;text-align:center;padding:20px;">⏳ Đang tìm chuyến về...</div>
-  `;
-
-  await goiFindChieuVe(sanBayDi, sanBayDen, ngayVe, hangGhe, soHK, loaiTuyen);
-}
-
-async function timLaiChieuVe() {
-  const ngayMoi = document.getElementById('ngay-ve-input').value;
-  const sanBayDi  = localStorage.getItem('san_bay_den') || cb.san_bay_den;
-  const sanBayDen = localStorage.getItem('san_bay_di')  || cb.san_bay_di;
-  const hangGhe   = localStorage.getItem('hang_ghe_kh') || 'Pho_thong';
-  const soHK = soNguoiLon + soTreEm;
-  const loaiTuyen = cb.loai_tuyen || 'noi_dia';
-  document.getElementById('ds-chuyen-ve').innerHTML = '<div style="text-align:center;padding:20px;color:#666;">⏳ Đang tìm...</div>';
-  await goiFindChieuVe(sanBayDi, sanBayDen, ngayMoi, hangGhe, soHK, loaiTuyen);
-}
-
-async function goiFindChieuVe(sanBayDi, sanBayDen, ngayVe, hangGhe, soHK, loaiTuyen) {
-  try {
-    const url  = `${API}/chuyen-bay/tim-kiem?tu=${sanBayDi}&den=${sanBayDen}&ngay=${ngayVe}&hang=${hangGhe}&so_hk=${soHK}&loai_tuyen=${loaiTuyen}`;
-    const res  = await fetch(url);
-    const data = await res.json();
-
-    if (!data.length) {
-      document.getElementById('ds-chuyen-ve').innerHTML = `
-        <div style="background:#ffebee;border:1px solid #e84545;border-radius:8px;padding:16px;color:#c62828;">
-          😔 Không tìm thấy chuyến bay chiều về.<br>
-          <small style="color:#888;margin-top:8px;display:block;">
-            Tuyến: ${sanBayDi} → ${sanBayDen} | Ngày: ${ngayVe || 'Chưa chọn ngày về'}
-          </small>
-          ${!ngayVe ? '<br><strong>⚠️ Bạn chưa chọn ngày về khi tìm kiếm!</strong>' : ''}
-        </div>`;
-      return;
-    }
-
-    let html = '';
-    data.forEach(chuyenBay => {
-      const gioDi  = chuyenBay.gio_cat_canh.split(' ')[1].slice(0,5);
-      const gioDen = chuyenBay.gio_ha_canh.split(' ')[1].slice(0,5);
-      const gioBay = Math.floor(chuyenBay.thoi_gian_bay/60)+'h'+(chuyenBay.thoi_gian_bay%60?chuyenBay.thoi_gian_bay%60+'m':'');
-      const gia    = chuyenBay.gia_nguoi_lon.toLocaleString('vi-VN');
-      html += `
-        <div style="border:2px solid #e0e0e0;border-radius:10px;padding:16px;margin-bottom:12px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;transition:border-color 0.2s;"
-             id="ve-cb-${chuyenBay.id}"
-             onclick="chonChuyenVe(${JSON.stringify(chuyenBay).replace(/"/g,'&quot;')}, this)">
-          <div style="display:flex;align-items:center;gap:12px;">
-            <div style="width:44px;height:44px;border-radius:10px;background:#003580;color:white;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px;">${chuyenBay.ma_hang}</div>
-            <div>
-              <div style="font-weight:600;color:#333;">${chuyenBay.so_hieu_cb} - ${chuyenBay.ten_hang}</div>
-              <div style="font-size:13px;color:#888;">${gioDi} → ${gioDen} (${gioBay})</div>
-            </div>
-          </div>
-          <div style="text-align:right;">
-            <div style="font-size:20px;font-weight:700;color:#e84545;">${gia} ₫</div>
-            <div style="font-size:12px;color:#f5a623;">Còn ${chuyenBay.so_ghe_con_lai} ghế</div>
-          </div>
-        </div>`;
-    });
-    document.getElementById('ds-chuyen-ve').innerHTML = html;
-  } catch(e) {
-    document.getElementById('ds-chuyen-ve').innerHTML = '<p style="color:#e84545;">❌ Lỗi tải chuyến bay chiều về.</p>';
-  }
-}
-
-function chonChuyenVe(chuyenBay, el) {
-  // Bỏ highlight cũ
-  document.querySelectorAll('[id^="ve-cb-"]').forEach(e => {
-    e.style.borderColor = '#e0e0e0';
-    e.style.background  = 'white';
-  });
-  // Highlight chuyến được chọn
-  el.style.borderColor = '#003580';
-  el.style.background  = '#e8f0fe';
-  cbVe = chuyenBay;
-  localStorage.setItem('chuyen_bay_ve', JSON.stringify(cbVe));
-
-  // Hiện thông báo đã chọn chuyến về
-  const gioDi  = chuyenBay.gio_cat_canh.split(' ')[1].slice(0,5);
-  const gioDen = chuyenBay.gio_ha_canh.split(' ')[1].slice(0,5);
-  const notice = document.getElementById('chon-ve-notice');
-  if (!notice) {
-    const div = document.createElement('div');
-    div.id = 'chon-ve-notice';
-    div.style.cssText = 'background:#e8f5e9;border:1px solid #28a745;border-radius:10px;padding:12px 16px;margin-bottom:16px;color:#1b5e20;font-size:14px;font-weight:600;';
-    div.innerHTML = `✅ Đã chọn chiều về: <strong>${chuyenBay.so_hieu_cb}</strong> (${gioDi} → ${gioDen}) — ${chuyenBay.gia_nguoi_lon.toLocaleString('vi-VN')} ₫/người`;
-    document.getElementById('khung-chieu-ve').after(div);
-  } else {
-    notice.innerHTML = `✅ Đã chọn chiều về: <strong>${chuyenBay.so_hieu_cb}</strong> (${gioDi} → ${gioDen}) — ${chuyenBay.gia_nguoi_lon.toLocaleString('vi-VN')} ₫/người`;
-  }
-
-  // Hiện form hành khách + nút thanh toán + tính tổng
-  taoFormHanhKhach();
-  tinhGia();
-  document.getElementById('btn-thanh-toan').style.display = 'block';
-
-  // Scroll xuống form
-  document.getElementById('danh-sach-hanh-khach').scrollIntoView({ behavior: 'smooth' });
+    </div>`;
 }
 
 // ===== FORM HÀNH KHÁCH =====
 function taoFormHanhKhach() {
   let html = '';
   for (let i = 0; i < soNguoiLon; i++) {
-    html += formHanhKhach(i+1, 'Nguoi_lon', `Người lớn ${i+1}`);
+    html += formHanhKhach(i+1, 'Nguoi_lon', `Người lớn ${soNguoiLon > 1 ? i+1 : ''}`);
   }
   for (let i = 0; i < soTreEm; i++) {
     html += formHanhKhach(soNguoiLon+i+1, 'Tre_em', `Trẻ em ${i+1}`);
@@ -348,13 +384,16 @@ function taoFormHanhKhach() {
 
 function formHanhKhach(idx, loai, tieude) {
   return `
-  <div class="section">
-    <h3>👤 ${tieude}</h3>
+  <div class="card">
+    <div class="card-title">
+      <div class="icon-circle">👤</div>
+      Thông tin hành khách ${tieude ? '— ' + tieude : ''}
+    </div>
     <input type="hidden" id="loai_${idx}" value="${loai}">
     <div class="form-row">
       <div class="form-group">
-        <label>Họ và tên (viết hoa)</label>
-        <input type="text" id="hoten_${idx}" placeholder="VD: NGUYEN VAN AN" style="text-transform:uppercase">
+        <label>Họ và tên (như trên CCCD/Hộ chiếu)</label>
+        <input type="text" id="hoten_${idx}" placeholder="NGUYEN VAN A" style="text-transform:uppercase">
       </div>
       <div class="form-group">
         <label>Giới tính</label>
@@ -364,18 +403,28 @@ function formHanhKhach(idx, loai, tieude) {
         </select>
       </div>
     </div>
-    <div class="form-row three">
+    <div class="form-row">
       <div class="form-group">
         <label>Ngày sinh</label>
         <input type="date" id="ngaysinh_${idx}">
       </div>
       <div class="form-group">
-        <label>Quốc tịch</label>
-        <input type="text" id="quoctich_${idx}" value="Việt Nam">
+        <label>Số CCCD/Hộ chiếu</label>
+        <input type="text" id="hochieu_${idx}" placeholder="00123456789">
+      </div>
+    </div>
+    <div class="card-title" style="margin-top:8px;padding-top:16px;border-top:1px solid #f0f0f0;">
+      <div class="icon-circle">📞</div>
+      Thông tin liên hệ
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>Số điện thoại</label>
+        <input type="tel" id="sdt_${idx}" placeholder="+84 901 234 567">
       </div>
       <div class="form-group">
-        <label>Số hộ chiếu (nếu có)</label>
-        <input type="text" id="hochieu_${idx}" placeholder="B1234567">
+        <label>Email</label>
+        <input type="email" id="email_${idx}" placeholder="example@email.com">
       </div>
     </div>
   </div>`;
@@ -383,10 +432,10 @@ function formHanhKhach(idx, loai, tieude) {
 
 // ===== TÍNH GIÁ =====
 function tinhGia() {
-  const giaNLDi = cb.gia_nguoi_lon  || 0;
-  const giaTEDi = cb.gia_tre_em     || 0;
-  const giaNLVe = cbVe ? (cbVe.gia_nguoi_lon || 0) : 0;
-  const giaTEVe = cbVe ? (cbVe.gia_tre_em    || 0) : 0;
+  const giaNLDi = Number(cb.gia_nguoi_lon)  || 0;
+  const giaTEDi = Number(cb.gia_tre_em)     || 0;
+  const giaNLVe = cbVe ? (Number(cbVe.gia_nguoi_lon) || 0) : 0;
+  const giaTEVe = cbVe ? (Number(cbVe.gia_tre_em)    || 0) : 0;
 
   const tongNLDi = soNguoiLon * giaNLDi;
   const tongTEDi = soTreEm    * giaTEDi;
@@ -396,29 +445,26 @@ function tinhGia() {
 
   let html = '';
   if (loaiChuyen === 'Khu_hoi') {
-    html += `<div class="gia-row" style="font-weight:600;color:#003580;"><span>✈ Chiều đi</span><span></span></div>`;
+    html += `<div class="gia-row-s" style="font-weight:600;color:#003580;"><span>✈ Chiều đi</span><span></span></div>`;
   }
-  if (soNguoiLon > 0) html += `<div class="gia-row"><span>Người lớn x${soNguoiLon}</span><span>${tongNLDi.toLocaleString('vi-VN')} ₫</span></div>`;
-  if (soTreEm    > 0) html += `<div class="gia-row"><span>Trẻ em x${soTreEm}</span><span>${tongTEDi.toLocaleString('vi-VN')} ₫</span></div>`;
-
+  if (soNguoiLon > 0) html += `<div class="gia-row-s"><span>Giá vé (x${soNguoiLon} người lớn)</span><span>${tongNLDi.toLocaleString('vi-VN')} VND</span></div>`;
+  if (soTreEm    > 0) html += `<div class="gia-row-s"><span>Trẻ em x${soTreEm}</span><span>${tongTEDi.toLocaleString('vi-VN')} VND</span></div>`;
   if (loaiChuyen === 'Khu_hoi' && cbVe) {
-    html += `<div class="gia-row" style="font-weight:600;color:#003580;margin-top:8px;"><span>↩ Chiều về</span><span></span></div>`;
-    if (soNguoiLon > 0) html += `<div class="gia-row"><span>Người lớn x${soNguoiLon}</span><span>${tongNLVe.toLocaleString('vi-VN')} ₫</span></div>`;
-    if (soTreEm    > 0) html += `<div class="gia-row"><span>Trẻ em x${soTreEm}</span><span>${tongTEVe.toLocaleString('vi-VN')} ₫</span></div>`;
+    html += `<div class="gia-row-s" style="font-weight:600;color:#003580;margin-top:6px;"><span>↩ Chiều về</span><span></span></div>`;
+    if (soNguoiLon > 0) html += `<div class="gia-row-s"><span>Giá vé (x${soNguoiLon} người lớn)</span><span>${tongNLVe.toLocaleString('vi-VN')} VND</span></div>`;
+    if (soTreEm    > 0) html += `<div class="gia-row-s"><span>Trẻ em x${soTreEm}</span><span>${tongTEVe.toLocaleString('vi-VN')} VND</span></div>`;
   }
+  html += `<div class="gia-row-s"><span>Thuế &amp; Phí</span><span style="color:#28a745;">Miễn phí</span></div>`;
+  html += `<div class="gia-row-s"><span>Phí dịch vụ</span><span style="color:#28a745;">Miễn phí</span></div>`;
 
   document.getElementById('gia-chi-tiet').innerHTML = html;
-  document.getElementById('tong-tien').textContent  = tong.toLocaleString('vi-VN') + ' ₫';
+  document.getElementById('tong-tien').textContent  = tong.toLocaleString('vi-VN') + ' VND';
   return tong;
 }
 
 // ===== TIẾP TỤC THANH TOÁN =====
 function tiepTucThanhToan() {
-  // Kiểm tra đã chọn chuyến về chưa (khứ hồi)
-  if (loaiChuyen === 'Khu_hoi' && !cbVe) {
-    alert('Vui lòng chọn chuyến bay chiều về!');
-    return;
-  }
+  if (loaiChuyen === 'Khu_hoi' && !cbVe) { alert('Vui lòng chọn chuyến bay chiều về!'); return; }
 
   const tongHK = soNguoiLon + soTreEm;
   const dsVe   = [];
@@ -428,7 +474,6 @@ function tiepTucThanhToan() {
     if (!hoTen) { alert(`Vui lòng nhập họ tên hành khách ${i}!`); return; }
     const loai = document.getElementById(`loai_${i}`).value;
 
-    // Vé chiều đi
     dsVe.push({
       chuyen_bay_id:   cb.id,
       hang_ghe_id:     cb.hang_ghe_id,
@@ -439,7 +484,6 @@ function tiepTucThanhToan() {
       gia_ve:          loai === 'Nguoi_lon' ? cb.gia_nguoi_lon : cb.gia_tre_em
     });
 
-    // Vé chiều về (nếu khứ hồi)
     if (loaiChuyen === 'Khu_hoi' && cbVe) {
       dsVe.push({
         chuyen_bay_id:   cbVe.id,
@@ -459,13 +503,14 @@ function tiepTucThanhToan() {
 }
 
 // ===== KHỞI TẠO =====
-hienThiChuyenBay();
-
-if (loaiChuyen === 'Khu_hoi' && !cbVe) {
-  // Chưa chọn chiều về -> quay lại tìm kiếm
+if (!cb.so_hieu_cb) {
+  window.location.href = 'index.html';
+} else if (loaiChuyen === 'Khu_hoi' && !cbVe) {
   alert('⚠️ Vui lòng chọn chuyến bay chiều về trước!');
   window.location.href = 'index.html';
 } else {
+  hienThiSidebar();
+  hienThiKhuHoi();
   taoFormHanhKhach();
   tinhGia();
 }

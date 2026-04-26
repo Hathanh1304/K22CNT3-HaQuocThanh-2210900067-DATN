@@ -124,6 +124,8 @@
 </div>
 
 <div class="main">
+
+  <!-- TOPBAR - Thanh tiêu đề trên cùng -->
   <div class="topbar">
     <h1 id="topbar-title">📊 Dashboard</h1>
     <div class="topbar-right">
@@ -133,7 +135,8 @@
   </div>
 
   <div class="content">
-    <!-- DASHBOARD -->
+
+    <!-- TAB: DASHBOARD - Tổng quan thống kê hệ thống -->
     <div class="tab-content active" id="tab-dashboard">
       <div class="stats-grid">
         <div class="stat-card"><div class="stat-icon blue">👥</div><div><div class="stat-label">Khách hàng</div><div class="stat-value" id="stat-kh">--</div></div></div>
@@ -147,7 +150,7 @@
       </div>
     </div>
 
-    <!-- CHUYẾN BAY -->
+    <!-- TAB: CHUYẾN BAY - Quản lý danh sách chuyến bay -->
     <div class="tab-content" id="tab-chuyen-bay">
       <div class="card">
         <div class="card-header">
@@ -171,7 +174,7 @@
       </div>
     </div>
 
-    <!-- ĐƠN ĐẶT VÉ -->
+    <!-- TAB: ĐƠN ĐẶT VÉ - Quản lý đơn đặt vé của khách hàng -->
     <div class="tab-content" id="tab-don-dat-ve">
       <div class="card">
         <div class="card-header">
@@ -194,7 +197,7 @@
       </div>
     </div>
 
-    <!-- KHÁCH HÀNG -->
+    <!-- TAB: KHÁCH HÀNG - Xem danh sách khách hàng đã đăng ký -->
     <div class="tab-content" id="tab-khach-hang">
       <div class="card">
         <div class="card-header">
@@ -208,7 +211,7 @@
       </div>
     </div>
 
-    <!-- THÔNG BÁO -->
+    <!-- TAB: THÔNG BÁO - Lịch sử thông báo đã gửi cho khách hàng -->
     <div class="tab-content" id="tab-thong-bao">
       <div class="card">
         <div class="card-header"><h3>🔔 Lịch sử thông báo</h3><button class="btn-sm btn-primary" onclick="loadThongBao()">🔄 Làm mới</button></div>
@@ -216,7 +219,7 @@
       </div>
     </div>
 
-    <!-- ĐÁNH GIÁ -->
+    <!-- TAB: ĐÁNH GIÁ - Xem và quản lý đánh giá của khách hàng -->
     <div class="tab-content" id="tab-danh-gia">
       <div class="card">
         <div class="card-header">
@@ -233,7 +236,7 @@
       </div>
     </div>
 
-    <!-- HỖ TRỢ -->
+    <!-- TAB: HỖ TRỢ - Xử lý yêu cầu hỗ trợ từ khách hàng -->
     <div class="tab-content" id="tab-ho-tro">
       <div class="card">
         <div class="card-header">
@@ -252,11 +255,11 @@
         <div id="ds-ho-tro"><div style="padding:32px;text-align:center;color:#aaa">Đang tải...</div></div>
       </div>
     </div>
+
   </div>
   <footer>© 2026 HaThanhF - Hệ thống quản trị</footer>
 </div>
 
-<!-- Modal sửa chuyến bay -->
 <div class="modal-overlay" id="modal-sua-cb">
   <div class="modal">
     <h3>✏️ Sửa chuyến bay</h3>
@@ -286,7 +289,6 @@
   </div>
 </div>
 
-<!-- Modal thêm chuyến bay -->
 <div class="modal-overlay" id="modal-them-cb">
   <div class="modal">
     <h3>➕ Thêm chuyến bay mới</h3>
@@ -317,7 +319,6 @@
   </div>
 </div>
 
-<!-- Modal thông báo delay -->
 <div class="modal-overlay" id="modal-delay">
   <div class="modal">
     <h3>📢 Thông báo chuyến bay trễ giờ</h3>
@@ -332,7 +333,6 @@
   </div>
 </div>
 
-<!-- Modal trả lời hỗ trợ -->
 <div class="modal-overlay" id="modal-tra-loi">
   <div class="modal">
     <h3>💬 Trả lời yêu cầu hỗ trợ</h3>
@@ -361,7 +361,6 @@
   </div>
 </div>
 
-<!-- Modal sửa vé -->
 <div class="modal-overlay" id="modal-sua-ve">
   <div class="modal" style="max-width:680px">
     <h3>✏️ Sửa vé trong đơn <span id="sua-ve-ma" style="color:#003580;font-size:16px"></span></h3>
@@ -372,7 +371,6 @@
   </div>
 </div>
 
-<!-- Modal đổi chuyến bay -->
 <div class="modal-overlay" id="modal-doi-chuyen">
   <div class="modal" style="max-width:680px">
     <h3>✈️ Đổi chuyến bay</h3>
@@ -391,6 +389,8 @@
 </div>
 
 <script>
+
+// KHỞI TẠO - Biến toàn cục và kiểm tra đăng nhập admin
 const API = 'http://127.0.0.1:5000/api';
 let allChuyenBay = [], allDonDatVe = [], allKhachHang = [], allHoTro = [], allDanhGia = [];
 let pendingDelayId = null;
@@ -399,6 +399,7 @@ const adminInfo = JSON.parse(localStorage.getItem('admin') || 'null');
 if (!adminInfo) { window.location.href = 'dang-nhap-admin.html'; }
 else { document.getElementById('admin-name').textContent = '👤 ' + adminInfo.ho_ten; }
 
+// HẰNG SỐ - Map trạng thái và loại hỗ trợ sang tiếng Việt
 const TRANG_THAI = {
   cho_thanh_toan:'Chờ TT', da_thanh_toan:'Đã TT', da_xac_nhan:'Xác nhận', da_huy:'Đã hủy',
   du_kien:'Dự kiến', tre_gio:'Trễ giờ', huy_chuyen:'Hủy chuyến', da_cat_canh:'Đã cất cánh', da_ha_canh:'Đã hạ cánh',
@@ -410,6 +411,7 @@ const LOAI_HT = {
   hoan_tien:'💰 Hoàn tiền', khieu_nai:'⚠️ Khiếu nại', khac:'📌 Khác'
 };
 
+// ĐIỀU HƯỚNG TAB - Chuyển đổi giữa các tab và tải dữ liệu tương ứng
 function showTab(tab, el) {
   document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
   document.querySelectorAll('.menu-item').forEach(m => m.classList.remove('active'));
@@ -425,9 +427,13 @@ function showTab(tab, el) {
   if (tab === 'danh-gia' && !allDanhGia.length) loadDanhGia();
 }
 
+// Đóng modal bất kỳ theo id
 function dongModal(id) { document.getElementById(id).classList.remove('show'); }
+
+// Đăng xuất admin, xóa localStorage và chuyển về trang đăng nhập
 function dangXuat() { localStorage.removeItem('admin'); window.location.href = 'dang-nhap-admin.html'; }
 
+// DASHBOARD - Tải thống kê tổng quan và biểu đồ doanh thu
 async function loadDashboard() {
   const res  = await fetch(`${API}/admin/dashboard`);
   const data = await res.json();
@@ -443,11 +449,14 @@ async function loadDashboard() {
   document.getElementById('bar-chart').innerHTML = chart || '<div style="color:#aaa">Chưa có dữ liệu</div>';
 }
 
+// CHUYẾN BAY - Tải, hiển thị, lọc, tìm kiếm, xóa chuyến bay
 async function loadChuyenBay() {
   const res = await fetch(`${API}/admin/chuyen-bay`);
   allChuyenBay = await res.json();
   renderChuyenBay(allChuyenBay);
 }
+
+// Render danh sách chuyến bay ra bảng HTML
 function renderChuyenBay(data) {
   const rows = data.map(cb => `
     <tr>
@@ -466,9 +475,14 @@ function renderChuyenBay(data) {
     </tr>`).join('');
   document.getElementById('table-chuyen-bay').innerHTML = rows || '<tr><td colspan="8" style="text-align:center;color:#aaa">Không có dữ liệu</td></tr>';
 }
+
+// Tìm kiếm chuyến bay theo số hiệu hoặc tên hãng
 function locChuyenBay(q) { renderChuyenBay(allChuyenBay.filter(cb => cb.so_hieu_cb.toLowerCase().includes(q.toLowerCase()) || cb.ten_hang.toLowerCase().includes(q.toLowerCase()))); }
+
+// Lọc chuyến bay theo trạng thái
 function locChuyenBayTheoTrangThai(tt) { renderChuyenBay(tt ? allChuyenBay.filter(cb => cb.trang_thai===tt) : allChuyenBay); }
 
+// Xóa chuyến bay sau khi xác nhận
 async function xoaChuyenBay(id, soHieu) {
   if (!confirm(`Xác nhận xóa chuyến bay ${soHieu}?`)) return;
   const res  = await fetch(`${API}/admin/chuyen-bay/xoa/${id}`, { method:'DELETE' });
@@ -477,6 +491,7 @@ async function xoaChuyenBay(id, soHieu) {
   else alert('❌ ' + data.error);
 }
 
+// Mở modal sửa chuyến bay và điền sẵn dữ liệu hiện tại
 async function moModalSuaCB(cbId) {
   document.getElementById('modal-sua-cb').classList.add('show');
   const res  = await fetch(`${API}/admin/chuyen-bay/chi-tiet/${cbId}`);
@@ -491,6 +506,7 @@ async function moModalSuaCB(cbId) {
   document.getElementById('sua-gia-te').value     = data.gia_tre_em;
 }
 
+// Gửi API cập nhật thông tin chuyến bay
 async function suaChuyenBay() {
   const id = document.getElementById('sua-cb-id').value;
   const payload = {
@@ -508,6 +524,7 @@ async function suaChuyenBay() {
   else alert('❌ ' + data.error);
 }
 
+// Mở modal thêm chuyến bay, tải danh sách hãng bay và sân bay
 async function moModalThemCB() {
   document.getElementById('modal-them-cb').classList.add('show');
   const [hhk, sb] = await Promise.all([
@@ -520,6 +537,7 @@ async function moModalThemCB() {
   document.getElementById('them-sb-den').innerHTML = sbOpts;
 }
 
+// Gửi API tạo chuyến bay mới
 async function themChuyenBay() {
   const payload = {
     hang_hk_id: parseInt(document.getElementById('them-hang-hk').value),
@@ -540,6 +558,7 @@ async function themChuyenBay() {
   else alert('❌ ' + data.error);
 }
 
+// THÔNG BÁO DELAY - Mở modal và tải danh sách khách cần thông báo
 async function moModalDelay(cbId, soHieu, tu, den, gioCatCanh) {
   pendingDelayId = cbId;
   document.getElementById('modal-cb-info').innerHTML = `✈️ <strong>${soHieu}</strong> &nbsp;|&nbsp; ${tu} → ${den} &nbsp;|&nbsp; 🕐 ${gioCatCanh.split(' ')[1].slice(0,5)}`;
@@ -554,6 +573,7 @@ async function moModalDelay(cbId, soHieu, tu, den, gioCatCanh) {
     <div class="khach-row"><span><strong>${i+1}. ${kh.ho_ten}</strong></span><span style="color:#666">${kh.so_dien_thoai||''} &nbsp; ${kh.email}</span></div>`).join('');
 }
 
+// Xác nhận gửi thông báo delay, cập nhật trạng thái chuyến bay
 async function xacNhanDelay() {
   if (!pendingDelayId) return;
   const res  = await fetch(`${API}/admin/thong-bao-delay/${pendingDelayId}`, { method:'POST' });
@@ -563,11 +583,14 @@ async function xacNhanDelay() {
   else alert('❌ ' + data.error);
 }
 
+// ĐƠN ĐẶT VÉ - Tải, hiển thị, lọc, tìm kiếm, xóa đơn đặt vé
 async function loadDonDatVe() {
   const res = await fetch(`${API}/admin/don-dat-ve`);
   allDonDatVe = await res.json();
   renderDonDatVe(allDonDatVe);
 }
+
+// Render danh sách đơn đặt vé ra bảng HTML
 function renderDonDatVe(data) {
   const rows = data.map(d => `
     <tr>
@@ -586,9 +609,14 @@ function renderDonDatVe(data) {
     </tr>`).join('');
   document.getElementById('table-don-dat-ve').innerHTML = rows || '<tr><td colspan="8" style="text-align:center;color:#aaa">Không có dữ liệu</td></tr>';
 }
+
+// Tìm kiếm đơn đặt vé theo mã hoặc tên khách
 function locDonDatVe(q) { renderDonDatVe(allDonDatVe.filter(d => d.ma_dat_ve.toLowerCase().includes(q.toLowerCase()) || d.ten_khach.toLowerCase().includes(q.toLowerCase()))); }
+
+// Lọc đơn đặt vé theo trạng thái
 function locDonTheoTrangThai(tt) { renderDonDatVe(tt ? allDonDatVe.filter(d => d.trang_thai===tt) : allDonDatVe); }
 
+// Xóa đơn đặt vé và toàn bộ vé trong đơn
 async function xoaDon(datVeId, maDatVe) {
   if (!confirm(`Xác nhận xóa đơn đặt vé ${maDatVe}?\nToàn bộ vé trong đơn sẽ bị xóa!`)) return;
   try {
@@ -599,6 +627,7 @@ async function xoaDon(datVeId, maDatVe) {
   } catch(e) { alert('❌ Lỗi kết nối!'); }
 }
 
+// SỬA VÉ - Mở modal và tải danh sách vé trong đơn để chỉnh sửa
 async function moModalSuaVe(datVeId, maDatVe) {
   document.getElementById('sua-ve-ma').textContent = maDatVe;
   document.getElementById('ds-ve-sua').innerHTML = '<div style="text-align:center;padding:20px;color:#aaa">⏳ Đang tải...</div>';
@@ -638,6 +667,7 @@ async function moModalSuaVe(datVeId, maDatVe) {
     </div>`).join('');
 }
 
+// Gửi API lưu thông tin vé đã chỉnh sửa
 async function luuVe(veId) {
   const payload = {
     ho_ten:      document.getElementById(`ve-ten-${veId}`).value.trim(),
@@ -654,11 +684,14 @@ async function luuVe(veId) {
   else alert('❌ ' + data.error);
 }
 
+// KHÁCH HÀNG - Tải, hiển thị và tìm kiếm danh sách khách hàng
 async function loadKhachHang() {
   const res = await fetch(`${API}/admin/khach-hang`);
   allKhachHang = await res.json();
   renderKhachHang(allKhachHang);
 }
+
+// Render danh sách khách hàng ra bảng HTML
 function renderKhachHang(data) {
   const rows = data.map((kh,i) => `
     <tr>
@@ -669,8 +702,11 @@ function renderKhachHang(data) {
     </tr>`).join('');
   document.getElementById('table-khach-hang').innerHTML = rows || '<tr><td colspan="6" style="text-align:center;color:#aaa">Không có dữ liệu</td></tr>';
 }
+
+// Tìm kiếm khách hàng theo tên hoặc email
 function locKhachHang(q) { renderKhachHang(allKhachHang.filter(kh => kh.ho_ten.toLowerCase().includes(q.toLowerCase()) || kh.email.toLowerCase().includes(q.toLowerCase()))); }
 
+// THÔNG BÁO - Tải và hiển thị lịch sử thông báo đã gửi
 async function loadThongBao() {
   const res  = await fetch(`${API}/admin/thong-bao`);
   const data = await res.json();
@@ -687,11 +723,14 @@ async function loadThongBao() {
     </div>`).join('');
 }
 
+// HỖ TRỢ - Tải, hiển thị, lọc yêu cầu hỗ trợ và trả lời khách hàng
 async function loadHoTro(trangThai = '') {
   const res  = await fetch(`${API}/ho-tro/admin/danh-sach?trang_thai=${trangThai}`);
   allHoTro   = await res.json();
   renderHoTro(allHoTro);
 }
+
+// Render danh sách yêu cầu hỗ trợ
 function renderHoTro(data) {
   if (!data.length) { document.getElementById('ds-ho-tro').innerHTML = '<div style="padding:32px;text-align:center;color:#aaa">Không có yêu cầu nào.</div>'; return; }
   document.getElementById('ds-ho-tro').innerHTML = data.map(ht => `
@@ -710,17 +749,22 @@ function renderHoTro(data) {
       ${ht.phan_hoi?`<div class="ht-phan-hoi"><strong>💬 Phản hồi của admin:</strong> ${ht.phan_hoi}</div>`:''}
     </div>`).join('');
 }
+
+// Lọc yêu cầu hỗ trợ theo trạng thái
 function locHoTroTheoTrangThai(tt) { loadHoTro(tt); }
 
+// Mở modal trả lời, điền sẵn tiêu đề và nội dung yêu cầu
 function moModalTraLoi(id, tieuDe, noiDung, trangThai) {
   document.getElementById('ht-id').value = id;
   document.getElementById('ht-info').innerHTML = `📋 <strong>${tieuDe}</strong>`;
   document.getElementById('ht-noi-dung-hien').textContent = noiDung;
   document.getElementById('ht-phan-hoi').value = '';
+  // Nếu đang chờ xử lý thì chuyển sang đang xử lý, còn lại giữ nguyên
   document.getElementById('ht-trang-thai').value = trangThai === 'cho_xu_ly' ? 'dang_xu_ly' : trangThai;
   document.getElementById('modal-tra-loi').classList.add('show');
 }
 
+// Gửi phản hồi và cập nhật trạng thái yêu cầu hỗ trợ, tạo thông báo cho khách hàng
 async function guiTraLoi() {
   const id       = document.getElementById('ht-id').value;
   const phanHoi  = document.getElementById('ht-phan-hoi').value.trim();
@@ -732,11 +776,14 @@ async function guiTraLoi() {
   else alert('❌ ' + data.error);
 }
 
+// ĐÁNH GIÁ - Tải, hiển thị, tìm kiếm và xóa đánh giá khách hàng
 async function loadDanhGia() {
   const res = await fetch(`${API}/danh-gia/admin/danh-sach`);
   allDanhGia = await res.json();
   renderDanhGia(allDanhGia);
 }
+
+// Render danh sách đánh giá ra bảng HTML
 function renderDanhGia(data) {
   const SAO = ['','★☆☆☆☆','★★☆☆☆','★★★☆☆','★★★★☆','★★★★★'];
   const rows = data.map(dg => `
@@ -752,7 +799,11 @@ function renderDanhGia(data) {
     </tr>`).join('');
   document.getElementById('table-danh-gia').innerHTML = rows || '<tr><td colspan="8" style="text-align:center;color:#aaa">Chưa có đánh giá nào</td></tr>';
 }
+
+// Tìm kiếm đánh giá theo tên khách hoặc số hiệu chuyến bay
 function locDanhGia(q) { renderDanhGia(allDanhGia.filter(dg => dg.ten_khach.toLowerCase().includes(q.toLowerCase()) || dg.so_hieu_cb.toLowerCase().includes(q.toLowerCase()))); }
+
+// Xóa đánh giá sau khi xác nhận
 async function xoaDanhGia(id) {
   if (!confirm('Xác nhận xóa đánh giá này?')) return;
   const res  = await fetch(`${API}/danh-gia/admin/xoa/${id}`, { method: 'DELETE' });
@@ -761,7 +812,10 @@ async function xoaDanhGia(id) {
   else alert('❌ ' + data.error);
 }
 
+// ĐỔI CHUYẾN BAY - Tìm chuyến mới và chuyển vé sang chuyến đó
 let doiChuyenVeId = null;
+
+// Mở modal đổi chuyến, điền sẵn tuyến đường hiện tại
 function moModalDoiChuyen(veId, soHieu, tu, den) {
   doiChuyenVeId = veId;
   document.getElementById('doi-ve-info').innerHTML = `🎫 Vé hiện tại: <strong>${soHieu}</strong> (${tu} → ${den})`;
@@ -772,6 +826,7 @@ function moModalDoiChuyen(veId, soHieu, tu, den) {
   document.getElementById('modal-doi-chuyen').classList.add('show');
 }
 
+// Tìm kiếm chuyến bay mới theo tuyến và ngày
 async function timChuyenMoi() {
   const tu   = document.getElementById('doi-tuyen-di').value.trim().toUpperCase();
   const den  = document.getElementById('doi-tuyen-den').value.trim().toUpperCase();
@@ -801,6 +856,7 @@ async function timChuyenMoi() {
   } catch(e) { document.getElementById('ds-chuyen-moi').innerHTML = '<div style="color:#e84545;text-align:center;padding:16px;">❌ Lỗi kết nối!</div>'; }
 }
 
+// Xác nhận đổi vé sang chuyến bay mới đã chọn
 async function xacNhanDoiChuyen(cbMoiId, hangGheMoiId, soHieuMoi) {
   if (!confirm(`Xác nhận đổi sang chuyến ${soHieuMoi}?`)) return;
   try {
@@ -815,7 +871,6 @@ async function xacNhanDoiChuyen(cbMoiId, hangGheMoiId, soHieuMoi) {
     } else { alert('❌ ' + data.error); }
   } catch(e) { alert('❌ Lỗi kết nối!'); }
 }
-
 loadDashboard();
 </script>
 </body>

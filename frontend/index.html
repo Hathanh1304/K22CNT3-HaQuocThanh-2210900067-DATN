@@ -6,13 +6,38 @@
   <title>QT TICKET - Đặt Vé Máy Bay</title>
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
-    body { font-family: 'Segoe UI', sans-serif; background: #f5f5f5; }
-    header { background: white; color: #333; padding: 14px 40px; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 2px 8px rgba(0,0,0,0.08); position: sticky; top: 0; z-index: 100; }
-    header .logo { font-size: 22px; font-weight: 700; letter-spacing: 1px; color: #003580; }
-    header .logo span { color: #f5a623; }
-    header nav { display: flex; align-items: center; gap: 8px; }
-    header nav a { color: #555; text-decoration: none; padding: 8px 14px; font-size: 14px; border-radius: 8px; transition: all 0.2s; }
-    header nav a:hover { background: #f0f4f8; color: #003580; }
+    body { font-family: 'Segoe UI', sans-serif; background: #f5f7fa; color: #333; }
+
+    /* ========== HEADER ========== */
+    header {
+      background: white; padding: 0 48px;
+      display: flex; align-items: center; justify-content: space-between;
+      height: 60px; box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+      position: sticky; top: 0; z-index: 200;
+    }
+    .logo { font-size: 20px; font-weight: 700; color: #003580; letter-spacing: 1px; }
+    .logo span { color: #f5a623; }
+    .header-nav { display: flex; align-items: center; gap: 4px; }
+    .header-nav a {
+      color: #444; text-decoration: none; padding: 8px 14px;
+      font-size: 14px; border-radius: 8px; transition: all 0.2s; font-weight: 500;
+    }
+    .header-nav a:hover { background: #f0f4f8; color: #003580; }
+    .header-nav a.active { color: #003580; border-bottom: 2px solid #003580; border-radius: 0; }
+    .btn-signin {
+      background: #003580; color: white !important;
+      padding: 8px 20px !important; border-radius: 8px !important;
+      font-weight: 600 !important; margin-left: 4px;
+    }
+    .btn-signin:hover { background: #0055aa !important; }
+    .btn-dangky {
+      background: #f5a623; color: white !important;
+      padding: 8px 20px !important; border-radius: 8px !important;
+      font-weight: 600 !important; margin-left: 4px;
+    }
+    .btn-dangky:hover { background: #e8920e !important; }
+
+    /* Thông báo */
     .notif-btn { position: relative; cursor: pointer; color: #555; font-size: 18px; padding: 8px; border-radius: 8px; display: inline-flex; align-items: center; transition: background 0.2s; }
     .notif-btn:hover { background: #f0f4f8; }
     .notif-badge { position: absolute; top: 2px; right: 2px; background: #e84545; color: white; border-radius: 50%; font-size: 10px; font-weight: 700; min-width: 16px; height: 16px; display: flex; align-items: center; justify-content: center; padding: 0 3px; }
@@ -27,18 +52,35 @@
     .notif-item .notif-time { color: #aaa; font-size: 11px; margin-top: 4px; }
     .notif-mark-all { font-size: 12px; color: #0066cc; cursor: pointer; font-weight: 400; }
     .notif-empty { padding: 24px; text-align: center; color: #aaa; font-size: 14px; }
-    .menu-chuc-nang { background: white; border-bottom: 1px solid #eee; padding: 0 40px; }
-    .menu-inner { max-width: 960px; margin: 0 auto; display: flex; gap: 4px; }
-    .menu-tab { color: #666; text-decoration: none; padding: 14px 20px; font-size: 14px; font-weight: 500; border-bottom: 3px solid transparent; transition: all 0.2s; display: flex; align-items: center; gap: 6px; cursor: pointer; }
-    .menu-tab:hover { color: #003580; border-bottom-color: #ccd9f0; }
-    .menu-tab.active { color: #003580; border-bottom-color: #003580; font-weight: 600; }
-    .hero { background-image: url('images/hinhnen.jpg'); background-size: cover; background-position: center; padding: 48px 40px 100px; color: white; text-align: center; position: relative; overflow: hidden; }
-    .hero::before { content: ''; position: absolute; inset: 0; background: rgba(0, 20, 60, 0.55); pointer-events: none; }
-    .hero h1 { font-size: 38px; font-weight: 700; margin-bottom: 10px; position: relative; z-index: 1; }
-    .hero p { font-size: 16px; opacity: 0.9; position: relative; z-index: 1; }
-    .search-box { background: white; border-radius: 20px; padding: 28px 32px; max-width: 960px; margin: -56px auto 40px; position: relative; box-shadow: 0 12px 48px rgba(0,0,0,0.14); }
+
+    /* ========== HERO ========== */
+    .hero {
+      background-image: url('images/hinhnen.jpg');
+      background-size: cover; background-position: center top;
+      min-height: 380px; position: relative;
+      display: flex; flex-direction: column; justify-content: flex-end;
+      padding: 0 0 80px;
+    }
+    .hero::before {
+      content: ''; position: absolute; inset: 0;
+      background: linear-gradient(to bottom, rgba(0,30,80,0.5) 0%, rgba(0,30,80,0.7) 100%);
+    }
+    .hero-content { position: relative; z-index: 1; padding: 40px 48px 0; }
+    .hero h1 { font-size: 40px; font-weight: 700; color: white; line-height: 1.2; margin-bottom: 12px; }
+    .hero p { font-size: 16px; color: rgba(255,255,255,0.88); max-width: 480px; line-height: 1.6; }
+
+    /* ========== SEARCH BOX (dạng cũ - nhiều hàng) ========== */
+    .search-wrapper { max-width: 960px; margin: -56px auto 40px; padding: 0 16px; position: relative; z-index: 10; }
+    .search-box {
+      background: white; border-radius: 20px; padding: 28px 32px;
+      box-shadow: 0 12px 48px rgba(0,0,0,0.14);
+    }
     .loai-chuyen { display: flex; gap: 6px; margin-bottom: 24px; }
-    .loai-chuyen label { display: flex; align-items: center; gap: 8px; cursor: pointer; font-size: 14px; font-weight: 500; color: #555; padding: 8px 18px; border-radius: 24px; border: 1.5px solid #e0e0e0; transition: all 0.2s; }
+    .loai-chuyen label {
+      display: flex; align-items: center; gap: 8px; cursor: pointer;
+      font-size: 14px; font-weight: 500; color: #555;
+      padding: 8px 18px; border-radius: 24px; border: 1.5px solid #e0e0e0; transition: all 0.2s;
+    }
     .loai-chuyen label:has(input:checked) { background: #003580; color: white; border-color: #003580; }
     .loai-chuyen input[type=radio] { display: none; }
     .search-grid { display: grid; gap: 12px; margin-bottom: 12px; }
@@ -46,20 +88,42 @@
     .search-grid-3 { grid-template-columns: 1fr 1fr 1fr; }
     .field-wrap { display: flex; flex-direction: column; }
     .field-wrap label { font-size: 11px; font-weight: 600; color: #999; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 6px; padding-left: 2px; }
-    .field-inner { display: flex; align-items: center; gap: 8px; background: #f7f8fa; border: 1.5px solid #e8e8e8; border-radius: 12px; padding: 12px 14px; transition: all 0.2s; }
+    .field-inner {
+      display: flex; align-items: center; gap: 8px;
+      background: #f7f8fa; border: 1.5px solid #e8e8e8;
+      border-radius: 12px; padding: 12px 14px; transition: all 0.2s;
+    }
     .field-inner:focus-within { border-color: #003580; background: white; box-shadow: 0 0 0 3px rgba(0,53,128,0.08); }
     .field-inner .icon { font-size: 16px; color: #aaa; flex-shrink: 0; }
-    .field-inner select, .field-inner input { background: none; border: none; outline: none; font-size: 14px; color: #333; width: 100%; font-family: inherit; }
-    .field-inner select option { color: #333; }
+    .field-inner select, .field-inner input {
+      background: none; border: none; outline: none;
+      font-size: 14px; color: #333; width: 100%; font-family: inherit;
+    }
     .airport-row { display: flex; align-items: center; gap: 8px; }
     .airport-row .field-wrap { flex: 1; }
-    .swap-btn { width: 36px; height: 36px; border-radius: 50%; background: white; border: 1.5px solid #e0e0e0; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 16px; transition: all 0.2s; flex-shrink: 0; margin-top: 22px; }
+    .swap-btn {
+      width: 36px; height: 36px; border-radius: 50%; background: white;
+      border: 1.5px solid #e0e0e0; display: flex; align-items: center;
+      justify-content: center; cursor: pointer; font-size: 16px;
+      transition: all 0.2s; flex-shrink: 0; margin-top: 22px;
+    }
     .swap-btn:hover { border-color: #003580; color: #003580; transform: rotate(180deg); }
     .pax-row { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; }
-    .btn-search { width: 100%; padding: 15px; background: #f5a623; color: white; border: none; border-radius: 12px; font-size: 16px; font-weight: 700; cursor: pointer; transition: all 0.2s; margin-top: 16px; letter-spacing: 0.3px; }
+    .btn-search {
+      width: 100%; padding: 15px; background: #f5a623; color: white;
+      border: none; border-radius: 12px; font-size: 16px; font-weight: 700;
+      cursor: pointer; transition: all 0.2s; margin-top: 16px; letter-spacing: 0.3px;
+    }
     .btn-search:hover { background: #e8920e; box-shadow: 0 4px 16px rgba(245,166,35,0.4); transform: translateY(-1px); }
+
+    /* ========== KẾT QUẢ ========== */
     .results { max-width: 960px; margin: 0 auto 60px; padding: 0 16px; }
-    .flight-card { background: white; border-radius: 14px; padding: 20px 24px; margin-bottom: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); display: flex; align-items: center; justify-content: space-between; transition: all 0.2s; border: 1.5px solid transparent; }
+    .flight-card {
+      background: white; border-radius: 14px; padding: 20px 24px;
+      margin-bottom: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+      display: flex; align-items: center; justify-content: space-between;
+      transition: all 0.2s; border: 1.5px solid transparent;
+    }
     .flight-card:hover { box-shadow: 0 4px 20px rgba(0,0,0,0.1); border-color: #e0e8ff; }
     .flight-card.selected { border-color: #003580; background: #f0f4ff; }
     .airline { display: flex; align-items: center; gap: 12px; min-width: 150px; }
@@ -92,143 +156,275 @@
     .col-header { font-size: 15px; font-weight: 700; color: #003580; padding: 12px 16px; background: white; border-radius: 10px; margin-bottom: 12px; box-shadow: 0 2px 6px rgba(0,0,0,0.06); border-left: 4px solid #003580; }
     .col-header.ve { border-left-color: #f5a623; }
     .col-ve-placeholder { background: white; border-radius: 12px; padding: 32px; text-align: center; color: #bbb; font-size: 14px; }
-    @media (max-width: 700px) { .two-col { grid-template-columns: 1fr; } .search-grid-2, .search-grid-3 { grid-template-columns: 1fr; } .pax-row { grid-template-columns: 1fr; } }
+
+    /* ========== ĐIỂM ĐẾN NỔI BẬT ========== */
+    .section { max-width: 960px; margin: 0 auto; padding: 56px 16px 0; }
+    .section-head { display: flex; align-items: flex-end; justify-content: space-between; margin-bottom: 6px; }
+    .section-head h2 { font-size: 26px; font-weight: 700; color: #111; }
+    .section-head a { font-size: 14px; font-weight: 600; color: #003580; text-decoration: none; }
+    .section-sub { font-size: 14px; color: #888; margin-bottom: 24px; }
+    .dest-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
+    .dest-card {
+      background: white; border-radius: 14px; overflow: hidden;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.07); cursor: pointer;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .dest-card:hover { transform: translateY(-4px); box-shadow: 0 8px 28px rgba(0,0,0,0.13); }
+    .dest-img-placeholder { width: 100%; height: 160px; display: flex; align-items: center; justify-content: center; font-size: 40px; }
+    .dest-body { padding: 14px 16px 16px; }
+    .dest-badge { display: inline-block; font-size: 10px; font-weight: 700; padding: 3px 8px; border-radius: 4px; margin-bottom: 8px; text-transform: uppercase; }
+    .badge-hot { background: #e8f0fe; color: #003580; }
+    .badge-deal { background: #fff3e0; color: #e8920e; }
+    .dest-name { font-size: 17px; font-weight: 700; color: #111; margin-bottom: 4px; }
+    .dest-desc { font-size: 12px; color: #888; line-height: 1.5; margin-bottom: 10px; }
+    .dest-price-label { font-size: 10px; color: #aaa; text-transform: uppercase; font-weight: 600; }
+    .dest-price { font-size: 16px; font-weight: 700; color: #e84545; }
+
+    /* ========== TẠI SAO CHỌN ========== */
+    .why-section { background: #f9fafb; margin-top: 56px; padding: 56px 16px; }
+    .why-inner { max-width: 960px; margin: 0 auto; }
+    .why-inner h2 { font-size: 26px; font-weight: 700; color: #111; text-align: center; margin-bottom: 8px; }
+    .why-inner p { text-align: center; color: #888; font-size: 14px; max-width: 500px; margin: 0 auto 40px; line-height: 1.7; }
+    .why-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 28px; }
+    .why-card { text-align: center; padding: 32px 24px; background: white; border-radius: 14px; box-shadow: 0 2px 10px rgba(0,0,0,0.06); }
+    .why-icon { width: 64px; height: 64px; border-radius: 50%; background: #e8f0fe; display: flex; align-items: center; justify-content: center; font-size: 26px; margin: 0 auto 16px; }
+    .why-title { font-size: 16px; font-weight: 700; color: #111; margin-bottom: 10px; }
+    .why-desc { font-size: 13px; color: #777; line-height: 1.7; }
+
+    /* ========== FOOTER ========== */
     .footer-wrap { background: #111827; color: #9ca3af; font-size: 14px; padding: 48px 40px 24px; }
-    .footer-grid { display: grid; grid-template-columns: 1.4fr 1fr 1fr; gap: 32px; max-width: 1100px; margin: 0 auto 32px; }
+    .footer-grid { display: grid; grid-template-columns: 1.4fr 1fr 1fr; gap: 32px; max-width: 960px; margin: 0 auto 32px; }
     .footer-logo { font-size: 22px; font-weight: 700; color: white; margin-bottom: 12px; }
     .footer-logo span { color: #f5a623; }
-    .footer-col h4 { color: white; font-size: 13px; font-weight: 500; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 16px; }
+    .footer-col h4 { color: white; font-size: 13px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 16px; }
     .footer-col a { display: block; color: #9ca3af; text-decoration: none; margin-bottom: 10px; font-size: 13px; transition: color 0.2s; }
     .footer-col a:hover { color: white; }
-    .footer-bottom { border-top: 0.5px solid #374151; padding-top: 20px; text-align: center; font-size: 12px; color: #6b7280; max-width: 1100px; margin: 0 auto; }
-    @media (max-width: 700px) { .footer-grid { grid-template-columns: 1fr 1fr; } }
+    .footer-bottom { border-top: 0.5px solid #374151; padding-top: 20px; text-align: center; font-size: 12px; color: #6b7280; max-width: 960px; margin: 0 auto; }
+
+    @media (max-width: 700px) {
+      header { padding: 0 16px; }
+      .hero-content { padding: 32px 16px 0; }
+      .hero h1 { font-size: 28px; }
+      .dest-grid { grid-template-columns: 1fr 1fr; }
+      .why-grid { grid-template-columns: 1fr; }
+      .search-grid-2, .search-grid-3 { grid-template-columns: 1fr; }
+      .pax-row { grid-template-columns: 1fr; }
+      .two-col { grid-template-columns: 1fr; }
+      .footer-grid { grid-template-columns: 1fr 1fr; }
+    }
   </style>
 </head>
 <body>
 
+<!-- ========== HEADER ========== -->
 <header>
   <div class="logo">QT <span>TICKET</span></div>
-  <nav id="nav-menu">
-    <a href="index.html">Trang chủ</a>
+  <nav class="header-nav" id="nav-menu">
+    <a href="index.html" class="active">Trang chủ</a>
     <a href="ho-tro.html">🎧 Hỗ trợ</a>
-    <a href="dang-nhap.html">Đăng nhập</a>
-    <a href="dang-ky.html">Đăng ký</a>
+    <a href="dang-nhap.html" class="btn-signin">Đăng nhập</a>
+    <a href="dang-ky.html" class="btn-dangky">Đăng ký</a>
   </nav>
 </header>
 
-<div class="menu-chuc-nang">
-  <div class="menu-inner">
-    <a class="menu-tab active" onclick="chonTab('noi_dia', this)">🛫 Bay trong nước</a>
-    <a class="menu-tab" onclick="chonTab('quoc_te', this)">🌏 Bay quốc tế</a>
-    <a class="menu-tab" href="lich-su-dat-ve.html">🎫 Lịch sử đặt vé</a>
-    <a class="menu-tab" onclick="theoDoi()">📍 Theo dõi chuyến bay</a>
-  </div>
-</div>
-
+<!-- ========== HERO ========== -->
 <div class="hero">
-  <h1>✈ Đặt vé máy bay giá tốt</h1>
-  <p>Hàng ngàn chuyến bay, giá rẻ mỗi ngày</p>
+  <div class="hero-content">
+    <h1>Chinh phục bầu trời cùng QT TICKET</h1>
+    <p>Trải nghiệm dịch vụ đặt vé máy bay chuyên nghiệp, an toàn và tiết kiệm nhất cho mọi hành trình của bạn.</p>
+  </div>
 </div>
 
-<div class="search-box">
-  <div class="loai-chuyen">
-    <label><input type="radio" name="loai" value="Mot_chieu" checked onchange="doiLoaiChuyen()"> ✈ Một chiều</label>
-    <label><input type="radio" name="loai" value="Khu_hoi" onchange="doiLoaiChuyen()"> ↔ Khứ hồi</label>
-  </div>
-  <div class="airport-row" style="margin-bottom:12px">
-    <div class="field-wrap">
-      <label>Điểm đi</label>
-      <div class="field-inner"><span class="icon">🛫</span><select id="san-bay-di"><option value="">-- Chọn sân bay --</option></select></div>
+<!-- ========== SEARCH BOX (dạng cũ nhiều hàng) ========== -->
+<div class="search-wrapper">
+  <div class="search-box">
+    <div class="loai-chuyen">
+      <label><input type="radio" name="loai" value="Mot_chieu" checked onchange="doiLoaiChuyen()"> ✈ Một chiều</label>
+      <label><input type="radio" name="loai" value="Khu_hoi" onchange="doiLoaiChuyen()"> ↔ Khứ hồi</label>
     </div>
-    <button class="swap-btn" onclick="hoanViSanBay()" title="Đổi chiều bay">⇄</button>
-    <div class="field-wrap">
-      <label>Điểm đến</label>
-      <div class="field-inner"><span class="icon">🛬</span><select id="san-bay-den"><option value="">-- Chọn sân bay --</option></select></div>
-    </div>
-  </div>
-  <div class="search-grid search-grid-2" id="hang-mot-chieu">
-    <div class="field-wrap">
-      <label>Ngày đi</label>
-      <div class="field-inner"><span class="icon">📅</span><input type="date" id="ngay-di"></div>
-    </div>
-    <div class="field-wrap">
-      <label>Hạng ghế</label>
-      <div class="field-inner"><span class="icon">💺</span>
-        <select id="hang-ghe">
-          <option value="Pho_thong">Phổ thông</option>
-          <option value="Pho_thong_dac_biet">Phổ thông đặc biệt</option>
-          <option value="Thuong_gia">Thương gia</option>
-          <option value="Hang_nhat">Hạng nhất</option>
-        </select>
+
+    <!-- Hàng sân bay -->
+    <div class="airport-row" style="margin-bottom:12px">
+      <div class="field-wrap">
+        <label>Điểm đi</label>
+        <div class="field-inner"><span class="icon">🛫</span><select id="san-bay-di"><option value="">-- Chọn sân bay --</option></select></div>
+      </div>
+      <button class="swap-btn" onclick="hoanViSanBay()" title="Đổi chiều bay">⇄</button>
+      <div class="field-wrap">
+        <label>Điểm đến</label>
+        <div class="field-inner"><span class="icon">🛬</span><select id="san-bay-den"><option value="">-- Chọn sân bay --</option></select></div>
       </div>
     </div>
-  </div>
-  <div class="search-grid search-grid-3" id="hang-khu-hoi" style="display:none">
-    <div class="field-wrap">
-      <label>Ngày đi</label>
-      <div class="field-inner"><span class="icon">📅</span><input type="date" id="ngay-di-kh"></div>
-    </div>
-    <div class="field-wrap">
-      <label>Ngày về</label>
-      <div class="field-inner"><span class="icon">📅</span><input type="date" id="ngay-ve"></div>
-    </div>
-    <div class="field-wrap">
-      <label>Hạng ghế</label>
-      <div class="field-inner"><span class="icon">💺</span>
-        <select id="hang-ghe-kh">
-          <option value="Pho_thong">Phổ thông</option>
-          <option value="Pho_thong_dac_biet">Phổ thông đặc biệt</option>
-          <option value="Thuong_gia">Thương gia</option>
-          <option value="Hang_nhat">Hạng nhất</option>
-        </select>
+
+    <!-- Hàng ngày + hạng ghế (một chiều) -->
+    <div class="search-grid search-grid-2" id="hang-mot-chieu">
+      <div class="field-wrap">
+        <label>Ngày đi</label>
+        <div class="field-inner"><span class="icon">📅</span><input type="date" id="ngay-di"></div>
+      </div>
+      <div class="field-wrap">
+        <label>Hạng ghế</label>
+        <div class="field-inner"><span class="icon">💺</span>
+          <select id="hang-ghe">
+            <option value="Pho_thong">Phổ thông</option>
+            <option value="Pho_thong_dac_biet">Phổ thông đặc biệt</option>
+            <option value="Thuong_gia">Thương gia</option>
+            <option value="Hang_nhat">Hạng nhất</option>
+          </select>
+        </div>
       </div>
     </div>
+
+    <!-- Hàng ngày đi/về + hạng ghế (khứ hồi) -->
+    <div class="search-grid search-grid-3" id="hang-khu-hoi" style="display:none">
+      <div class="field-wrap">
+        <label>Ngày đi</label>
+        <div class="field-inner"><span class="icon">📅</span><input type="date" id="ngay-di-kh"></div>
+      </div>
+      <div class="field-wrap">
+        <label>Ngày về</label>
+        <div class="field-inner"><span class="icon">📅</span><input type="date" id="ngay-ve"></div>
+      </div>
+      <div class="field-wrap">
+        <label>Hạng ghế</label>
+        <div class="field-inner"><span class="icon">💺</span>
+          <select id="hang-ghe-kh">
+            <option value="Pho_thong">Phổ thông</option>
+            <option value="Pho_thong_dac_biet">Phổ thông đặc biệt</option>
+            <option value="Thuong_gia">Thương gia</option>
+            <option value="Hang_nhat">Hạng nhất</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <!-- Hàng hành khách -->
+    <div class="pax-row" style="margin-top:0">
+      <div class="field-wrap">
+        <label>Người lớn</label>
+        <div class="field-inner"><span class="icon">👤</span><input type="number" id="so-nguoi-lon" value="1" min="1" max="9"></div>
+      </div>
+      <div class="field-wrap">
+        <label>Trẻ em (2-11)</label>
+        <div class="field-inner"><span class="icon">👦</span><input type="number" id="so-tre-em" value="0" min="0" max="9"></div>
+      </div>
+      <div class="field-wrap">
+        <label>Em bé (&lt;2)</label>
+        <div class="field-inner"><span class="icon">👶</span><input type="number" id="so-em-be" value="0" min="0" max="9"></div>
+      </div>
+    </div>
+
+    <button class="btn-search" onclick="timChuyenBay()">🔍 Tìm chuyến bay</button>
   </div>
-  <div class="pax-row" style="margin-top:12px">
-    <div class="field-wrap">
-      <label>Người lớn</label>
-      <div class="field-inner"><span class="icon">👤</span><input type="number" id="so-nguoi-lon" value="1" min="1" max="9"></div>
-    </div>
-    <div class="field-wrap">
-      <label>Trẻ em (2-11)</label>
-      <div class="field-inner"><span class="icon">👦</span><input type="number" id="so-tre-em" value="0" min="0" max="9"></div>
-    </div>
-    <div class="field-wrap">
-      <label>Em bé (&lt;2)</label>
-      <div class="field-inner"><span class="icon">👶</span><input type="number" id="so-em-be" value="0" min="0" max="9"></div>
-    </div>
-  </div>
-  <button class="btn-search" onclick="timChuyenBay()">🔍 Tìm chuyến bay</button>
 </div>
 
+<!-- ========== KẾT QUẢ TÌM KIẾM ========== -->
 <div class="results">
   <div class="loading" id="loading">⏳ Đang tìm chuyến bay...</div>
   <div class="no-result" id="no-result">😔 Không tìm thấy chuyến bay phù hợp.</div>
   <div id="danh-sach-chuyen-bay"></div>
 </div>
 
+<!-- ========== ĐIỂM ĐẾN NỔI BẬT ========== -->
+<div class="section" id="section-diem-den">
+  <div class="section-head">
+    <h2>Điểm đến hàng đầu</h2>
+    <a href="#">Xem tất cả →</a>
+  </div>
+  <p class="section-sub">Khám phá những hành trình được yêu thích nhất trong tuần này.</p>
+  <div class="dest-grid">
+    <div class="dest-card" onclick="chonDiemDen('HAN','SGN')">
+      <div class="dest-img-placeholder" style="background:linear-gradient(135deg,#e8f4fd,#b8d8f0)">🏖️</div>
+      <div class="dest-body">
+        <span class="dest-badge badge-hot">Phổ biến</span>
+        <div class="dest-name">Vịnh Hạ Long</div>
+        <div class="dest-desc">Khám phá vẻ đẹp kỳ vĩ của di sản thiên nhiên thế giới.</div>
+        <div class="dest-price-label">Chỉ từ</div>
+        <div class="dest-price">1.250.000đ</div>
+      </div>
+    </div>
+    <div class="dest-card" onclick="chonDiemDen('SGN','DLI')">
+      <div class="dest-img-placeholder" style="background:linear-gradient(135deg,#e8f5e9,#a5d6a7)">🌿</div>
+      <div class="dest-body">
+        <span class="dest-badge badge-deal">Ưu đãi</span>
+        <div class="dest-name">Đà Lạt</div>
+        <div class="dest-desc">Thành phố ngàn hoa với khí hậu ôn hòa quanh năm.</div>
+        <div class="dest-price-label">Chỉ từ</div>
+        <div class="dest-price">890.000đ</div>
+      </div>
+    </div>
+    <div class="dest-card" onclick="chonDiemDen('HAN','PQC')">
+      <div class="dest-img-placeholder" style="background:linear-gradient(135deg,#e3f2fd,#81d4fa)">🏝️</div>
+      <div class="dest-body">
+        <span class="dest-badge badge-hot">Phổ biến</span>
+        <div class="dest-name">Phú Quốc</div>
+        <div class="dest-desc">Thiên đường nghỉ dưỡng với những bãi biển xanh ngắt.</div>
+        <div class="dest-price-label">Chỉ từ</div>
+        <div class="dest-price">1.500.000đ</div>
+      </div>
+    </div>
+    <div class="dest-card" onclick="chonDiemDen('HAN','DAD')">
+      <div class="dest-img-placeholder" style="background:linear-gradient(135deg,#fff8e1,#ffe082)">🏮</div>
+      <div class="dest-body">
+        <span class="dest-badge badge-hot">Phổ biến</span>
+        <div class="dest-name">Hội An</div>
+        <div class="dest-desc">Nét đẹp cổ kính và văn hóa ẩm thực độc đáo.</div>
+        <div class="dest-price-label">Chỉ từ</div>
+        <div class="dest-price">1.100.000đ</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ========== TẠI SAO CHỌN QT TICKET ========== -->
+<div class="why-section">
+  <div class="why-inner">
+    <h2>Tại sao chọn QT TICKET?</h2>
+    <p>Chúng tôi cam kết mang đến trải nghiệm đặt vé tốt nhất với công nghệ hiện đại và dịch vụ tận tâm.</p>
+    <div class="why-grid">
+      <div class="why-card">
+        <div class="why-icon">💰</div>
+        <div class="why-title">Giá tốt nhất</div>
+        <div class="why-desc">Cam kết giá cạnh tranh nhất thị trường với nhiều ưu đãi hấp dẫn mỗi ngày.</div>
+      </div>
+      <div class="why-card">
+        <div class="why-icon">🎧</div>
+        <div class="why-title">Hỗ trợ 24/7</div>
+        <div class="why-desc">Đội ngũ tư vấn viên chuyên nghiệp luôn sẵn sàng hỗ trợ bạn bất cứ lúc nào.</div>
+      </div>
+      <div class="why-card">
+        <div class="why-icon">🛡️</div>
+        <div class="why-title">Bảo mật tuyệt đối</div>
+        <div class="why-desc">Hệ thống thanh toán an toàn, bảo mật thông tin khách hàng theo tiêu chuẩn quốc tế.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ========== FOOTER ========== -->
 <footer class="footer-wrap">
   <div class="footer-grid">
     <div>
       <div class="footer-logo">QT<span>TICKET</span></div>
-      <p style="font-size:13px;line-height:1.7;color:#9ca3af">Công ty TNHH Du Lịch và Dịch Vụ QT Ticket</p>
-      <p style="font-size:13px;color:#9ca3af;margin-top:4px">số nhà 208, đường Tuệ Tĩnh, phố Lê Lợi Nam Thành, TP. Hoa Lư, tỉnh Ninh Bình</p>
-      <p style="font-size:13px;color:#9ca3af;margin-top:10px">Hotline: <span style="color:white">0986 830 471</span></p>
-      <p style="font-size:13px;color:#9ca3af">Email: <span style="color:white">haquocthanhnb@gmail.com</span></p>
+      <p style="font-size:13px;line-height:1.7">Công ty TNHH Du Lịch và Dịch Vụ QT Ticket</p>
+      <p style="font-size:13px;margin-top:4px">số nhà 208, đường Tuệ Tĩnh, phố Lê Lợi Nam Thành, TP. Hoa Lư, tỉnh Ninh Bình</p>
+      <p style="font-size:13px;margin-top:10px">Hotline: <span style="color:white">0986 830 471</span></p>
+      <p style="font-size:13px">Email: <span style="color:white">haquocthanhnb@gmail.com</span></p>
     </div>
     <div class="footer-col">
-      <h4>Giới thiệu</h4>
+      <h4>Liên kết nhanh</h4>
+      <a href="ve-chung-toi.html">Giới thiệu công ty</a>
       <a href="ve-chung-toi.html">Về chúng tôi</a>
+      <a href="ho-tro.html">Dịch vụ</a>
+    </div>
+    <div class="footer-col">
+      <h4>Hỗ trợ</h4>
+      <a href="ho-tro.html">Câu hỏi thường gặp</a>
+      <a href="ho-tro.html">Chính sách bảo mật</a>
       <a href="ho-tro.html">Liên hệ</a>
     </div>
-    <div class="footer-col">
-      <h4>Dịch vụ</h4>
-      <a href="index.html">Đặt vé máy bay</a>
-      <a href="lich-su-dat-ve.html">Lịch sử đặt vé</a>
-      <a href="ho-tro.html">Câu hỏi thường gặp</a>
-    </div>
   </div>
-  <div class="footer-bottom">© 2026 QT Ticket. All rights reserved.</div>
+  <div class="footer-bottom">© 2026 QT TICKET. Your trusted travel partner.</div>
 </footer>
 
 <script>
@@ -236,7 +432,6 @@ const API = 'http://127.0.0.1:5000/api';
 let loaiTuyenHienTai = 'noi_dia';
 let allDataDi = [], allDataVe = [], cbDiDaChon = null;
 
-// ✅ Map logo hãng bay theo tên file thực tế trong images/
 function logoHang(ma) {
   const map = {
     'VN': 'images/vietnam-airline-logo.jpg',
@@ -252,7 +447,7 @@ function capNhatHeader() {
   const nav = document.getElementById('nav-menu');
   if (kh) {
     nav.innerHTML = `
-      <a href="index.html">Trang chủ</a>
+      <a href="index.html" class="active">Trang chủ</a>
       <a href="trang-ca-nhan.html">👤 ${kh.ho_ten}</a>
       <a href="lich-su-dat-ve.html">🎫 Vé của tôi</a>
       <a href="ho-tro.html">🎧 Hỗ trợ</a>
@@ -266,7 +461,7 @@ function capNhatHeader() {
           <div id="notif-list"><div class="notif-empty">Đang tải...</div></div>
         </div>
       </span>
-      <a href="#" onclick="dangXuat()">Đăng xuất</a>`;
+      <a href="#" onclick="dangXuat()" class="btn-signin" style="background:#e84545">Đăng xuất</a>`;
     loadThongBao();
   }
 }
@@ -279,13 +474,19 @@ function hoanViSanBay() {
   const tmp = di.value; di.value = den.value; den.value = tmp;
 }
 
-async function chonTab(loai, el) {
-  loaiTuyenHienTai = loai;
-  document.querySelectorAll('.menu-tab').forEach(t => t.classList.remove('active'));
-  el.classList.add('active');
-  await loadSanBayTheoLoai(loai);
-  document.getElementById('danh-sach-chuyen-bay').innerHTML = '';
-  document.getElementById('no-result').style.display = 'none';
+function doiLoaiChuyen() {
+  const loai = document.querySelector('input[name=loai]:checked').value;
+  const mc = document.getElementById('hang-mot-chieu');
+  const kh = document.getElementById('hang-khu-hoi');
+  if (loai === 'Khu_hoi') {
+    mc.style.display = 'none'; kh.style.display = 'grid';
+    document.getElementById('ngay-di-kh').value = document.getElementById('ngay-di').value;
+    const d = new Date(document.getElementById('ngay-di').value);
+    d.setDate(d.getDate() + 3);
+    document.getElementById('ngay-ve').value = d.toISOString().split('T')[0];
+  } else {
+    mc.style.display = 'grid'; kh.style.display = 'none';
+  }
 }
 
 async function loadSanBayTheoLoai(loai) {
@@ -326,17 +527,14 @@ async function loadSanBay() {
   } catch(e) {}
 }
 
-function doiLoaiChuyen() {
-  const loai = document.querySelector('input[name=loai]:checked').value;
-  const mc = document.getElementById('hang-mot-chieu');
-  const kh = document.getElementById('hang-khu-hoi');
-  if (loai === 'Khu_hoi') {
-    mc.style.display = 'none'; kh.style.display = 'grid';
-    document.getElementById('ngay-di-kh').value = document.getElementById('ngay-di').value;
-    const d = new Date(document.getElementById('ngay-di').value);
-    d.setDate(d.getDate() + 3);
-    document.getElementById('ngay-ve').value = d.toISOString().split('T')[0];
-  } else { mc.style.display = 'grid'; kh.style.display = 'none'; }
+function chonDiemDen(tu, den) {
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+  setTimeout(() => {
+    const di_el  = document.getElementById('san-bay-di');
+    const den_el = document.getElementById('san-bay-den');
+    if ([...di_el.options].some(o => o.value === tu))   di_el.value  = tu;
+    if ([...den_el.options].some(o => o.value === den)) den_el.value = den;
+  }, 600);
 }
 
 function taoFlightCard(cb, chieu) {
@@ -345,8 +543,6 @@ function taoFlightCard(cb, chieu) {
   const gio_bay = Math.floor(cb.thoi_gian_bay/60)+'h'+(cb.thoi_gian_bay%60?cb.thoi_gian_bay%60+'m':'');
   const gia_fmt = Number(cb.gia_nguoi_lon).toLocaleString('vi-VN') + ' ₫';
   const loai    = document.querySelector('input[name=loai]:checked').value;
-
-  // ✅ Hiển thị logo hãng hoặc fallback chữ nếu không có logo
   const logoSrc = logoHang(cb.ma_hang);
   const logoHTML = logoSrc
     ? `<img src="${logoSrc}" class="airline-logo" alt="${cb.ma_hang}">`
@@ -387,6 +583,7 @@ async function timChuyenBay() {
   if (tu === den) { alert('Điểm đi và điểm đến không được trùng nhau!'); return; }
   if (loai === 'Khu_hoi' && !ngayVe) { alert('Vui lòng chọn ngày về!'); return; }
 
+  document.getElementById('section-diem-den').style.display = 'none';
   document.getElementById('loading').style.display = 'block';
   document.getElementById('no-result').style.display = 'none';
   document.getElementById('danh-sach-chuyen-bay').innerHTML = '';
@@ -403,7 +600,11 @@ async function timChuyenBay() {
   }
 
   document.getElementById('loading').style.display = 'none';
-  if (!allDataDi.length && !allDataVe.length) { document.getElementById('no-result').style.display = 'block'; return; }
+  if (!allDataDi.length && (!allDataVe || !allDataVe.length)) {
+    document.getElementById('no-result').style.display = 'block';
+    document.getElementById('section-diem-den').style.display = 'block';
+    return;
+  }
   hienThiKetQua(loai);
 }
 
@@ -419,8 +620,7 @@ function hienThiKetQua(loai) {
     html += `<div class="col-header ve">↩ Chiều về &nbsp;<small style="color:#888;font-weight:400">${allDataVe.length} chuyến</small></div>`;
     if (!allDataVe.length) html += '<div class="col-ve-placeholder">Không có chuyến về phù hợp</div>';
     else allDataVe.forEach(cb => { html += taoFlightCard(cb, 've'); });
-    html += '</div>';
-    html += '</div>';
+    html += '</div></div>';
     html += `<div id="btn-dat-ve-wrapper" style="display:none;text-align:center;margin-top:20px">
       <div id="chon-summary" style="background:#f0f4ff;border-radius:12px;padding:16px;margin-bottom:16px;font-size:14px;color:#333;line-height:1.8"></div>
       <button class="btn-search" style="max-width:400px;margin:0 auto;display:block" onclick="diDenDatVe()">🎫 Tiến hành đặt vé</button>
@@ -441,10 +641,7 @@ function chonChuyenBay(cb, loai, chieu) {
       localStorage.setItem('chuyen_bay_di', JSON.stringify(cb));
       cbDiDaChon = cb;
       const colVe = document.getElementById('col-ve');
-      if (colVe) {
-        colVe.style.display = 'block';
-        setTimeout(() => colVe.scrollIntoView({ behavior: 'smooth', block: 'start' }), 100);
-      }
+      if (colVe) { colVe.style.display = 'block'; setTimeout(() => colVe.scrollIntoView({ behavior: 'smooth', block: 'start' }), 100); }
     } else {
       document.querySelectorAll('[id^="card-ve-"]').forEach(c => c.classList.remove('selected'));
       document.getElementById('card-ve-' + cb.id)?.classList.add('selected');

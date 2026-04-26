@@ -6,34 +6,31 @@
   <title>QT TICKET - Trang cá nhân</title>
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
-    body { font-family: 'Segoe UI', sans-serif; background: #f5f5f5; }
+    body { font-family: 'Segoe UI', sans-serif; background: #f5f7fa; color: #333; }
 
-    /* HEADER - giống trang chủ */
+    /* ===== HEADER ===== */
     header {
-      background: white; color: #333; padding: 14px 40px;
+      background: white; padding: 0 48px;
       display: flex; align-items: center; justify-content: space-between;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.08); position: sticky; top: 0; z-index: 100;
+      height: 60px; box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+      position: sticky; top: 0; z-index: 200;
     }
-    header .logo { font-size: 22px; font-weight: 700; letter-spacing: 1px; color: #003580; }
-    header .logo span { color: #f5a623; }
-    header nav { display: flex; align-items: center; gap: 8px; }
-    header nav a { color: #555; text-decoration: none; padding: 8px 14px; font-size: 14px; border-radius: 8px; transition: all 0.2s; }
-    header nav a:hover { background: #f0f4f8; color: #003580; }
+    .logo { font-size: 20px; font-weight: 700; color: #003580; letter-spacing: 1px; }
+    .logo span { color: #f5a623; }
+    .header-nav { display: flex; align-items: center; gap: 4px; }
+    .header-nav a { color: #444; text-decoration: none; padding: 8px 16px; font-size: 14px; font-weight: 500; border-radius: 6px; transition: all 0.2s; }
+    .header-nav a:hover { background: #f0f4f8; color: #003580; }
+    .header-nav a.active { color: #003580; font-weight: 600; }
+    .btn-dangxuat { background: #f8d7da; color: #721c24 !important; border-radius: 8px !important; font-weight: 600 !important; }
+    .btn-dangxuat:hover { background: #f5c6cb !important; }
 
-    /* HERO nhỏ - giống style trang chủ */
-    .hero-small {
-      background: linear-gradient(135deg, #003580 0%, #0055b3 60%, #1a75d2 100%);
-      padding: 32px 40px; color: white; text-align: center;
-    }
-    .hero-small h1 { font-size: 24px; font-weight: 700; }
-    .hero-small p  { font-size: 14px; opacity: 0.8; margin-top: 6px; }
-
+    /* ===== CONTAINER ===== */
     .container {
-      max-width: 960px; margin: 32px auto; padding: 0 16px;
-      display: grid; grid-template-columns: 260px 1fr; gap: 24px;
+      max-width: 1060px; margin: 32px auto; padding: 0 24px;
+      display: grid; grid-template-columns: 240px 1fr; gap: 24px;
     }
 
-    /* SIDEBAR */
+    /* ===== SIDEBAR ===== */
     .sidebar { display: flex; flex-direction: column; gap: 12px; }
     .profile-card {
       background: white; border-radius: 14px; padding: 24px;
@@ -61,109 +58,118 @@
     .menu-item.active { background: #e8f0fe; color: #003580; font-weight: 600; border-left: 3px solid #003580; }
     .menu-item .icon { font-size: 18px; width: 24px; text-align: center; }
 
-    /* MAIN */
+    /* ===== MAIN ===== */
     .main { display: flex; flex-direction: column; gap: 20px; }
-    .section {
-      background: white; border-radius: 14px; padding: 24px;
+    .card {
+      background: white; border-radius: 12px; padding: 24px;
       box-shadow: 0 2px 8px rgba(0,0,0,0.06);
     }
-    .section h3 {
-      font-size: 15px; font-weight: 700; color: #003580;
+    .card-title {
+      font-size: 15px; font-weight: 700; color: #333;
       margin-bottom: 20px; padding-bottom: 12px;
       border-bottom: 2px solid #f0f4f8;
       display: flex; align-items: center; gap: 8px;
     }
+    .card-title .icon-circle {
+      width: 28px; height: 28px; border-radius: 50%;
+      background: #e8f0fe; display: flex; align-items: center;
+      justify-content: center; font-size: 13px;
+    }
 
-    /* FORM - giống field-inner trang chủ */
+    /* ===== FORM ===== */
     .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px; }
     .form-group { display: flex; flex-direction: column; gap: 6px; margin-bottom: 4px; }
-    .form-group label {
-      font-size: 11px; font-weight: 600; color: #999;
-      text-transform: uppercase; letter-spacing: 0.5px; padding-left: 2px;
-    }
-    .form-group input,
-    .form-group select {
-      padding: 12px 14px; background: #f7f8fa;
-      border: 1.5px solid #e8e8e8; border-radius: 12px;
+    .form-group label { font-size: 11px; font-weight: 600; color: #999; text-transform: uppercase; letter-spacing: 0.5px; }
+    .form-group input, .form-group select {
+      padding: 11px 14px; background: #f7f8fa;
+      border: 1.5px solid #e8e8e8; border-radius: 10px;
       font-size: 14px; outline: none; transition: all 0.2s;
       font-family: inherit; color: #333;
     }
-    .form-group input:focus,
-    .form-group select:focus {
+    .form-group input:focus, .form-group select:focus {
       border-color: #003580; background: white;
       box-shadow: 0 0 0 3px rgba(0,53,128,0.08);
     }
     .form-group input:disabled { background: #f0f0f0; color: #999; cursor: not-allowed; }
 
     .btn-save {
-      padding: 12px 28px;
-      background: #f5a623;
-      color: white; border: none; border-radius: 10px;
-      font-size: 14px; font-weight: 700; cursor: pointer;
-      transition: all 0.2s; letter-spacing: 0.3px;
+      padding: 12px 28px; background: #f5a623; color: white;
+      border: none; border-radius: 10px; font-size: 14px;
+      font-weight: 700; cursor: pointer; transition: all 0.2s;
     }
-    .btn-save:hover { background: #e8920e; box-shadow: 0 4px 12px rgba(245,166,35,0.4); transform: translateY(-1px); }
+    .btn-save:hover { background: #e8920e; transform: translateY(-1px); box-shadow: 0 4px 12px rgba(245,166,35,0.4); }
 
-    .alert {
-      padding: 12px 16px; border-radius: 10px; font-size: 14px;
-      margin-bottom: 16px; display: none;
-    }
+    .alert { padding: 12px 16px; border-radius: 10px; font-size: 14px; margin-bottom: 16px; display: none; }
     .alert.success { background: #e8f5e9; color: #2e7d32; border: 1px solid #a5d6a7; }
     .alert.error   { background: #ffebee; color: #c62828; border: 1px solid #ef9a9a; }
 
-    /* FOOTER - giống trang chủ */
-    .footer-wrap { background: #111827; color: #9ca3af; font-size: 14px; padding: 48px 40px 24px; margin-top: 40px; }
-    .footer-grid { display: grid; grid-template-columns: 1.4fr 1fr 1fr; gap: 32px; max-width: 1100px; margin: 0 auto 32px; }
-    .footer-logo { font-size: 22px; font-weight: 700; color: white; margin-bottom: 12px; }
+    /* ===== FOOTER ===== */
+    footer { background: #111827; color: #9ca3af; font-size: 14px; padding: 48px 48px 24px; margin-top: 40px; }
+    .footer-grid { display: grid; grid-template-columns: 1.4fr 1fr 1fr; gap: 32px; max-width: 1060px; margin: 0 auto 32px; }
+    .footer-logo { font-size: 20px; font-weight: 700; color: white; margin-bottom: 10px; }
     .footer-logo span { color: #f5a623; }
-    .footer-col h4 { color: white; font-size: 13px; font-weight: 500; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 16px; }
-    .footer-col a { display: block; color: #9ca3af; text-decoration: none; margin-bottom: 10px; font-size: 13px; transition: color 0.2s; }
+    .footer-col h4 { color: white; font-size: 12px; font-weight: 600; text-transform: uppercase; margin-bottom: 14px; }
+    .footer-col a { display: block; color: #9ca3af; text-decoration: none; margin-bottom: 8px; font-size: 13px; }
     .footer-col a:hover { color: white; }
-    .footer-bottom { border-top: 0.5px solid #374151; padding-top: 20px; text-align: center; font-size: 12px; color: #6b7280; max-width: 1100px; margin: 0 auto; }
+    .footer-bottom { border-top: 0.5px solid #374151; padding-top: 16px; text-align: center; font-size: 12px; color: #6b7280; max-width: 1060px; margin: 0 auto; }
 
-    @media (max-width: 700px) {
+    @media (max-width: 768px) {
       .container { grid-template-columns: 1fr; }
       .form-row { grid-template-columns: 1fr; }
+      header { padding: 0 16px; }
+      footer { padding: 32px 16px 16px; }
       .footer-grid { grid-template-columns: 1fr 1fr; }
     }
   </style>
 </head>
 <body>
 
+<!-- ===== HEADER ===== -->
 <header>
   <div class="logo">QT <span>TICKET</span></div>
-  <nav>
-    <a href="index.html">🏠 Trang chủ</a>
-    <a href="lich-su-dat-ve.html">🎫 Vé của tôi</a>
-    <a href="#" onclick="dangXuat()">Đăng xuất</a>
+  <nav class="header-nav">
+    <a href="index.html">Quay lại</a>
+    <a href="ho-tro.html">Hỗ trợ</a>
+    <a href="trang-ca-nhan.html" class="active">👤 <span id="nav-ten">Tài khoản</span></a>
+    <a href="#" onclick="dangXuat()" class="btn-dangxuat">Đăng xuất</a>
   </nav>
 </header>
 
-<div class="hero-small">
-  <h1>👤 Trang cá nhân</h1>
-  <p>Quản lý thông tin tài khoản của bạn</p>
-</div>
-
+<!-- ===== NỘI DUNG ===== -->
 <div class="container">
-  <!-- Sidebar -->
+
+  <!-- SIDEBAR -->
   <div class="sidebar">
     <div class="profile-card">
       <div class="avatar" id="avatar-text">?</div>
-      <div class="profile-name" id="profile-name">Đang tải...</div>
+      <div class="profile-name"  id="profile-name">Đang tải...</div>
       <div class="profile-email" id="profile-email"></div>
     </div>
     <div class="menu-card">
-      <a class="menu-item active" href="trang-ca-nhan.html"><span class="icon">👤</span> Thông tin cá nhân</a>
-      <a class="menu-item" href="lich-su-dat-ve.html"><span class="icon">🎫</span> Lịch sử đặt vé</a>
-      <a class="menu-item" href="#" onclick="dangXuat()"><span class="icon">🚪</span> Đăng xuất</a>
+      <a class="menu-item active" href="trang-ca-nhan.html">
+        <span class="icon">👤</span> Thông tin cá nhân
+      </a>
+      <a class="menu-item" href="lich-su-dat-ve.html">
+        <span class="icon">🎫</span> Lịch sử đặt vé
+      </a>
+      <a class="menu-item" href="ho-tro.html">
+        <span class="icon">🎧</span> Hỗ trợ
+      </a>
+      <a class="menu-item" href="#" onclick="dangXuat()">
+        <span class="icon">🚪</span> Đăng xuất
+      </a>
     </div>
   </div>
 
-  <!-- Main -->
+  <!-- MAIN -->
   <div class="main">
+
     <!-- Thông tin cá nhân -->
-    <div class="section">
-      <h3>👤 Thông tin cá nhân</h3>
+    <div class="card">
+      <div class="card-title">
+        <div class="icon-circle">👤</div>
+        Thông tin cá nhân
+      </div>
       <div class="alert" id="alert-info"></div>
       <div class="form-row">
         <div class="form-group">
@@ -200,15 +206,18 @@
         </div>
       </div>
       <div class="form-group" style="margin-bottom:20px">
-        <label>Số hộ chiếu</label>
+        <label>Số hộ chiếu / CCCD</label>
         <input type="text" id="so-ho-chieu" placeholder="B1234567">
       </div>
       <button class="btn-save" onclick="luuThongTin()">💾 Lưu thay đổi</button>
     </div>
 
     <!-- Đổi mật khẩu -->
-    <div class="section">
-      <h3>🔒 Đổi mật khẩu</h3>
+    <div class="card">
+      <div class="card-title">
+        <div class="icon-circle">🔒</div>
+        Đổi mật khẩu
+      </div>
       <div class="alert" id="alert-mk"></div>
       <div class="form-row">
         <div class="form-group">
@@ -220,31 +229,31 @@
           <input type="password" id="mk-moi" placeholder="Tối thiểu 6 ký tự">
         </div>
       </div>
-      <div class="form-group" style="margin-bottom:20px; max-width:50%">
+      <div class="form-group" style="margin-bottom:20px; max-width:48%">
         <label>Xác nhận mật khẩu mới</label>
         <input type="password" id="mk-xacnhan" placeholder="Nhập lại mật khẩu mới">
       </div>
       <button class="btn-save" onclick="doiMatKhau()">🔑 Đổi mật khẩu</button>
     </div>
+
   </div>
 </div>
 
-<!-- FOOTER -->
-<footer class="footer-wrap">
+<!-- ===== FOOTER ===== -->
+<footer>
   <div class="footer-grid">
     <div>
       <div class="footer-logo">QT<span>TICKET</span></div>
-      <p style="font-size:13px;line-height:1.7;color:#9ca3af">Công ty TNHH Du Lịch và Dịch Vụ QT Ticket</p>
-      <p style="font-size:13px;color:#9ca3af;margin-top:4px">số nhà 208, đường Tuệ Tĩnh, phố Lê Lợi Nam Thành, TP. Hoa Lư, tỉnh Ninh Bình</p>
-      <p style="font-size:13px;color:#9ca3af;margin-top:10px">Hotline: <span style="color:white">0986 830 471</span></p>
-      <p style="font-size:13px;color:#9ca3af">Email: <span style="color:white">haquocthanhnb@gmail.com</span></p>
+      <p style="font-size:12px;line-height:1.7">Công ty TNHH Du Lịch và Dịch Vụ QT Ticket</p>
+      <p style="font-size:12px;margin-top:4px">số nhà 208, đường Tuệ Tĩnh, phố Lê Lợi Nam Thành, TP. Hoa Lư, tỉnh Ninh Bình</p>
+      <p style="font-size:12px;margin-top:8px">Hotline: <span style="color:white">0986 830 471</span></p>
+      <p style="font-size:12px">Email: <span style="color:white">haquocthanhnb@gmail.com</span></p>
     </div>
     <div class="footer-col">
       <h4>Giới thiệu</h4>
       <a href="ve-chung-toi.html">Về chúng tôi</a>
-      <a href="#">Điều khoản và điều kiện</a>
+      <a href="#">Điều khoản & điều kiện</a>
       <a href="#">Chính sách riêng tư</a>
-      <a href="#">Hình thức thanh toán</a>
       <a href="ho-tro.html">Liên hệ</a>
     </div>
     <div class="footer-col">
@@ -254,7 +263,7 @@
       <a href="ho-tro.html">Câu hỏi thường gặp</a>
     </div>
   </div>
-  <div class="footer-bottom">© 2026 QT Ticket. All rights reserved.</div>
+  <div class="footer-bottom">© 2026 QT TICKET. All rights reserved.</div>
 </footer>
 
 <script>
@@ -263,9 +272,10 @@ const kh  = JSON.parse(localStorage.getItem('khach_hang') || 'null');
 if (!kh) { window.location.href = 'dang-nhap.html'; }
 
 function hienThiThongTin() {
-  document.getElementById('avatar-text').textContent  = kh.ho_ten.charAt(0).toUpperCase();
-  document.getElementById('profile-name').textContent = kh.ho_ten;
-  document.getElementById('profile-email').textContent= kh.email;
+  document.getElementById('avatar-text').textContent   = kh.ho_ten.charAt(0).toUpperCase();
+  document.getElementById('profile-name').textContent  = kh.ho_ten;
+  document.getElementById('profile-email').textContent = kh.email;
+  document.getElementById('nav-ten').textContent       = kh.ho_ten.split(' ').pop();
   document.getElementById('ho-ten').value        = kh.ho_ten        || '';
   document.getElementById('email').value         = kh.email         || '';
   document.getElementById('so-dien-thoai').value = kh.so_dien_thoai || '';
@@ -306,6 +316,8 @@ async function luuThongTin() {
     kh.so_ho_chieu   = document.getElementById('so-ho-chieu').value;
     localStorage.setItem('khach_hang', JSON.stringify(kh));
     hienAlert('alert-info', 'success', '✅ Cập nhật thông tin thành công!');
+    document.getElementById('profile-name').textContent = kh.ho_ten;
+    document.getElementById('avatar-text').textContent  = kh.ho_ten.charAt(0).toUpperCase();
   } else {
     hienAlert('alert-info', 'error', '❌ ' + (data.error || 'Có lỗi xảy ra!'));
   }
