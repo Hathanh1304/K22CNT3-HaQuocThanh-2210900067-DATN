@@ -251,6 +251,10 @@
           <label>Tiêu đề</label>
           <input type="text" id="ht-tieu-de" placeholder="Tóm tắt vấn đề của bạn">
         </div>
+<div class="form-group">
+          <label>Facebook</label>
+          <input type="text" id="ht-facebook" placeholder="Ha Quoc Thanh">
+        </div>
         <div class="form-group">
           <label>Nội dung chi tiết</label>
           <textarea id="ht-noi-dung" placeholder="Mô tả chi tiết vấn đề bạn gặp phải..."></textarea>
@@ -361,9 +365,21 @@ async function guiYeuCau() {
   const loai    = document.getElementById('ht-loai').value;
   const tieuDe  = document.getElementById('ht-tieu-de').value.trim();
   const noiDung = document.getElementById('ht-noi-dung').value.trim();
+  const facebook = document.getElementById('ht-facebook').value.trim();
   const maDatVe = document.getElementById('ht-ma-dat-ve').value.trim();
   if (!ten || !email || !tieuDe || !noiDung) { alert('Vui lòng điền đầy đủ thông tin!'); return; }
-  const payload = { khach_hang_id: khDangNhap ? khDangNhap.id : null, ho_ten: ten, email, so_dien_thoai: sdt, loai, tieu_de: tieuDe, noi_dung: noiDung, dat_ve_id: null };
+const payload = {
+  khach_hang_id: khDangNhap ? khDangNhap.id : null,
+  ho_ten:        ten,
+  email:         email,
+  so_dien_thoai: sdt,
+  loai:          loai,
+  tieu_de:       tieuDe,
+  noi_dung:      noiDung,
+  facebook:      facebook,
+  dat_ve_id:     null
+};
+  
   if (maDatVe) {
     try { const r = await fetch(`${API}/dat-ve/theo-ma/${maDatVe}`); const d = await r.json(); if (d.id) payload.dat_ve_id = d.id; } catch(e) {}
   }

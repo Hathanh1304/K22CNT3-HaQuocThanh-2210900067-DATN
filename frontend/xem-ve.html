@@ -6,170 +6,188 @@
   <title>QT TICKET - Xem vé</title>
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
-    body { font-family: 'Segoe UI', sans-serif; background: #f5f5f5; }
+    body { font-family: 'Segoe UI', sans-serif; background: #f5f7fa; color: #333; }
 
-    /* HEADER - giống trang chủ */
+    /* ===== HEADER ===== */
     header {
-      background: white; color: #333; padding: 14px 40px;
+      background: white; padding: 0 48px;
       display: flex; align-items: center; justify-content: space-between;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.08); position: sticky; top: 0; z-index: 100;
+      height: 60px; box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+      position: sticky; top: 0; z-index: 200;
     }
-    header .logo { font-size: 22px; font-weight: 700; letter-spacing: 1px; color: #003580; }
-    header .logo span { color: #f5a623; }
-    header nav a {
-      color: #555; text-decoration: none; padding: 8px 14px;
-      font-size: 14px; border-radius: 8px; transition: all 0.2s;
-    }
-    header nav a:hover { background: #f0f4f8; color: #003580; }
+    .logo { font-size: 20px; font-weight: 700; color: #003580; letter-spacing: 1px; }
+    .logo span { color: #f5a623; }
+    .header-nav { display: flex; align-items: center; gap: 4px; }
+    .header-nav a { color: #444; text-decoration: none; padding: 8px 16px; font-size: 14px; font-weight: 500; border-radius: 6px; transition: all 0.2s; }
+    .header-nav a:hover { background: #f0f4f8; color: #003580; }
+    .btn-signin { background: #003580; color: white !important; padding: 8px 20px !important; border-radius: 8px !important; font-weight: 600 !important; }
 
-    /* HERO nhỏ */
-    .hero-small {
-      background: linear-gradient(135deg, #003580 0%, #0055b3 60%, #1a75d2 100%);
-      padding: 32px 40px; color: white; text-align: center;
-    }
-    .hero-small h1 { font-size: 24px; font-weight: 700; }
-    .hero-small p  { font-size: 14px; opacity: 0.8; margin-top: 6px; }
+    /* ===== PAGE BODY ===== */
+    .page-wrap { max-width: 900px; margin: 40px auto; padding: 0 24px 60px; }
 
-    .container { max-width: 700px; margin: 32px auto; padding: 0 16px; }
+    /* Tiêu đề trang */
+    .page-title { margin-bottom: 28px; }
+    .page-title h1 { font-size: 26px; font-weight: 700; color: #111; margin-bottom: 4px; }
+    .page-title p  { font-size: 14px; color: #888; }
 
-    /* Label chiều đi / chiều về */
-    .chieu-label {
-      font-size: 13px; font-weight: 700; text-transform: uppercase;
-      letter-spacing: 1px; padding: 8px 16px; border-radius: 8px 8px 0 0;
-      display: inline-block; margin-bottom: -1px;
-    }
+    /* Label chiều đi / về */
+    .chieu-label { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; padding: 6px 14px; border-radius: 6px 6px 0 0; display: inline-block; margin-bottom: -2px; }
     .chieu-label.di { background: #003580; color: white; }
     .chieu-label.ve { background: #f5a623; color: white; }
 
-    .ticket { background: white; border-radius: 0 16px 16px 16px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.06); margin-bottom: 24px; }
-    .ticket.mot-chieu { border-radius: 16px; }
+    /* ===== TICKET LAYOUT 2 CỘT ===== */
+    .ticket-wrap { display: grid; grid-template-columns: 1fr 240px; gap: 0; margin-bottom: 28px; border-radius: 0 16px 16px 16px; overflow: hidden; box-shadow: 0 4px 20px rgba(0,0,0,0.1); }
+    .ticket-wrap.mot-chieu { border-radius: 16px; }
 
-    .ticket-header { background: linear-gradient(135deg, #003580, #0066cc); color: white; padding: 24px 32px; display: flex; justify-content: space-between; align-items: center; }
-    .ticket-header.ve-header { background: linear-gradient(135deg, #b07000, #f5a623); }
-    .ticket-header .hang-bay { font-size: 20px; font-weight: 700; }
-    .ticket-header .so-hieu  { font-size: 14px; opacity: 0.85; margin-top: 4px; }
-    .ticket-header .ma-ve    { font-size: 14px; background: rgba(255,255,255,0.2); padding: 6px 14px; border-radius: 20px; }
+    /* CỘT TRÁI — nội dung vé */
+    .ticket-left { background: white; }
 
-    .ticket-route { display: flex; align-items: center; justify-content: space-between; padding: 24px 32px; border-bottom: 1px dashed #e0e0e0; }
-    .route-point { text-align: center; }
-    .route-code  { font-size: 36px; font-weight: 700; color: #003580; }
-    .route-time  { font-size: 20px; font-weight: 600; color: #333; margin-top: 8px; }
-    .route-middle { text-align: center; color: #aaa; }
-    .route-line  { width: 120px; height: 2px; background: #e0e0e0; position: relative; margin: 8px auto; }
-    .route-line::after { content: '✈'; position: absolute; right: -8px; top: -10px; font-size: 16px; color: #0066cc; }
-    .route-line.ve-line::after { color: #f5a623; }
-    .route-dur   { font-size: 13px; color: #888; }
+    /* Header vé */
+    .ticket-header { background: #003580; color: white; padding: 18px 24px; display: flex; justify-content: space-between; align-items: center; }
+    .ticket-header.ve-header { background: #e8920e; }
+    .ticket-airline { font-size: 16px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; }
+    .ticket-flight-num { font-size: 12px; opacity: 0.8; margin-top: 3px; }
+    .ticket-header-right { text-align: right; font-size: 11px; opacity: 0.8; }
+    .ticket-header-right strong { font-size: 18px; font-weight: 700; display: block; opacity: 1; letter-spacing: 1px; }
 
-    .ticket-info { display: grid; grid-template-columns: repeat(3, 1fr); border-bottom: 1px dashed #e0e0e0; }
-    .info-cell { padding: 16px 20px; border-right: 1px dashed #e0e0e0; }
-    .info-cell:last-child { border-right: none; }
-    .info-label { font-size: 11px; color: #aaa; text-transform: uppercase; font-weight: 600; margin-bottom: 4px; }
-    .info-value { font-size: 15px; font-weight: 600; color: #333; }
+    /* Tuyến bay */
+    .ticket-route { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: 12px; padding: 24px; border-bottom: 1px solid #f0f0f0; }
+    .route-left { }
+    .route-right { text-align: right; }
+    .r-code  { font-size: 44px; font-weight: 700; color: #003580; line-height: 1; }
+    .r-city  { font-size: 13px; color: #888; margin-top: 4px; }
+    .r-time  { font-size: 22px; font-weight: 700; color: #111; margin-top: 8px; }
+    .r-date  { font-size: 12px; color: #888; margin-top: 2px; }
+    .r-terminal { font-size: 11px; color: #aaa; margin-top: 2px; }
+    .route-mid { text-align: center; }
+    .route-dur-text { font-size: 12px; color: #aaa; margin-bottom: 6px; }
+    .route-line-h { height: 1px; background: #ddd; position: relative; margin: 6px 0; }
+    .route-line-h::after { content: '✈'; position: absolute; left: 50%; top: -10px; transform: translateX(-50%); font-size: 16px; color: #003580; }
+    .route-bay-thang { font-size: 11px; color: #aaa; margin-top: 6px; }
 
-    .ticket-passenger { padding: 20px 32px; border-bottom: 1px dashed #e0e0e0; }
-    .ticket-passenger h4 { font-size: 13px; color: #aaa; text-transform: uppercase; margin-bottom: 12px; }
-    .passenger-row { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid #f5f5f5; font-size: 14px; }
-    .passenger-row:last-child { border-bottom: none; }
-    .passenger-name { font-weight: 600; color: #333; }
-    .passenger-type { color: #888; font-size: 13px; }
-    .passenger-gia  { font-weight: 600; color: #e84545; }
+    /* Thông tin hành khách */
+    .ticket-pax { display: grid; grid-template-columns: repeat(4, 1fr); padding: 0; border-bottom: 1px solid #f0f0f0; }
+    .pax-cell { padding: 16px 20px; border-right: 1px solid #f0f0f0; }
+    .pax-cell:last-child { border-right: none; }
+    .pax-label { font-size: 10px; font-weight: 600; color: #aaa; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 6px; }
+    .pax-value { font-size: 15px; font-weight: 700; color: #111; line-height: 1.3; }
 
-    .ticket-footer { display: flex; justify-content: space-between; align-items: center; padding: 20px 32px; background: #f8f9ff; }
-    .total-label { font-size: 14px; color: #666; }
-    .total-gia   { font-size: 22px; font-weight: 700; color: #e84545; }
+    /* Danh sách hành khách nhiều người */
+    .pax-list { padding: 16px 24px; border-bottom: 1px solid #f0f0f0; }
+    .pax-list-title { font-size: 10px; font-weight: 600; color: #aaa; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 10px; }
+    .pax-item { display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 1px solid #f9f9f9; font-size: 14px; }
+    .pax-item:last-child { border-bottom: none; }
+    .pax-item-name { font-weight: 600; color: #111; }
+    .pax-item-type { font-size: 12px; color: #888; }
+    .pax-item-gia  { font-weight: 600; color: #e84545; }
 
-    .badge { padding: 6px 16px; border-radius: 20px; font-size: 13px; font-weight: 600; }
-    .badge.da_xac_nhan,.badge.da_thanh_toan { background: #d4edda; color: #155724; }
+    /* Lưu ý quan trọng */
+    .ticket-note { padding: 16px 24px; background: #f8f9fa; }
+    .ticket-note-title { font-size: 13px; font-weight: 700; color: #333; margin-bottom: 10px; display: flex; align-items: center; gap: 6px; }
+    .ticket-note ul { padding-left: 18px; }
+    .ticket-note li { font-size: 12px; color: #666; line-height: 1.8; }
+
+    /* Badge trạng thái */
+    .badge { padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: 600; display: inline-block; }
+    .badge.da_xac_nhan, .badge.da_thanh_toan { background: #d4edda; color: #155724; }
     .badge.cho_thanh_toan { background: #fff3cd; color: #856404; }
     .badge.da_huy { background: #f8d7da; color: #721c24; }
 
-    .qr-section { text-align: center; padding: 20px 32px; border-top: 1px dashed #e0e0e0; background: #f8f9ff; }
-    .qr-section h4 { font-size: 13px; color: #aaa; text-transform: uppercase; margin-bottom: 12px; }
-    .qr-ma-ve { font-size: 16px; font-weight: 700; color: #003580; margin-top: 10px; letter-spacing: 2px; }
+    /* CỘT PHẢI — QR + nút */
+    .ticket-right { background: #f8f9fa; border-left: 1px dashed #ddd; display: flex; flex-direction: column; }
+    .ticket-right-header { background: #003580; color: white; padding: 18px 20px; }
+    .ticket-right-header.ve-header { background: #e8920e; }
+    .pnr-label { font-size: 10px; font-weight: 600; letter-spacing: 1px; opacity: 0.8; margin-bottom: 4px; }
+    .pnr-code  { font-size: 22px; font-weight: 700; letter-spacing: 2px; }
+
+    .qr-block { padding: 20px; text-align: center; flex: 1; }
+    .qr-title { font-size: 13px; font-weight: 700; color: #333; margin-bottom: 14px; }
+    .qr-box { background: white; border-radius: 12px; padding: 14px; display: inline-block; box-shadow: 0 2px 8px rgba(0,0,0,0.08); margin-bottom: 12px; }
+    .qr-hint { font-size: 11px; color: #888; line-height: 1.5; padding: 0 8px; }
+
+    .so-ve-block { padding: 14px 20px; border-top: 1px dashed #ddd; text-align: center; }
+    .so-ve-label { font-size: 10px; font-weight: 600; color: #aaa; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 6px; }
+    .so-ve-num   { font-size: 15px; font-weight: 700; color: #003580; letter-spacing: 2px; }
+
+    /* Nút hành động */
+    .action-btns { padding: 16px 20px; display: flex; flex-direction: column; gap: 10px; border-top: 1px solid #eee; }
+    .btn-action { width: 100%; padding: 11px 16px; border-radius: 10px; font-size: 13px; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; transition: all 0.2s; border: none; }
+    .btn-pdf    { background: #f5a623; color: white; }
+    .btn-pdf:hover { background: #e8920e; }
+    .btn-print2 { background: #003580; color: white; }
+    .btn-print2:hover { background: #0055aa; }
+    .btn-share  { background: white; color: #333; border: 1.5px solid #ddd !important; }
+    .btn-share:hover { border-color: #003580 !important; color: #003580; }
 
     /* Tổng kết */
-    .tong-ket {
-      background: white; border-radius: 14px; padding: 20px 32px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.06); margin-bottom: 20px;
-      display: flex; justify-content: space-between; align-items: center;
-    }
-    .tong-ket .label { font-size: 14px; color: #666; }
-    .tong-ket .gia   { font-size: 28px; font-weight: 800; color: #e84545; }
-    .tong-ket .meta  { font-size: 12px; color: #aaa; margin-top: 4px; }
+    .tong-ket { background: white; border-radius: 14px; padding: 18px 24px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center; }
+    .tong-ket .label { font-size: 13px; color: #666; }
+    .tong-ket .gia   { font-size: 26px; font-weight: 800; color: #e84545; }
+    .tong-ket .meta  { font-size: 12px; color: #aaa; margin-top: 3px; }
 
-    /* Buttons - giống trang chủ */
-    .btn-group { display: flex; gap: 12px; margin-bottom: 40px; }
-    .btn-print {
-      flex: 1; padding: 15px;
-      background: #f5a623; color: white; border: none;
-      border-radius: 12px; font-size: 15px; font-weight: 700; cursor: pointer;
-      transition: all 0.2s;
-    }
-    .btn-print:hover { background: #e8920e; box-shadow: 0 4px 16px rgba(245,166,35,0.4); transform: translateY(-1px); }
-    .btn-back {
-      flex: 1; padding: 15px; background: white; color: #003580;
-      border: 1.5px solid #e0e0e0; border-radius: 12px; font-size: 15px;
-      font-weight: 600; cursor: pointer; text-decoration: none;
-      text-align: center; display: flex; align-items: center; justify-content: center;
-      transition: all 0.2s;
-    }
-    .btn-back:hover { border-color: #003580; background: #f0f4f8; }
-
-    /* FOOTER - giống trang chủ */
-    .footer-wrap { background: #111827; color: #9ca3af; font-size: 14px; padding: 48px 40px 24px; margin-top: 20px; }
-    .footer-grid { display: grid; grid-template-columns: 1.4fr 1fr 1fr; gap: 32px; max-width: 1100px; margin: 0 auto 32px; }
-    .footer-logo { font-size: 22px; font-weight: 700; color: white; margin-bottom: 12px; }
+    /* Footer */
+    footer { background: #111827; color: #9ca3af; font-size: 14px; padding: 48px 48px 24px; }
+    .footer-grid { display: grid; grid-template-columns: 1.4fr 1fr 1fr; gap: 32px; max-width: 960px; margin: 0 auto 32px; }
+    .footer-logo { font-size: 20px; font-weight: 700; color: white; margin-bottom: 10px; }
     .footer-logo span { color: #f5a623; }
-    .footer-col h4 { color: white; font-size: 13px; font-weight: 500; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 16px; }
-    .footer-col a { display: block; color: #9ca3af; text-decoration: none; margin-bottom: 10px; font-size: 13px; transition: color 0.2s; }
+    .footer-col h4 { color: white; font-size: 12px; font-weight: 600; text-transform: uppercase; margin-bottom: 14px; }
+    .footer-col a { display: block; color: #9ca3af; text-decoration: none; margin-bottom: 8px; font-size: 13px; }
     .footer-col a:hover { color: white; }
-    .footer-bottom { border-top: 0.5px solid #374151; padding-top: 20px; text-align: center; font-size: 12px; color: #6b7280; max-width: 1100px; margin: 0 auto; }
+    .footer-bottom { border-top: 0.5px solid #374151; padding-top: 16px; text-align: center; font-size: 12px; color: #6b7280; max-width: 960px; margin: 0 auto; }
 
-    @media print { header, .btn-group, .footer-wrap { display: none; } body { background: white; } .ticket { box-shadow: none; } }
-    @media (max-width: 700px) { .footer-grid { grid-template-columns: 1fr 1fr; } }
+    @media print {
+      header, .action-btns, footer { display: none; }
+      body { background: white; }
+      .ticket-wrap { box-shadow: none; }
+    }
+    @media (max-width: 700px) {
+      header { padding: 0 16px; }
+      .ticket-wrap { grid-template-columns: 1fr; }
+      .ticket-right { border-left: none; border-top: 1px dashed #ddd; }
+      .ticket-pax { grid-template-columns: 1fr 1fr; }
+      .footer-grid { grid-template-columns: 1fr 1fr; }
+    }
   </style>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 </head>
 <body>
 
+<!-- ===== HEADER ===== -->
 <header>
   <div class="logo">QT <span>TICKET</span></div>
-  <nav>
-    <a href="#" onclick="quayLai()">← Quay lại</a>
-    <a href="index.html">🏠 Trang chủ</a>
+  <nav class="header-nav" id="nav-menu">
+    <a href="ho-tro.html">Hỗ trợ</a>
+    <a href="#" onclick="quayLai()" class="btn-signin" style="background:#f5a623;">← Quay lại</a>
   </nav>
 </header>
 
-<div class="hero-small">
-  <h1>🎫 Vé điện tử</h1>
-  <p>Thông tin chi tiết chuyến bay của bạn</p>
-</div>
+<!-- ===== NỘI DUNG ===== -->
+<div class="page-wrap">
+  <div class="page-title">
+    <h1>Vé điện tử của bạn</h1>
+    <p>Cảm ơn bạn đã lựa chọn dịch vụ của QT TICKET.</p>
+  </div>
 
-<div class="container">
   <div id="noi-dung-ve">
     <p style="text-align:center;padding:48px;color:#aaa">⏳ Đang tải vé...</p>
   </div>
-  <div class="btn-group">
-    <a class="btn-back" href="#" onclick="quayLai()">← Quay lại</a>
-    <button class="btn-print" onclick="window.print()">🖨️ In vé / Lưu PDF</button>
-  </div>
 </div>
 
-<footer class="footer-wrap">
+<!-- ===== FOOTER ===== -->
+<footer>
   <div class="footer-grid">
     <div>
       <div class="footer-logo">QT<span>TICKET</span></div>
-      <p style="font-size:13px;line-height:1.7;color:#9ca3af">Công ty TNHH Du Lịch và Dịch Vụ QT Ticket</p>
-      <p style="font-size:13px;color:#9ca3af;margin-top:4px">số nhà 208, đường Tuệ Tĩnh, phố Lê Lợi Nam Thành, TP. Hoa Lư, tỉnh Ninh Bình</p>
-      <p style="font-size:13px;color:#9ca3af;margin-top:10px">Hotline: <span style="color:white">0986 830 471</span></p>
-      <p style="font-size:13px;color:#9ca3af">Email: <span style="color:white">haquocthanhnb@gmail.com</span></p>
+      <p style="font-size:12px;line-height:1.7">Công ty TNHH Du Lịch và Dịch Vụ QT Ticket</p>
+      <p style="font-size:12px;margin-top:4px">số nhà 208, đường Tuệ Tĩnh, phố Lê Lợi Nam Thành, TP. Hoa Lư, tỉnh Ninh Bình</p>
+      <p style="font-size:12px;margin-top:8px">Hotline: <span style="color:white">0986 830 471</span></p>
+      <p style="font-size:12px">Email: <span style="color:white">haquocthanhnb@gmail.com</span></p>
     </div>
     <div class="footer-col">
       <h4>Giới thiệu</h4>
       <a href="ve-chung-toi.html">Về chúng tôi</a>
-      <a href="#">Điều khoản và điều kiện</a>
+      <a href="#">Điều khoản & điều kiện</a>
       <a href="#">Chính sách riêng tư</a>
-      <a href="#">Hình thức thanh toán</a>
       <a href="ho-tro.html">Liên hệ</a>
     </div>
     <div class="footer-col">
@@ -179,14 +197,14 @@
       <a href="ho-tro.html">Câu hỏi thường gặp</a>
     </div>
   </div>
-  <div class="footer-bottom">© 2026 QT Ticket. All rights reserved.</div>
+  <div class="footer-bottom">© 2026 QT TICKET. All rights reserved.</div>
 </footer>
 
 <script>
-const API = 'http://127.0.0.1:5000/api';
+const API    = 'http://127.0.0.1:5000/api';
 const params = new URLSearchParams(window.location.search);
-const ma   = params.get('ma');
-const from = params.get('from');
+const ma     = params.get('ma');
+const from   = params.get('from');
 if (!ma) { window.location.href = 'lich-su-dat-ve.html'; }
 
 const LOAI_HK = { Nguoi_lon: 'Người lớn', Tre_em: 'Trẻ em', Em_be: 'Em bé' };
@@ -197,169 +215,246 @@ const TRANG_THAI_LABEL = {
   da_huy:         'Đã hủy'
 };
 
-function taoBlockVe(nhom, loai, maDatVe, badge, label, index) {
-  const v0    = nhom[0];
-  const gioDi = v0.gio_cat_canh.split(' ')[1].slice(0,5);
-  const gioDen= v0.gio_ha_canh.split(' ')[1].slice(0,5);
-  const gioBay= Math.floor(v0.thoi_gian_bay/60)+'h'+(v0.thoi_gian_bay%60?v0.thoi_gian_bay%60+'m':'');
-  const ngayBay = new Date(v0.gio_cat_canh).toLocaleDateString('vi-VN', {weekday:'long', year:'numeric', month:'long', day:'numeric'});
-  const isVe  = loai === 've';
-  const qrId  = 'qr-code-' + index;
+// Cập nhật header nếu đã đăng nhập
+const kh = JSON.parse(localStorage.getItem('khach_hang') || 'null');
+if (kh) {
+  document.getElementById('nav-menu').innerHTML = `
+    <a href="trang-ca-nhan.html">👤 ${kh.ho_ten}</a>
+    <a href="ho-tro.html">Hỗ trợ</a>
+    <a href="#" onclick="quayLai()" class="btn-signin" style="background:#f5a623;">← Quay lại</a>`;
+}
 
-  let passengers = '';
-  nhom.forEach(v => {
-    passengers += `
-      <div class="passenger-row">
-        <div>
-          <div class="passenger-name">✈ ${v.ho_ten}</div>
-          <div class="passenger-type">${LOAI_HK[v.loai_hanh_khach]}${v.so_ghe ? ' · Ghế ' + v.so_ghe : ''}</div>
+function taoBlockVe(nhom, loai, maDatVe, badge, label, index) {
+  const v0     = nhom[0];
+  const gioDi  = v0.gio_cat_canh.split(' ')[1].slice(0,5);
+  const gioDen = v0.gio_ha_canh.split(' ')[1].slice(0,5);
+  const gioBay = Math.floor(v0.thoi_gian_bay/60)+'h'+(v0.thoi_gian_bay%60?v0.thoi_gian_bay%60+'m':'');
+  const ngayBay = new Date(v0.gio_cat_canh).toLocaleDateString('vi-VN', { day:'2-digit', month:'long', year:'numeric' });
+  const ngayBayShort = new Date(v0.gio_cat_canh).toLocaleDateString('vi-VN', { weekday:'short', day:'2-digit', month:'2-digit', year:'numeric' });
+  const isVe   = loai === 've';
+  const qrId   = 'qr-code-' + index;
+  const soVeEl = 'so-ve-' + index;
+
+  // Hành khách đầu tiên để hiển thị chính
+  const hkChinh = nhom[0];
+
+  // Danh sách hành khách
+  let paxHTML = '';
+  if (nhom.length === 1) {
+    paxHTML = `
+      <div class="ticket-pax">
+        <div class="pax-cell">
+          <div class="pax-label">Hành khách</div>
+          <div class="pax-value">${hkChinh.ho_ten}</div>
         </div>
-        <div class="passenger-gia">${parseInt(v.gia_ve).toLocaleString('vi-VN')} ₫</div>
+        <div class="pax-cell">
+          <div class="pax-label">Số ghế</div>
+          <div class="pax-value">${hkChinh.so_ghe || '—'}</div>
+        </div>
+        <div class="pax-cell">
+          <div class="pax-label">Hạng vé</div>
+          <div class="pax-value">${(v0.hang_ghe||'').replace(/_/g,' ') || 'Phổ thông'}</div>
+        </div>
+        <div class="pax-cell">
+          <div class="pax-label">Cửa khởi hành</div>
+          <div class="pax-value">Gate —</div>
+        </div>
       </div>`;
-  });
+  } else {
+    const rows = nhom.map(v => `
+      <div class="pax-item">
+        <div>
+          <div class="pax-item-name">${v.ho_ten}</div>
+          <div class="pax-item-type">${LOAI_HK[v.loai_hanh_khach]}${v.so_ghe ? ' · Ghế ' + v.so_ghe : ''}</div>
+        </div>
+        <div class="pax-item-gia">${parseInt(v.gia_ve).toLocaleString('vi-VN')} ₫</div>
+      </div>`).join('');
+    paxHTML = `<div class="pax-list"><div class="pax-list-title">Danh sách hành khách</div>${rows}</div>`;
+  }
 
   const tongNhom = nhom.reduce((s, v) => s + parseInt(v.gia_ve), 0).toLocaleString('vi-VN');
 
   return `
-    <div class="ticket ${loai === '' ? 'mot-chieu' : ''}">
+  <div class="ticket-wrap ${loai === '' ? 'mot-chieu' : ''}">
+    <!-- CỘT TRÁI -->
+    <div class="ticket-left">
       <div class="ticket-header ${isVe ? 've-header' : ''}">
         <div>
-          <div class="hang-bay">✈ ${v0.ten_hang}</div>
-          <div class="so-hieu">${v0.so_hieu_cb} · ${v0.hang_ghe ? v0.hang_ghe.replace(/_/g,' ') : ''}</div>
+          <div class="ticket-airline">${v0.ten_hang}</div>
+          <div class="ticket-flight-num">Số hiệu chuyến bay</div>
         </div>
-        <div class="ma-ve">📋 ${maDatVe}</div>
+        <div style="text-align:right;">
+          <div style="font-size:11px;opacity:0.8;">Số hiệu chuyến bay</div>
+          <div style="font-size:22px;font-weight:700;letter-spacing:1px;">${v0.so_hieu_cb}</div>
+        </div>
       </div>
+
       <div class="ticket-route">
-        <div class="route-point">
-          <div class="route-code">${v0.tu}</div>
-          <div class="route-time">${gioDi}</div>
+        <div class="route-left">
+          <div class="r-code">${v0.tu}</div>
+          <div class="r-city">${v0.thanh_pho_di || v0.tu}</div>
+          <div class="r-time">${gioDi}</div>
+          <div class="r-date">${ngayBayShort}</div>
         </div>
-        <div class="route-middle">
-          <div class="route-line ${isVe ? 've-line' : ''}"></div>
-          <div class="route-dur">${gioBay}</div>
-          <div class="route-dur">Bay thẳng</div>
+        <div class="route-mid">
+          <div class="route-dur-text">${gioBay}</div>
+          <div class="route-line-h" style="width:100px;"></div>
+          <div class="route-bay-thang">Bay thẳng</div>
         </div>
-        <div class="route-point">
-          <div class="route-code">${v0.den}</div>
-          <div class="route-time">${gioDen}</div>
-        </div>
-      </div>
-      <div class="ticket-info">
-        <div class="info-cell">
-          <div class="info-label">Ngày bay</div>
-          <div class="info-value">${ngayBay}</div>
-        </div>
-        <div class="info-cell">
-          <div class="info-label">Số hành khách</div>
-          <div class="info-value">${nhom.length} người</div>
-        </div>
-        <div class="info-cell">
-          <div class="info-label">Trạng thái</div>
-          <div><span class="badge ${badge}">${label}</span></div>
+        <div class="route-right">
+          <div class="r-code">${v0.den}</div>
+          <div class="r-city">${v0.thanh_pho_den || v0.den}</div>
+          <div class="r-time">${gioDen}</div>
+          <div class="r-date">${ngayBayShort}</div>
         </div>
       </div>
-      <div class="ticket-passenger">
-        <h4>Danh sách hành khách</h4>
-        ${passengers}
+
+      ${paxHTML}
+
+      <div class="ticket-note">
+        <div class="ticket-note-title">ℹ️ Lưu ý quan trọng</div>
+        <ul>
+          <li>Vui lòng có mặt tại sân bay ít nhất <strong>120 phút</strong> trước giờ khởi hành.</li>
+          <li>Mang theo giấy tờ tùy thân (CMND/CCCD/Hộ chiếu) bản gốc và hợp lệ.</li>
+          <li>Hành lý xách tay tối đa ${v0.han_hanh_ly_xach_tay_kg || 7}kg. Hành lý ký gửi (nếu có) không vượt quá ${v0.han_hanh_ly_kg || 23}kg.</li>
+          <li>Cửa ra máy bay sẽ đóng 15 phút trước giờ khởi hành dự kiến.</li>
+        </ul>
       </div>
-      <div class="qr-section">
-        <h4>Mã QR vé điện tử</h4>
-        <div id="${qrId}"></div>
-        <div class="qr-ma-ve">${maDatVe}</div>
+    </div>
+
+    <!-- CỘT PHẢI -->
+    <div class="ticket-right">
+      <div class="ticket-right-header ${isVe ? 've-header' : ''}">
+        <div class="pnr-label">MÃ ĐẶT CHỖ (PNR)</div>
+        <div class="pnr-code">${maDatVe}</div>
       </div>
-      <div class="ticket-footer">
-        <div>
-          <div class="total-label">Tổng tiền chiều này</div>
-          <div class="total-gia">${tongNhom} ₫</div>
+
+      <div class="qr-block">
+        <div class="qr-title">Mã QR làm thủ tục</div>
+        <div class="qr-box">
+          <div id="${qrId}"></div>
         </div>
-        <div style="text-align:right;font-size:12px;color:#aaa">
-          ${v0.so_hieu_cb} · ${v0.tu} → ${v0.den}
-        </div>
+        <div class="qr-hint">Vui lòng xuất trình mã này tại quầy thủ tục hoặc máy check-in tự động.</div>
       </div>
-    </div>`;
+
+      <div class="so-ve-block">
+        <div class="so-ve-label">Số vé điện tử</div>
+        <div class="so-ve-num" id="${soVeEl}">— — — —</div>
+      </div>
+
+      <div class="action-btns">
+        <button class="btn-action btn-pdf" onclick="window.print()">
+          ⬇️ Tải xuống PDF
+        </button>
+        <button class="btn-action btn-print2" onclick="window.print()">
+          🖨️ In vé điện tử
+        </button>
+        <button class="btn-action btn-share" onclick="navigator.clipboard.writeText('${maDatVe}').then(()=>alert('Đã sao chép mã vé!'))">
+          ↗️ Chia sẻ vé
+        </button>
+      </div>
+    </div>
+  </div>`;
 }
 
 async function loadVe() {
-  const res = await fetch(`${API}/dat-ve/${ma}`);
-  const don = await res.json();
-  if (don.error) { document.getElementById('noi-dung-ve').innerHTML = '<p style="text-align:center;color:red">Không tìm thấy vé!</p>'; return; }
-
-  const badge = don.trang_thai;
-  const label = TRANG_THAI_LABEL[don.trang_thai] || don.trang_thai;
-  const tong  = parseInt(don.tong_tien).toLocaleString('vi-VN');
-  const loaiChuyen = don.loai_chuyen;
-
-  let html = '';
-
-  if (loaiChuyen === 'Khu_hoi') {
-    const nhomMap = {};
-    don.ve.forEach(v => {
-      const key = v.chuyen_bay_id;
-      if (!nhomMap[key]) nhomMap[key] = [];
-      nhomMap[key].push(v);
-    });
-    const nhomList = Object.values(nhomMap);
-    const nhomDi = nhomList[0];
-    const nhomVe = nhomList[1];
-
-    html += '<div class="chieu-label di">✈ Chiều đi</div>';
-    html += taoBlockVe(nhomDi, 'di', don.ma_dat_ve, badge, label, 0);
-
-    if (nhomVe) {
-      html += '<div class="chieu-label ve" style="margin-top:8px">↩ Chiều về</div>';
-      html += taoBlockVe(nhomVe, 've', don.ma_dat_ve, badge, label, 1);
+  try {
+    const res = await fetch(`${API}/dat-ve/${ma}`);
+    const don = await res.json();
+    if (don.error) {
+      document.getElementById('noi-dung-ve').innerHTML = `
+        <div style="text-align:center;padding:48px;color:#e84545">
+          <div style="font-size:48px;margin-bottom:16px">😔</div>
+          <h3>Không tìm thấy vé</h3>
+          <p style="color:#888;margin-top:8px;">Mã vé <strong>${ma}</strong> không tồn tại.</p>
+        </div>`;
+      return;
     }
 
-    html += `
-      <div class="tong-ket">
-        <div>
-          <div class="label">💰 Tổng tiền cả 2 chiều</div>
-          <div class="meta">Đặt ngày: ${new Date(don.ngay_dat).toLocaleDateString('vi-VN')} · Khách hàng: ${don.ten_khach}</div>
-        </div>
-        <div class="gia">${tong} ₫</div>
-      </div>`;
-  } else {
-    html += taoBlockVe(don.ve, '', don.ma_dat_ve, badge, label, 0);
-    html += `
-      <div class="tong-ket">
-        <div>
-          <div class="label">💰 Tổng tiền</div>
-          <div class="meta">Đặt ngày: ${new Date(don.ngay_dat).toLocaleDateString('vi-VN')} · Khách hàng: ${don.ten_khach}</div>
-        </div>
-        <div class="gia">${tong} ₫</div>
+    const badge      = don.trang_thai;
+    const label      = TRANG_THAI_LABEL[don.trang_thai] || don.trang_thai;
+    const tong       = parseInt(don.tong_tien).toLocaleString('vi-VN');
+    const loaiChuyen = don.loai_chuyen;
+    let html = '';
+
+    if (loaiChuyen === 'Khu_hoi') {
+      const nhomMap = {};
+      don.ve.forEach(v => {
+        if (!nhomMap[v.chuyen_bay_id]) nhomMap[v.chuyen_bay_id] = [];
+        nhomMap[v.chuyen_bay_id].push(v);
+      });
+      const nhomList = Object.values(nhomMap);
+      const nhomDi   = nhomList[0];
+      const nhomVe   = nhomList[1];
+
+      html += '<div class="chieu-label di">✈ Chiều đi</div>';
+      html += taoBlockVe(nhomDi, 'di', don.ma_dat_ve, badge, label, 0);
+      if (nhomVe) {
+        html += '<div class="chieu-label ve" style="margin-top:20px">↩ Chiều về</div>';
+        html += taoBlockVe(nhomVe, 've', don.ma_dat_ve, badge, label, 1);
+      }
+      html += `
+        <div class="tong-ket">
+          <div>
+            <div class="label">💰 Tổng tiền cả 2 chiều</div>
+            <div class="meta">Đặt ngày: ${new Date(don.ngay_dat).toLocaleDateString('vi-VN')} · Khách hàng: ${don.ten_khach}</div>
+          </div>
+          <div class="gia">${tong} ₫</div>
+        </div>`;
+    } else {
+      html += taoBlockVe(don.ve, '', don.ma_dat_ve, badge, label, 0);
+      html += `
+        <div class="tong-ket">
+          <div>
+            <div class="label">💰 Tổng tiền &nbsp; <span class="badge ${badge}">${label}</span></div>
+            <div class="meta">Đặt ngày: ${new Date(don.ngay_dat).toLocaleDateString('vi-VN')} · Khách hàng: ${don.ten_khach}</div>
+          </div>
+          <div class="gia">${tong} ₫</div>
+        </div>`;
+    }
+
+    document.getElementById('noi-dung-ve').innerHTML = html;
+
+    // Tạo QR code
+    setTimeout(() => {
+      const nhomMap = {};
+      don.ve.forEach(v => {
+        if (!nhomMap[v.chuyen_bay_id]) nhomMap[v.chuyen_bay_id] = [];
+        nhomMap[v.chuyen_bay_id].push(v);
+      });
+      Object.values(nhomMap).forEach((nhom, i) => {
+        const qrEl = document.getElementById('qr-code-' + i);
+        if (qrEl) {
+          qrEl.innerHTML = '';
+          new QRCode(qrEl, {
+            text: don.ma_dat_ve + '|' + nhom[0].so_hieu_cb + '|' + nhom[0].tu + '-' + nhom[0].den,
+            width: 130, height: 130,
+            colorDark: '#003580', colorLight: '#ffffff',
+            correctLevel: QRCode.CorrectLevel.M
+          });
+        }
+        // Tạo số vé giả (738 xxxx xxx xxx)
+        const soVeEl = document.getElementById('so-ve-' + i);
+        if (soVeEl) {
+          const rand = Math.floor(Math.random() * 9000000000) + 1000000000;
+          soVeEl.textContent = '738 ' + rand.toString().slice(0,4) + ' ' + rand.toString().slice(4,7) + ' ' + rand.toString().slice(7);
+        }
+      });
+    }, 300);
+
+  } catch(e) {
+    document.getElementById('noi-dung-ve').innerHTML = `
+      <div style="text-align:center;padding:48px;color:#e84545">
+        <div style="font-size:48px;margin-bottom:16px">❌</div>
+        <h3>Lỗi kết nối</h3>
+        <p style="color:#888;margin-top:8px;">Không thể kết nối đến máy chủ. Vui lòng thử lại.</p>
       </div>`;
   }
-
-  document.getElementById('noi-dung-ve').innerHTML = html;
-
-  setTimeout(() => {
-    const nhomMap = {};
-    don.ve.forEach(v => {
-      const key = v.chuyen_bay_id;
-      if (!nhomMap[key]) nhomMap[key] = [];
-      nhomMap[key].push(v);
-    });
-    Object.values(nhomMap).forEach((nhom, i) => {
-      const qrEl = document.getElementById('qr-code-' + i);
-      if (qrEl) {
-        qrEl.innerHTML = '';
-        new QRCode(qrEl, {
-          text: don.ma_dat_ve + '|' + nhom[0].so_hieu_cb + '|' + nhom[0].tu + '-' + nhom[0].den,
-          width: 140, height: 140,
-          colorDark: '#003580', colorLight: '#ffffff',
-          correctLevel: QRCode.CorrectLevel.M
-        });
-      }
-    });
-  }, 300);
 }
 
 function quayLai() {
-  if (from === 'admin') {
-    window.location.href = 'admin.html';
-  } else {
-    window.location.href = 'lich-su-dat-ve.html';
-  }
+  if (from === 'admin') window.location.href = 'admin.html';
+  else window.location.href = 'lich-su-dat-ve.html';
 }
 
 loadVe();

@@ -14,9 +14,9 @@ def gui_yeu_cau():
     cursor = conn.cursor()
     try:
         cursor.execute("""
-            INSERT INTO ho_tro
-              (khach_hang_id, dat_ve_id, ho_ten, email, so_dien_thoai, loai, tieu_de, noi_dung)
-            VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
+INSERT INTO ho_tro
+  (khach_hang_id, dat_ve_id, ho_ten, email, so_dien_thoai, loai, tieu_de, noi_dung, facebook)
+VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)
         """, (
             data.get('khach_hang_id'),
             data.get('dat_ve_id'),
@@ -25,7 +25,8 @@ def gui_yeu_cau():
             data.get('so_dien_thoai'),
             data.get('loai', 'hoi_thong_tin'),
             data.get('tieu_de'),
-            data.get('noi_dung')
+            data.get('noi_dung'),
+            data.get('facebook')
         ))
         conn.commit()
         return jsonify({'success': True, 'id': cursor.lastrowid})

@@ -7,37 +7,17 @@
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body { font-family: 'Segoe UI', sans-serif; background: #f5f7fa; color: #333; }
-
-    /* ========== HEADER ========== */
-    header {
-      background: white; padding: 0 48px;
-      display: flex; align-items: center; justify-content: space-between;
-      height: 60px; box-shadow: 0 1px 4px rgba(0,0,0,0.08);
-      position: sticky; top: 0; z-index: 200;
-    }
+    header { background: white; padding: 0 48px; display: flex; align-items: center; justify-content: space-between; height: 60px; box-shadow: 0 1px 4px rgba(0,0,0,0.08); position: sticky; top: 0; z-index: 200; }
     .logo { font-size: 20px; font-weight: 700; color: #003580; letter-spacing: 1px; }
     .logo span { color: #f5a623; }
     .header-nav { display: flex; align-items: center; gap: 4px; }
-    .header-nav a {
-      color: #444; text-decoration: none; padding: 8px 14px;
-      font-size: 14px; border-radius: 8px; transition: all 0.2s; font-weight: 500;
-    }
+    .header-nav a { color: #444; text-decoration: none; padding: 8px 14px; font-size: 14px; border-radius: 8px; transition: all 0.2s; font-weight: 500; }
     .header-nav a:hover { background: #f0f4f8; color: #003580; }
     .header-nav a.active { color: #003580; border-bottom: 2px solid #003580; border-radius: 0; }
-    .btn-signin {
-      background: #003580; color: white !important;
-      padding: 8px 20px !important; border-radius: 8px !important;
-      font-weight: 600 !important; margin-left: 4px;
-    }
+    .btn-signin { background: #003580; color: white !important; padding: 8px 20px !important; border-radius: 8px !important; font-weight: 600 !important; margin-left: 4px; }
     .btn-signin:hover { background: #0055aa !important; }
-    .btn-dangky {
-      background: #f5a623; color: white !important;
-      padding: 8px 20px !important; border-radius: 8px !important;
-      font-weight: 600 !important; margin-left: 4px;
-    }
+    .btn-dangky { background: #f5a623; color: white !important; padding: 8px 20px !important; border-radius: 8px !important; font-weight: 600 !important; margin-left: 4px; }
     .btn-dangky:hover { background: #e8920e !important; }
-
-    /* Thông báo */
     .notif-btn { position: relative; cursor: pointer; color: #555; font-size: 18px; padding: 8px; border-radius: 8px; display: inline-flex; align-items: center; transition: background 0.2s; }
     .notif-btn:hover { background: #f0f4f8; }
     .notif-badge { position: absolute; top: 2px; right: 2px; background: #e84545; color: white; border-radius: 50%; font-size: 10px; font-weight: 700; min-width: 16px; height: 16px; display: flex; align-items: center; justify-content: center; padding: 0 3px; }
@@ -52,35 +32,15 @@
     .notif-item .notif-time { color: #aaa; font-size: 11px; margin-top: 4px; }
     .notif-mark-all { font-size: 12px; color: #0066cc; cursor: pointer; font-weight: 400; }
     .notif-empty { padding: 24px; text-align: center; color: #aaa; font-size: 14px; }
-
-    /* ========== HERO ========== */
-    .hero {
-      background-image: url('images/hinhnen.jpg');
-      background-size: cover; background-position: center top;
-      min-height: 380px; position: relative;
-      display: flex; flex-direction: column; justify-content: flex-end;
-      padding: 0 0 80px;
-    }
-    .hero::before {
-      content: ''; position: absolute; inset: 0;
-      background: linear-gradient(to bottom, rgba(0,30,80,0.5) 0%, rgba(0,30,80,0.7) 100%);
-    }
+    .hero { background-image: url('images/hinhnen.jpg'); background-size: cover; background-position: center top; min-height: 380px; position: relative; display: flex; flex-direction: column; justify-content: flex-end; padding: 0 0 80px; }
+    .hero::before { content: ''; position: absolute; inset: 0; background: linear-gradient(to bottom, rgba(0,30,80,0.5) 0%, rgba(0,30,80,0.7) 100%); }
     .hero-content { position: relative; z-index: 1; padding: 40px 48px 0; }
     .hero h1 { font-size: 40px; font-weight: 700; color: white; line-height: 1.2; margin-bottom: 12px; }
     .hero p { font-size: 16px; color: rgba(255,255,255,0.88); max-width: 480px; line-height: 1.6; }
-
-    /* ========== SEARCH BOX (dạng cũ - nhiều hàng) ========== */
     .search-wrapper { max-width: 960px; margin: -56px auto 40px; padding: 0 16px; position: relative; z-index: 10; }
-    .search-box {
-      background: white; border-radius: 20px; padding: 28px 32px;
-      box-shadow: 0 12px 48px rgba(0,0,0,0.14);
-    }
+    .search-box { background: white; border-radius: 20px; padding: 28px 32px; box-shadow: 0 12px 48px rgba(0,0,0,0.14); }
     .loai-chuyen { display: flex; gap: 6px; margin-bottom: 24px; }
-    .loai-chuyen label {
-      display: flex; align-items: center; gap: 8px; cursor: pointer;
-      font-size: 14px; font-weight: 500; color: #555;
-      padding: 8px 18px; border-radius: 24px; border: 1.5px solid #e0e0e0; transition: all 0.2s;
-    }
+    .loai-chuyen label { display: flex; align-items: center; gap: 8px; cursor: pointer; font-size: 14px; font-weight: 500; color: #555; padding: 8px 18px; border-radius: 24px; border: 1.5px solid #e0e0e0; transition: all 0.2s; }
     .loai-chuyen label:has(input:checked) { background: #003580; color: white; border-color: #003580; }
     .loai-chuyen input[type=radio] { display: none; }
     .search-grid { display: grid; gap: 12px; margin-bottom: 12px; }
@@ -88,42 +48,19 @@
     .search-grid-3 { grid-template-columns: 1fr 1fr 1fr; }
     .field-wrap { display: flex; flex-direction: column; }
     .field-wrap label { font-size: 11px; font-weight: 600; color: #999; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 6px; padding-left: 2px; }
-    .field-inner {
-      display: flex; align-items: center; gap: 8px;
-      background: #f7f8fa; border: 1.5px solid #e8e8e8;
-      border-radius: 12px; padding: 12px 14px; transition: all 0.2s;
-    }
+    .field-inner { display: flex; align-items: center; gap: 8px; background: #f7f8fa; border: 1.5px solid #e8e8e8; border-radius: 12px; padding: 12px 14px; transition: all 0.2s; }
     .field-inner:focus-within { border-color: #003580; background: white; box-shadow: 0 0 0 3px rgba(0,53,128,0.08); }
     .field-inner .icon { font-size: 16px; color: #aaa; flex-shrink: 0; }
-    .field-inner select, .field-inner input {
-      background: none; border: none; outline: none;
-      font-size: 14px; color: #333; width: 100%; font-family: inherit;
-    }
+    .field-inner select, .field-inner input { background: none; border: none; outline: none; font-size: 14px; color: #333; width: 100%; font-family: inherit; }
     .airport-row { display: flex; align-items: center; gap: 8px; }
     .airport-row .field-wrap { flex: 1; }
-    .swap-btn {
-      width: 36px; height: 36px; border-radius: 50%; background: white;
-      border: 1.5px solid #e0e0e0; display: flex; align-items: center;
-      justify-content: center; cursor: pointer; font-size: 16px;
-      transition: all 0.2s; flex-shrink: 0; margin-top: 22px;
-    }
+    .swap-btn { width: 36px; height: 36px; border-radius: 50%; background: white; border: 1.5px solid #e0e0e0; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 16px; transition: all 0.2s; flex-shrink: 0; margin-top: 22px; }
     .swap-btn:hover { border-color: #003580; color: #003580; transform: rotate(180deg); }
     .pax-row { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; }
-    .btn-search {
-      width: 100%; padding: 15px; background: #f5a623; color: white;
-      border: none; border-radius: 12px; font-size: 16px; font-weight: 700;
-      cursor: pointer; transition: all 0.2s; margin-top: 16px; letter-spacing: 0.3px;
-    }
+    .btn-search { width: 100%; padding: 15px; background: #f5a623; color: white; border: none; border-radius: 12px; font-size: 16px; font-weight: 700; cursor: pointer; transition: all 0.2s; margin-top: 16px; letter-spacing: 0.3px; }
     .btn-search:hover { background: #e8920e; box-shadow: 0 4px 16px rgba(245,166,35,0.4); transform: translateY(-1px); }
-
-    /* ========== KẾT QUẢ ========== */
     .results { max-width: 960px; margin: 0 auto 60px; padding: 0 16px; }
-    .flight-card {
-      background: white; border-radius: 14px; padding: 20px 24px;
-      margin-bottom: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.06);
-      display: flex; align-items: center; justify-content: space-between;
-      transition: all 0.2s; border: 1.5px solid transparent;
-    }
+    .flight-card { background: white; border-radius: 14px; padding: 20px 24px; margin-bottom: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); display: flex; align-items: center; justify-content: space-between; transition: all 0.2s; border: 1.5px solid transparent; }
     .flight-card:hover { box-shadow: 0 4px 20px rgba(0,0,0,0.1); border-color: #e0e8ff; }
     .flight-card.selected { border-color: #003580; background: #f0f4ff; }
     .airline { display: flex; align-items: center; gap: 12px; min-width: 150px; }
@@ -156,19 +93,13 @@
     .col-header { font-size: 15px; font-weight: 700; color: #003580; padding: 12px 16px; background: white; border-radius: 10px; margin-bottom: 12px; box-shadow: 0 2px 6px rgba(0,0,0,0.06); border-left: 4px solid #003580; }
     .col-header.ve { border-left-color: #f5a623; }
     .col-ve-placeholder { background: white; border-radius: 12px; padding: 32px; text-align: center; color: #bbb; font-size: 14px; }
-
-    /* ========== ĐIỂM ĐẾN NỔI BẬT ========== */
     .section { max-width: 960px; margin: 0 auto; padding: 56px 16px 0; }
     .section-head { display: flex; align-items: flex-end; justify-content: space-between; margin-bottom: 6px; }
     .section-head h2 { font-size: 26px; font-weight: 700; color: #111; }
     .section-head a { font-size: 14px; font-weight: 600; color: #003580; text-decoration: none; }
     .section-sub { font-size: 14px; color: #888; margin-bottom: 24px; }
     .dest-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
-    .dest-card {
-      background: white; border-radius: 14px; overflow: hidden;
-      box-shadow: 0 2px 12px rgba(0,0,0,0.07); cursor: pointer;
-      transition: transform 0.2s, box-shadow 0.2s;
-    }
+    .dest-card { background: white; border-radius: 14px; overflow: hidden; box-shadow: 0 2px 12px rgba(0,0,0,0.07); cursor: pointer; transition: transform 0.2s, box-shadow 0.2s; }
     .dest-card:hover { transform: translateY(-4px); box-shadow: 0 8px 28px rgba(0,0,0,0.13); }
     .dest-img-placeholder { width: 100%; height: 160px; display: flex; align-items: center; justify-content: center; font-size: 40px; }
     .dest-body { padding: 14px 16px 16px; }
@@ -179,8 +110,6 @@
     .dest-desc { font-size: 12px; color: #888; line-height: 1.5; margin-bottom: 10px; }
     .dest-price-label { font-size: 10px; color: #aaa; text-transform: uppercase; font-weight: 600; }
     .dest-price { font-size: 16px; font-weight: 700; color: #e84545; }
-
-    /* ========== TẠI SAO CHỌN ========== */
     .why-section { background: #f9fafb; margin-top: 56px; padding: 56px 16px; }
     .why-inner { max-width: 960px; margin: 0 auto; }
     .why-inner h2 { font-size: 26px; font-weight: 700; color: #111; text-align: center; margin-bottom: 8px; }
@@ -191,7 +120,19 @@
     .why-title { font-size: 16px; font-weight: 700; color: #111; margin-bottom: 10px; }
     .why-desc { font-size: 13px; color: #777; line-height: 1.7; }
 
-    /* ========== FOOTER ========== */
+    /* ========== THEO DÕI CHUYẾN BAY ========== */
+    .theo-doi-section { background: white; padding: 56px 16px; }
+    .theo-doi-inner { max-width: 960px; margin: 0 auto; text-align: center; }
+    .theo-doi-inner h2 { font-size: 26px; font-weight: 700; color: #111; margin-bottom: 8px; }
+    .theo-doi-inner p { font-size: 14px; color: #888; margin-bottom: 32px; }
+    .theo-doi-box { display: flex; gap: 12px; max-width: 560px; margin: 0 auto; }
+    .theo-doi-input { flex: 1; display: flex; align-items: center; gap: 8px; background: #f7f8fa; border: 1.5px solid #e8e8e8; border-radius: 12px; padding: 12px 16px; transition: all 0.2s; }
+    .theo-doi-input:focus-within { border-color: #003580; background: white; box-shadow: 0 0 0 3px rgba(0,53,128,0.08); }
+    .theo-doi-input input { border: none; outline: none; background: none; font-size: 14px; color: #333; width: 100%; font-family: inherit; }
+    .theo-doi-input input::placeholder { color: #bbb; }
+    .btn-theo-doi { padding: 12px 28px; background: #003580; color: white; border: none; border-radius: 12px; font-size: 15px; font-weight: 700; cursor: pointer; white-space: nowrap; transition: all 0.2s; }
+    .btn-theo-doi:hover { background: #0055aa; transform: translateY(-1px); }
+
     .footer-wrap { background: #111827; color: #9ca3af; font-size: 14px; padding: 48px 40px 24px; }
     .footer-grid { display: grid; grid-template-columns: 1.4fr 1fr 1fr; gap: 32px; max-width: 960px; margin: 0 auto 32px; }
     .footer-logo { font-size: 22px; font-weight: 700; color: white; margin-bottom: 12px; }
@@ -211,6 +152,7 @@
       .pax-row { grid-template-columns: 1fr; }
       .two-col { grid-template-columns: 1fr; }
       .footer-grid { grid-template-columns: 1fr 1fr; }
+      .theo-doi-box { flex-direction: column; }
     }
   </style>
 </head>
@@ -235,15 +177,13 @@
   </div>
 </div>
 
-<!-- ========== SEARCH BOX (dạng cũ nhiều hàng) ========== -->
+<!-- ========== SEARCH BOX ========== -->
 <div class="search-wrapper">
   <div class="search-box">
     <div class="loai-chuyen">
       <label><input type="radio" name="loai" value="Mot_chieu" checked onchange="doiLoaiChuyen()"> ✈ Một chiều</label>
       <label><input type="radio" name="loai" value="Khu_hoi" onchange="doiLoaiChuyen()"> ↔ Khứ hồi</label>
     </div>
-
-    <!-- Hàng sân bay -->
     <div class="airport-row" style="margin-bottom:12px">
       <div class="field-wrap">
         <label>Điểm đi</label>
@@ -255,8 +195,6 @@
         <div class="field-inner"><span class="icon">🛬</span><select id="san-bay-den"><option value="">-- Chọn sân bay --</option></select></div>
       </div>
     </div>
-
-    <!-- Hàng ngày + hạng ghế (một chiều) -->
     <div class="search-grid search-grid-2" id="hang-mot-chieu">
       <div class="field-wrap">
         <label>Ngày đi</label>
@@ -274,8 +212,6 @@
         </div>
       </div>
     </div>
-
-    <!-- Hàng ngày đi/về + hạng ghế (khứ hồi) -->
     <div class="search-grid search-grid-3" id="hang-khu-hoi" style="display:none">
       <div class="field-wrap">
         <label>Ngày đi</label>
@@ -297,8 +233,6 @@
         </div>
       </div>
     </div>
-
-    <!-- Hàng hành khách -->
     <div class="pax-row" style="margin-top:0">
       <div class="field-wrap">
         <label>Người lớn</label>
@@ -313,7 +247,6 @@
         <div class="field-inner"><span class="icon">👶</span><input type="number" id="so-em-be" value="0" min="0" max="9"></div>
       </div>
     </div>
-
     <button class="btn-search" onclick="timChuyenBay()">🔍 Tìm chuyến bay</button>
   </div>
 </div>
@@ -401,6 +334,26 @@
   </div>
 </div>
 
+<!-- ========== THEO DÕI CHUYẾN BAY ========== -->
+<div class="theo-doi-section">
+  <div class="theo-doi-inner">
+    <h2>🔍 Theo dõi chuyến bay</h2>
+    <p>Nhập mã đặt vé hoặc số hiệu chuyến bay để xem trạng thái thực tế</p>
+    <div class="theo-doi-box">
+      <div class="theo-doi-input">
+        <span style="font-size:18px;">✈</span>
+        <input type="text" id="ma-theo-doi"
+               placeholder="VD: BKG2603001 hoặc VN201"
+               onkeydown="if(event.key==='Enter') theoDoi()">
+      </div>
+      <button class="btn-theo-doi" onclick="theoDoi()">🔍 Tra cứu</button>
+    </div>
+    <p style="font-size:12px;color:#aaa;margin-top:12px;">
+      Mã đặt vé được gửi qua email sau khi thanh toán thành công
+    </p>
+  </div>
+</div>
+
 <!-- ========== FOOTER ========== -->
 <footer class="footer-wrap">
   <div class="footer-grid">
@@ -433,12 +386,7 @@ let loaiTuyenHienTai = 'noi_dia';
 let allDataDi = [], allDataVe = [], cbDiDaChon = null;
 
 function logoHang(ma) {
-  const map = {
-    'VN': 'images/vietnam-airline-logo.jpg',
-    'VJ': 'images/logo-vietjet-air.jpg',
-    'QH': 'images/logo-bamboo-airways.jpg',
-    'BL': 'images/pacific-airlines-logo.png',
-  };
+  const map = { 'VN':'images/vietnam-airline-logo.jpg', 'VJ':'images/logo-vietjet-air.jpg', 'QH':'images/logo-bamboo-airways.jpg', 'BL':'images/pacific-airlines-logo.png' };
   return map[ma] || null;
 }
 
@@ -501,21 +449,8 @@ async function loadSanBayTheoLoai(loai) {
         const opt = `<option value="${sb.ma_iata}">${sb.ma_iata} - ${sb.thanh_pho}</option>`;
         di.innerHTML += opt; den.innerHTML += opt;
       });
-    } else {
-      const [resVN, resQT] = await Promise.all([
-        fetch(`${API}/chuyen-bay/san-bay/noi-dia`),
-        fetch(`${API}/chuyen-bay/san-bay/quoc-te`)
-      ]);
-      const dataVN = await resVN.json(), dataQT = await resQT.json();
-      let grpVN = '<optgroup label="🇻🇳 Việt Nam">';
-      dataVN.forEach(sb => { grpVN += `<option value="${sb.ma_iata}">${sb.ma_iata} - ${sb.thanh_pho}</option>`; });
-      grpVN += '</optgroup>';
-      let grpQT = '<optgroup label="🌏 Quốc tế">';
-      dataQT.forEach(sb => { grpQT += `<option value="${sb.ma_iata}">${sb.ma_iata} - ${sb.thanh_pho} (${sb.quoc_gia})</option>`; });
-      grpQT += '</optgroup>';
-      di.innerHTML += grpVN + grpQT; den.innerHTML += grpVN + grpQT;
     }
-  } catch(e) { console.log('Lỗi load sân bay:', e); }
+  } catch(e) {}
 }
 
 async function loadSanBay() {
@@ -544,15 +479,9 @@ function taoFlightCard(cb, chieu) {
   const gia_fmt = Number(cb.gia_nguoi_lon).toLocaleString('vi-VN') + ' ₫';
   const loai    = document.querySelector('input[name=loai]:checked').value;
   const logoSrc = logoHang(cb.ma_hang);
-  const logoHTML = logoSrc
-    ? `<img src="${logoSrc}" class="airline-logo" alt="${cb.ma_hang}">`
-    : `<div class="airline-code">${cb.ma_hang}</div>`;
-
+  const logoHTML = logoSrc ? `<img src="${logoSrc}" class="airline-logo" alt="${cb.ma_hang}">` : `<div class="airline-code">${cb.ma_hang}</div>`;
   return `<div class="flight-card" id="card-${chieu}-${cb.id}">
-    <div class="airline">
-      ${logoHTML}
-      <div><div class="flight-num">${cb.so_hieu_cb}</div><div class="airline-name">${cb.ten_hang}</div></div>
-    </div>
+    <div class="airline">${logoHTML}<div><div class="flight-num">${cb.so_hieu_cb}</div><div class="airline-name">${cb.ten_hang}</div></div></div>
     <div class="flight-time">
       <div class="time-row">
         <div><div class="time">${gio_di}</div><div class="airport">${cb.san_bay_di}</div></div>
@@ -578,11 +507,9 @@ async function timChuyenBay() {
   const ngayVe = loai === 'Khu_hoi' ? document.getElementById('ngay-ve').value : '';
   const hang   = loai === 'Khu_hoi' ? document.getElementById('hang-ghe-kh').value : document.getElementById('hang-ghe').value;
   const so_hk  = parseInt(document.getElementById('so-nguoi-lon').value) + parseInt(document.getElementById('so-tre-em').value);
-
   if (!tu || !den || !ngay) { alert('Vui lòng chọn đầy đủ điểm đi, điểm đến và ngày!'); return; }
   if (tu === den) { alert('Điểm đi và điểm đến không được trùng nhau!'); return; }
   if (loai === 'Khu_hoi' && !ngayVe) { alert('Vui lòng chọn ngày về!'); return; }
-
   document.getElementById('section-diem-den').style.display = 'none';
   document.getElementById('loading').style.display = 'block';
   document.getElementById('no-result').style.display = 'none';
@@ -590,15 +517,12 @@ async function timChuyenBay() {
   cbDiDaChon = null;
   localStorage.removeItem('chuyen_bay_di');
   localStorage.removeItem('chuyen_bay_ve');
-
   const resDi = await fetch(`${API}/chuyen-bay/tim-kiem?tu=${tu}&den=${den}&ngay=${ngay}&hang=${hang}&so_hk=${so_hk}&loai_tuyen=${loaiTuyenHienTai}`);
   allDataDi = await resDi.json();
-
   if (loai === 'Khu_hoi') {
     const resVe = await fetch(`${API}/chuyen-bay/tim-kiem?tu=${den}&den=${tu}&ngay=${ngayVe}&hang=${hang}&so_hk=${so_hk}&loai_tuyen=${loaiTuyenHienTai}`);
     allDataVe = await resVe.json();
   }
-
   document.getElementById('loading').style.display = 'none';
   if (!allDataDi.length && (!allDataVe || !allDataVe.length)) {
     document.getElementById('no-result').style.display = 'block';
@@ -610,13 +534,11 @@ async function timChuyenBay() {
 
 function hienThiKetQua(loai) {
   if (loai === 'Khu_hoi') {
-    let html = '<div class="two-col">';
-    html += '<div id="col-di">';
+    let html = '<div class="two-col"><div id="col-di">';
     html += `<div class="col-header">✈ Chiều đi &nbsp;<small style="color:#888;font-weight:400">${allDataDi.length} chuyến</small></div>`;
     if (!allDataDi.length) html += '<div class="col-ve-placeholder">Không có chuyến đi phù hợp</div>';
     else allDataDi.forEach(cb => { html += taoFlightCard(cb, 'di'); });
-    html += '</div>';
-    html += '<div id="col-ve" style="display:none">';
+    html += '</div><div id="col-ve" style="display:none">';
     html += `<div class="col-header ve">↩ Chiều về &nbsp;<small style="color:#888;font-weight:400">${allDataVe.length} chuyến</small></div>`;
     if (!allDataVe.length) html += '<div class="col-ve-placeholder">Không có chuyến về phù hợp</div>';
     else allDataVe.forEach(cb => { html += taoFlightCard(cb, 've'); });
@@ -680,9 +602,15 @@ function diDenDatVe() {
   window.location.href = 'dat-ve.html';
 }
 
+// ===== THEO DÕI CHUYẾN BAY =====
 function theoDoi() {
-  const ma = prompt('Nhập mã đặt vé của bạn:');
-  if (ma) window.location.href = `xem-ve.html?ma=${ma.trim().toUpperCase()}`;
+  const ma = document.getElementById('ma-theo-doi').value.trim().toUpperCase();
+  if (!ma) {
+    document.getElementById('ma-theo-doi').focus();
+    alert('Vui lòng nhập mã đặt vé hoặc số hiệu chuyến bay!');
+    return;
+  }
+  window.location.href = `xem-ve.html?ma=${ma}`;
 }
 
 const LOAI_ICON = { delay:'⏰', huy_chuyen:'❌', xac_nhan_ve:'✅', khuyen_mai:'🎁', he_thong:'⚙️' };

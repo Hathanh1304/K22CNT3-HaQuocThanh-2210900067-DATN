@@ -195,6 +195,8 @@
       <div class="sidebar-body">
         <div id="order-summary">Đang tải...</div>
         <div class="gia-row-s total">
+
+
           <span>Tổng thanh toán</span>
           <span id="tong-hien-thi">0 ₫</span>
         </div>
@@ -210,7 +212,7 @@
       <div class="hotro-icon">🎧</div>
       <div class="hotro-text">
         <strong>Cần hỗ trợ?</strong>
-        <span>Gọi ngay 1900 1234 (24/7)</span>
+        <span>Gọi ngay 0986 830 471 (24/7)</span>
       </div>
     </div>
 
@@ -331,6 +333,7 @@ function hienThiTomTat() {
     <div class="gia-row-s"><span>Phí dịch vụ</span><span style="color:#28a745;">Miễn phí</span></div>`;
   document.getElementById('tong-hien-thi').textContent = tongTien.toLocaleString('vi-VN') + ' ₫';
 }
+////
 
 async function thanhToan() {
   const ten   = document.getElementById('ten-lh').value.trim();
@@ -382,7 +385,7 @@ async function thanhToan() {
       body: JSON.stringify({
         dat_ve_id:   dvData.dat_ve_id,
         phuong_thuc: phuongThuc,
-        so_tien:     tongTien
+        so_tien: tongTien - soTienGiam
       })
     });
     const ttData = await ttRes.json();
